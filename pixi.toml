@@ -1,0 +1,15 @@
+[workspace]
+authors = ["Michael Hess <michaelhess17@yahoo.com>"]
+channels = ["conda-forge"]
+name = "Paper"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.3,<3.15"
+jupyter = ">=1.1.1,<2"
+
+[pypi-dependencies]
+quarto-cli = ">=1.9.36, <2"

@@ -1,0 +1,2775 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving
+and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
+
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+
+<front>
+
+
+<article-meta>
+
+
+<title-group>
+<article-title>Stroke reorganises the transient dynamical structure of
+human gait</article-title>
+</title-group>
+
+<contrib-group>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>Hess</surname>
+<given-names>Michael</given-names>
+</name>
+<string-name>Michael Hess</string-name>
+
+<email>mhess3@emory.edu</email>
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-1">a</xref>
+<xref ref-type="corresp" rid="cor-1">&#x002A;</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Berman</surname>
+<given-names>Gordon</given-names>
+</name>
+<string-name>Gordon Berman</string-name>
+
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-2">b</xref>
+</contrib>
+</contrib-group>
+<aff id="aff-1">
+<institution-wrap>
+<institution>Emory University, Department of Biology</institution>
+</institution-wrap>
+
+
+
+
+
+
+
+</aff>
+<aff id="aff-2">
+<institution-wrap>
+<institution>Emory University, Departments of Biology &amp;
+Physics</institution>
+</institution-wrap>
+
+
+
+
+
+
+
+</aff>
+<author-notes>
+<corresp id="cor-1">mhess3@emory.edu</corresp>
+</author-notes>
+
+
+
+
+
+
+
+
+
+<history></history>
+
+
+
+
+
+
+</article-meta>
+
+</front>
+
+<body>
+<sec id="abstract">
+  <title>Abstract</title>
+  <p>Healthy walking requires flexible, multi-joint coordination that
+  can absorb perturbations across a range of frequencies and directions
+  while maintaining rhythmic locomotion. Classical gait stability
+  measures – Floquet multipliers and Lyapunov exponents – reduce this
+  rich coordination to a single number summarising how fast
+  perturbations grow or decay, discarding information about
+  <italic>which</italic> perturbation directions matter,
+  <italic>how</italic> the system responds at different frequencies, and
+  <italic>how</italic> the two limbs couple to each other. Here we fit a
+  simple linear model (delay-embedded dynamic mode decomposition) to
+  bilateral hip, knee, and ankle kinematics from 299 treadmill walking
+  trials and show that the structure of this model – specifically, how
+  far it departs from a “well-behaved” (normal) operator – provides a
+  multi-dimensional portrait of locomotor coordination that
+  distinguishes able-bodied, high-functioning stroke, and
+  low-functioning stroke gait in ways that conventional metrics cannot.
+  Able-bodied operators are highly ill-conditioned, enabling the model
+  to respond broadly across stride harmonics and maintain symmetric
+  inter-limb coupling regardless of walking speed. High-functioning
+  stroke operators concentrate their response sharply at the stride
+  frequency, achieving strong resonance but sacrificing frequency
+  breadth. Low-functioning stroke operators are nearly well-conditioned,
+  producing weak responses across all frequencies. Both stroke groups
+  show speed-dependent non-normality (absent in able-bodied gait) and
+  increased inter-limb coupling asymmetry concentrated around the
+  non-paretic knee. These signatures reveal that stroke does not merely
+  slow gait or increase variability: it restructures the dynamical
+  coordination strategy in group-specific ways, suggesting that
+  rehabilitation approaches targeting dynamical richness may complement
+  conventional kinematic goals.</p>
+</sec>
+<sec id="introduction">
+  <title>Introduction</title>
+  <p>Walking looks simple but requires remarkably sophisticated
+  coordination. Each stride involves dozens of muscles acting across
+  multiple joints on both legs, timed to maintain balance, absorb ground
+  reaction forces, and propel the body forward. When this coordination
+  is disrupted by neurological injury such as stroke, the consequences
+  are visible not just as slower walking or asymmetric steps, but as a
+  qualitative change in how the whole system responds to the
+  moment-to-moment perturbations – from uneven ground, shifting
+  attention, or the body’s own variability – that healthy walkers handle
+  without conscious effort.</p>
+  <p>How should we measure this coordination? The dominant approach
+  treats walking as a periodic orbit and asks a single question: do
+  perturbations shrink or grow? Floquet multipliers answer this per
+  stride cycle, but require strict periodicity and very large datasets –
+  Revzen and Guckenheimer
+  (<xref alt="2008" rid="ref-revzen2008" ref-type="bibr">2008</xref>)
+  needed over 10,000 strides from cockroach running data just to obtain
+  stable estimates, orders of magnitude more than the ~15–50 strides in
+  a typical human trial. They also demand a reliable phase estimate,
+  itself a hard problem
+  (<xref alt="Revzen and Guckenheimer 2012" rid="ref-revzen2012" ref-type="bibr">Revzen
+  and Guckenheimer 2012</xref>;
+  <xref alt="Bruijn et al. 2013" rid="ref-bruijn2013" ref-type="bibr">Bruijn
+  et al. 2013</xref>). The maximum Lyapunov exponent
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>)
+  relaxes the periodicity assumption and has emerged as the
+  best-validated predictor of fall risk
+  (<xref alt="Dingwell and Cusumano 2000" rid="ref-dingwell2000" ref-type="bibr">Dingwell
+  and Cusumano 2000</xref>;
+  <xref alt="Bruijn et al. 2013" rid="ref-bruijn2013" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but it provides only a scalar: how fast do nearby
+  trajectories pull apart? It says nothing about <italic>which
+  directions</italic> are unstable, <italic>at what frequencies</italic>
+  the system can respond, or <italic>how the two limbs talk to each
+  other</italic>. These are precisely the questions that matter for
+  understanding locomotor coordination after stroke.</p>
+  <p>Both measures also share a deeper conceptual issue: they assume the
+  system is autonomous – evolving under its own dynamics without
+  external input. Walking is not autonomous. It is continuously driven
+  by descending neural commands, modulated by sensory feedback, and
+  stabilised by reflexes
+  (<xref alt="Ting and McKay 2007" rid="ref-ting2007" ref-type="bibr">Ting
+  and McKay 2007</xref>). The common finding that
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  is positive (local divergence) despite stable walking is a direct
+  consequence: the system is being simultaneously driven and controlled,
+  and Lyapunov analysis of the autonomous reconstruction picks up the
+  driving, not a genuine instability
+  (<xref alt="Dingwell and Kang 2007" rid="ref-dingwell2006" ref-type="bibr">Dingwell
+  and Kang 2007</xref>).</p>
+  <p>We take a different approach. Rather than asking a scalar stability
+  question, we fit a simple linear model to the walking data and then
+  examine the <italic>structure of that model</italic> to learn about
+  the underlying coordination. Specifically, we use dynamic mode
+  decomposition (DMD) – a data-driven technique that finds the best-fit
+  linear operator <inline-formula><alternatives>
+  <tex-math><![CDATA[A]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>A</mml:mi></mml:math></alternatives></inline-formula>
+  predicting the next time step from the current one
+  (<xref alt="Schmid 2010" rid="ref-schmid2010" ref-type="bibr">Schmid
+  2010</xref>;
+  <xref alt="Tu et al. 2014" rid="ref-tu2014" ref-type="bibr">Tu et al.
+  2014</xref>) – applied to delay-embedded bilateral joint kinematics.
+  Delay embedding stacks successive time points into a
+  higher-dimensional state vector, allowing the linear model to capture
+  temporal dependencies that a single snapshot cannot
+  (<xref alt="Takens 1981" rid="ref-takens1981" ref-type="bibr">Takens
+  1981</xref>;
+  <xref alt="Brunton and Kutz 2019" rid="ref-brunton2017" ref-type="bibr">Brunton
+  and Kutz 2019</xref>).</p>
+  <p>Like Floquet and Lyapunov analysis, DMD fits an autonomous model.
+  But rather than reducing the result to eigenvalues (which determine
+  long-run stability), we examine the model’s
+  <italic>non-normality</italic>: how far the fitted operator departs
+  from having orthogonal eigenvectors. This departure has concrete
+  physical meaning. A “well-behaved” (normal) operator can only respond
+  to perturbations through its individual modes, each decaying
+  independently. A non-normal operator can transiently amplify specific
+  perturbation directions, respond at frequencies where no single mode
+  is resonant, and couple inputs and outputs in directionally specific
+  ways
+  (<xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005" ref-type="bibr">Trefethen
+  and Embree 2005</xref>;
+  <xref alt="Henrici 1962" rid="ref-henrici1962" ref-type="bibr">Henrici
+  1962</xref>). These are not abstract mathematical properties – they
+  map directly onto the locomotor questions we care about: How flexibly
+  can the system respond to perturbations across frequencies? How do the
+  two limbs influence each other? And does the system’s coordination
+  structure depend on walking speed, or is it robust across operating
+  conditions?</p>
+  <p>Non-normality has previously been studied in the DMD literature
+  primarily as a <italic>numerical problem</italic>: Wu, Brunton, and
+  Revzen (<xref alt="2021" rid="ref-wu2021" ref-type="bibr">2021</xref>)
+  showed that when DMD is applied to oscillatory data, the underlying
+  operator is inherently non-normal, leading to ill-conditioning and
+  noise-amplified errors. We invert this perspective. Rather than
+  treating non-normality as a nuisance, we show that its magnitude and
+  structure – recovered from walking kinematics – are biologically
+  informative signatures of locomotor coordination. Where the fitted
+  linear model must strain hardest to approximate the true, nonlinear,
+  driven system, non-normality is highest. The pattern of that strain
+  tells us about the coordination it is trying to capture.</p>
+  <p>Post-stroke gait provides a compelling test case. The clinical
+  picture includes slower walking speeds, inter-limb asymmetry, and
+  elevated stride-to-stride variability
+  (<xref alt="Bruijn et al. 2013" rid="ref-bruijn2013" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but these descriptions remain at the level of
+  symptoms. A deeper question is whether stroke fundamentally
+  reorganises <italic>how</italic> the locomotor system coordinates
+  itself – not just how fast or how symmetrically it walks, but the
+  structure of its perturbation responses, its frequency content, and
+  its inter-limb coupling. We test this hypothesis using 299 treadmill
+  walking trials from the open dataset of Winner et al.
+  (<xref alt="2023" rid="ref-winner2023" ref-type="bibr">2023</xref>),
+  which includes able-bodied controls and high- and low-functioning
+  stroke survivors. Our approach complements their LSTM-based “gait
+  signatures” framework: where that work used black-box neural networks
+  to identify individual-specific dynamics, we use an explicitly
+  analysable linear operator to extract interpretable coordination
+  signatures.</p>
+</sec>
+<sec id="methods">
+  <title>Methods</title>
+  <sec id="dataset">
+    <title>Dataset</title>
+    <p>We analyse 299 treadmill walking trials drawn from the open
+    dataset of Winner et al.
+    (<xref alt="2023" rid="ref-winner2023" ref-type="bibr">2023</xref>).
+    Each trial comprises 1500 time points (15 s at 100 Hz) of six
+    kinematic channels: bilateral hip, knee, and ankle sagittal-plane
+    joint angles. Trials are partitioned by metadata into able-bodied
+    (AB, <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 180]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>180</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    speed range 30–220 cm/s), high-functioning stroke (HF,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 65]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>65</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    40–127 cm/s), and low-functioning stroke (LF,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 54]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>54</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    22–60 cm/s). All channels are z-scored within each trial prior to
+    analysis, so that operator properties reflect dynamical organisation
+    rather than absolute amplitude differences.</p>
+  </sec>
+  <sec id="delay-embedded-hankel-dmd">
+    <title>Delay-Embedded Hankel DMD</title>
+    <p>We construct a delay-embedded state by stacking
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tau = 10]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>τ</mml:mi><mml:mo>=</mml:mo><mml:mn>10</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+    lags of the 6-channel observation, yielding a
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[66]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mn>66</mml:mn></mml:math></alternatives></inline-formula>-dimensional
+    augmented state vector at each time step
+    (<xref alt="Takens 1981" rid="ref-takens1981" ref-type="bibr">Takens
+    1981</xref>). This embedding lag spans approximately one stride
+    period at typical walking cadences (100 Hz sampling), ensuring that
+    the augmented space captures at least one full cycle of the dominant
+    oscillation. The resulting Hankel matrix
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[H \in \mathbb{R}^{66 \times (T - \tau)}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>H</mml:mi><mml:mo>∈</mml:mo><mml:msup><mml:mi>ℝ</mml:mi><mml:mrow><mml:mn>66</mml:mn><mml:mo>×</mml:mo><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>T</mml:mi><mml:mo>−</mml:mo><mml:mi>τ</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    is split into input (<inline-formula><alternatives>
+    <tex-math><![CDATA[X = H_{:,1:end-1}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>X</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>H</mml:mi><mml:mrow><mml:mo>:</mml:mo><mml:mo>,</mml:mo><mml:mn>1</mml:mn><mml:mo>:</mml:mo><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>d</mml:mi><mml:mo>−</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>)
+    and output (<inline-formula><alternatives>
+    <tex-math><![CDATA[Y = H_{:,2:end}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>H</mml:mi><mml:mrow><mml:mo>:</mml:mo><mml:mo>,</mml:mo><mml:mn>2</mml:mn><mml:mo>:</mml:mo><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>d</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>)
+    matrices. We compute the truncated SVD
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[X = U \Sigma V^*]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>X</mml:mi><mml:mo>=</mml:mo><mml:mi>U</mml:mi><mml:mi mathvariant="normal">Σ</mml:mi><mml:msup><mml:mi>V</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>,
+    retaining the <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    singular values exceeding <inline-formula><alternatives>
+    <tex-math><![CDATA[10^{-6}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msup><mml:mn>10</mml:mn><mml:mrow><mml:mi>−</mml:mi><mml:mn>6</mml:mn></mml:mrow></mml:msup></mml:math></alternatives></inline-formula>
+    times the leading singular value (typically retaining &gt;99% of the
+    variance), and solve for the reduced operator
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A} = U_r^* Y V_r \Sigma_r^{-1}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover><mml:mo>=</mml:mo><mml:msubsup><mml:mi>U</mml:mi><mml:mi>r</mml:mi><mml:mo>*</mml:mo></mml:msubsup><mml:mi>Y</mml:mi><mml:msub><mml:mi>V</mml:mi><mml:mi>r</mml:mi></mml:msub><mml:msubsup><mml:mi mathvariant="normal">Σ</mml:mi><mml:mi>r</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msubsup></mml:mrow></mml:math></alternatives></inline-formula>
+    following the standard projected DMD formulation
+    (<xref alt="Tu et al. 2014" rid="ref-tu2014" ref-type="bibr">Tu et
+    al. 2014</xref>;
+    <xref alt="Schmid 2010" rid="ref-schmid2010" ref-type="bibr">Schmid
+    2010</xref>). To enforce stability, eigenvalues of
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover></mml:math></alternatives></inline-formula>
+    with modulus exceeding unity are projected onto the unit circle. All
+    subsequent analyses operate on this reduced operator.</p>
+  </sec>
+  <sec id="dynamical-quantities">
+    <title>Dynamical Quantities</title>
+    <p><bold>Henrici departure from normality.</bold> We quantify global
+    non-normality as <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta = \|A^* A - A A^*\|_2 \,/\, \|A\|_2^2]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>η</mml:mi><mml:mo>=</mml:mo><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:msup><mml:mi>A</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:mi>A</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:msup><mml:mi>A</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:msub><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn></mml:msub><mml:mspace width="0.167em"></mml:mspace><mml:mi>/</mml:mi><mml:mspace width="0.167em"></mml:mspace><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mi>A</mml:mi><mml:msubsup><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn><mml:mn>2</mml:mn></mml:msubsup></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[\|\cdot\|_2]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mo>⋅</mml:mo><mml:msub><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>
+    denotes the spectral (operator 2-) norm. A normal operator satisfies
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta = 0]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>η</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    larger values indicate stronger non-orthogonality of eigenvectors
+    and correspondingly greater potential for transient amplification
+    (<xref alt="Henrici 1962" rid="ref-henrici1962" ref-type="bibr">Henrici
+    1962</xref>;
+    <xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005" ref-type="bibr">Trefethen
+    and Embree 2005</xref>).</p>
+    <p><bold>Harmonic resolvent gain.</bold> The stride frequency
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[f_s]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+    is identified as the dominant peak (above 0.3 Hz) in the resolvent
+    gain <inline-formula><alternatives>
+    <tex-math><![CDATA[\sigma_{\max}^{-1}(e^{i\theta}I - A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:msubsup><mml:mi>σ</mml:mi><mml:mrow><mml:mi>max</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msubsup><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:msup><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    swept around the unit circle. Harmonic resolvent gains are then
+    evaluated at <inline-formula><alternatives>
+    <tex-math><![CDATA[\|(e^{i 2\pi h f_s / f_{\text{samp}}} I - A)^{-1}\|]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mn>2</mml:mn><mml:mi>π</mml:mi><mml:mi>h</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mtext mathvariant="normal">samp</mml:mtext></mml:msub></mml:mrow></mml:msup><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:msup><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mo stretchy="false" form="postfix">∥</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    for harmonics <inline-formula><alternatives>
+    <tex-math><![CDATA[h = 1, \ldots, 5]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>h</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>…</mml:mi><mml:mo>,</mml:mo><mml:mn>5</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>,
+    quantifying how strongly the operator amplifies periodic forcing at
+    each multiple of the stride frequency.</p>
+    <p><bold>Spatial resolvent asymmetry.</bold> The full resolvent at
+    the stride frequency is mapped back to the original
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[66]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mn>66</mml:mn></mml:math></alternatives></inline-formula>-dimensional
+    (delay-embedded) joint space via <inline-formula><alternatives>
+    <tex-math><![CDATA[R = U \,(z I - \tilde{A})^{-1}\, U^*]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>R</mml:mi><mml:mo>=</mml:mo><mml:mi>U</mml:mi><mml:mspace width="0.167em"></mml:mspace><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>z</mml:mi><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover><mml:msup><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mspace width="0.167em"></mml:mspace><mml:msup><mml:mi>U</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>.
+    We extract sub-blocks corresponding to
+    paretic<inline-formula><alternatives>
+    <tex-math><![CDATA[\to]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mo>→</mml:mo></mml:math></alternatives></inline-formula>non-paretic
+    and non-paretic<inline-formula><alternatives>
+    <tex-math><![CDATA[\to]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mo>→</mml:mo></mml:math></alternatives></inline-formula>paretic
+    coupling (across all delay lags) and compute their operator norms.
+    The asymmetry index is <inline-formula><alternatives>
+    <tex-math><![CDATA[\max(G_{12}, G_{21}) / \min(G_{12}, G_{21})]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mrow><mml:mi>max</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mi>/</mml:mi><mml:mrow><mml:mi>min</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[G_{12}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
+    and <inline-formula><alternatives>
+    <tex-math><![CDATA[G_{21}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
+    are the respective sub-block norms. Signed log-ratios of pairwise
+    joint gains quantify the directionality of inter-joint coupling.</p>
+    <p><bold>Peak Q-factor.</bold> The quality factor at the stride
+    frequency is <inline-formula><alternatives>
+    <tex-math><![CDATA[Q = f_s / \Delta f]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>Q</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:mi mathvariant="normal">Δ</mml:mi><mml:mi>f</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta f]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi mathvariant="normal">Δ</mml:mi><mml:mi>f</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+    is the half-power bandwidth (frequency interval over which the
+    resolvent gain exceeds <inline-formula><alternatives>
+    <tex-math><![CDATA[\text{peak} / \sqrt{2}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mtext mathvariant="normal">peak</mml:mtext><mml:mi>/</mml:mi><mml:msqrt><mml:mn>2</mml:mn></mml:msqrt></mml:mrow></mml:math></alternatives></inline-formula>).
+    Higher Q indicates narrower frequency tuning.</p>
+    <p><bold>Operator condition number.</bold> The condition number
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa(A) = \sigma_{\max}(A) / \sigma_{\min}(A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mo>=</mml:mo><mml:msub><mml:mi>σ</mml:mi><mml:mi>max</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mi>/</mml:mi><mml:msub><mml:mi>σ</mml:mi><mml:mi>min</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    quantifies the ill-conditioning of the operator. High
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    implies highly non-orthogonal eigenvectors and determines the extent
+    of <italic>pseudospectral spreading</italic>: how far the resolvent
+    gain extends away from eigenvalue locations on the unit circle. For
+    a normal operator, <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa = 1]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+    and the resolvent is determined entirely by eigenvalue distances;
+    for a non-normal operator, the pseudospectral
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\varepsilon]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>ε</mml:mi></mml:math></alternatives></inline-formula>-contours
+    broaden with <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>,
+    elevating gain at frequencies where no eigenvalue sits nearby
+    (<xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005" ref-type="bibr">Trefethen
+    and Embree 2005</xref>).</p>
+    <p><bold>Eigenvalue–stride distance.</bold> We also report
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\min_j |\lambda_j - e^{i 2\pi f_s / f_{\text{samp}}}|]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:msub><mml:mrow><mml:mi>min</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mi>j</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:msub><mml:mi>λ</mml:mi><mml:mi>j</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mn>2</mml:mn><mml:mi>π</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mtext mathvariant="normal">samp</mml:mtext></mml:msub></mml:mrow></mml:msup><mml:mo stretchy="false" form="prefix">|</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    the distance from the nearest eigenvalue of
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover></mml:math></alternatives></inline-formula>
+    to the stride-frequency point on the unit circle. This quantity
+    controls the peak resolvent gain at the fundamental: tighter
+    proximity yields larger absolute gain, independent of
+    non-normality.</p>
+    <p>All quantities are computed trial-by-trial. Speed-matched
+    comparisons cap AB trials at the maximum LF walking speed (60 cm/s)
+    to control for the confound that AB subjects walk faster on
+    average.</p>
+  </sec>
+  <sec id="statistical-inference">
+    <title>Statistical Inference</title>
+    <p>Because each participant contributes multiple trials at different
+    walking speeds, inferential comparisons use a hierarchical bootstrap
+    rather than treating trials as independent replicates. Within each
+    group, subjects are resampled with replacement, and then that
+    subject’s trials are resampled with replacement within the bootstrap
+    draw. This preserves the nested subject/trial structure while
+    accommodating unequal trial counts per subject. For between-group
+    contrasts we bootstrap differences in medians; for speed-dependence
+    we bootstrap Pearson correlations; and for directional quantities
+    expressed as log-ratios we bootstrap the mean log-ratio. We report
+    percentile 95% confidence intervals and two-sided bootstrap p-values
+    computed from the fraction of bootstrap samples on either side of
+    zero. Unless otherwise noted, cross-group inference is reported on
+    the speed-matched subset.</p>
+  </sec>
+</sec>
+<sec id="results">
+  <title>Results</title>
+  <sec id="figure-1-non-normality-tracks-nonlinearity-and-timescale-separation-in-simulated-systems">
+    <title>Figure 1: Non-Normality Tracks Nonlinearity and Timescale
+    Separation in Simulated Systems</title>
+    <preformat>
+Saved: figures/fig1_simulated_benchmarks.svg</preformat>
+    <fig id="fig-simulated">
+      <caption><p>Figure 1: Henrici departure in simulated oscillators.
+      (A) Stuart–Landau: Henrici rises with μ as the limit cycle
+      amplitude increases. (B) FitzHugh-Nagumo: Henrici rises as ε
+      decreases and timescale separation strengthens. (C) Stuart–Landau
+      with isochron shear: Henrici rises with shear parameter c. (D)
+      Joint heatmap over (μ, c).</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-simulated-output-2.svg" />
+    </fig>
+    <p>Simulated benchmark oscillators establish that Henrici departure
+    in a delay-embedded DMD operator rises with three properties of the
+    underlying nonlinear flow: (A) limit-cycle amplitude (Stuart–Landau,
+    increasing <inline-formula><alternatives>
+    <tex-math><![CDATA[\mu]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>μ</mml:mi></mml:math></alternatives></inline-formula>),
+    (B) timescale separation (FitzHugh–Nagumo, decreasing
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\varepsilon]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>ε</mml:mi></mml:math></alternatives></inline-formula>),
+    and (C) isochron shear (Stuart–Landau with amplitude-dependent
+    frequency, increasing <inline-formula><alternatives>
+    <tex-math><![CDATA[c]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>c</mml:mi></mml:math></alternatives></inline-formula>).
+    Panel D confirms that these effects combine monotonically. In each
+    case the linear surrogate encodes the nonlinear geometry through
+    nearly parallel eigenvectors whose large positive and negative
+    contributions cancel on the cycle but amplify deviations off it.
+    These simulations supply the mechanistic interpretation used
+    throughout: elevated Henrici departure indexes richer transient
+    structure, reflecting the complexity of the underlying nonlinear
+    dynamics that the linear operator must approximate.</p>
+  </sec>
+  <sec id="figure-2-speed-dependent-non-normality-distinguishes-stroke-from-able-bodied-gait">
+    <title>Figure 2: Speed-Dependent Non-Normality Distinguishes Stroke
+    from Able-Bodied Gait</title>
+    <fig id="fig-nonnormality">
+      <caption><p>Figure 2: Henrici departure vs walking speed for 299
+      gait trials. AB = able-bodied (steelblue), HF = high-functioning
+      stroke (orange), LF = low-functioning stroke (crimson). Lines
+      connect trials from the same subject across speeds. The strip
+      chart (right) shows speed-matched comparisons.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-nonnormality-output-1.svg" />
+    </fig>
+    <fig id="fig-condnum">
+      <caption><p>Figure 3: Operator condition number κ(A) by group
+      (speed-matched, log scale). Higher conditioning indicates more
+      ill-conditioned eigenvector geometry—a prerequisite for
+      pseudospectral spreading of resolvent gain away from eigenvalue
+      locations.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-condnum-output-1.svg" />
+    </fig>
+    <p>Able-bodied gait maintains high non-normality (median
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.96, IQR [0.95, 0.99]) that is not significantly correlated with
+    walking speed (<inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.11, 95% CI [-0.04, 0.26], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.14; hierarchical bootstrap). Both stroke groups show
+    significantly stronger speed-dependence: high-functioning stroke
+    achieves the highest peak non-normality (median
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 1.0, <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.35, CI [0.1, 0.56], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012), while low-functioning stroke exhibits the lowest overall
+    values (median <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.89, <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.47, CI [0.12, 0.75], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.016). Speed-matched comparisons confirm that HF non-normality
+    exceeds both AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.047, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.018) and LF (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.106, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.005), while the LF–AB contrast trends negative but remains
+    uncertain (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.059, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.063).</p>
+    <p>A second metric, the operator condition number
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa(A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    measures something related but distinct: how broadly the model can
+    spread its response across frequencies beyond the locations of its
+    individual modes. A high condition number means the model’s response
+    “leaks” widely – perturbations at one frequency can be amplified at
+    neighbouring frequencies even where no mode sits. A low condition
+    number confines the response tightly around each mode. The groups
+    are sharply separated: AB operators have extremely high conditioning
+    (median <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    275), HF moderate (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    1475), and LF nearly minimal (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    78). These differences are significant on the log scale (AB vs LF
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    log <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    = -1.3, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.006; AB vs HF <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    log <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    = 1.7, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.552). AB operators also retain higher SVD rank (median 45 vs 37
+    HF and 36 LF out of 66 possible dimensions), indicating that the
+    able-bodied coordination occupies a higher-dimensional subspace. As
+    we show in the next section, this three-way gradient in conditioning
+    – high (AB), moderate (HF), low (LF) – explains why the groups’
+    frequency response profiles take such different shapes despite
+    comparable or even elevated non-normality in HF.</p>
+  </sec>
+  <sec id="figure-3-harmonic-resolvent-gain-reveals-stroke-related-collapse-of-high-frequency-coupling">
+    <title>Figure 3: Harmonic Resolvent Gain Reveals Stroke-Related
+    Collapse of High-Frequency Coupling</title>
+    <fig id="fig-harmonic-all">
+      <caption><p>Figure 4: Absolute and normalised harmonic resolvent
+      gain. (A) Absolute gain at harmonics 1–5. (B) Gain normalised by
+      the fundamental, revealing fall-off shape independent of overall
+      gain level.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-all-output-1.svg" />
+    </fig>
+    <fig id="fig-harmonic-speed">
+      <caption><p>Figure 5: Normalised harmonic gain faceted by walking
+      speed bin (blue = slow, red = fast). Speed modulates the gain
+      profile within each group differently, with AB showing the largest
+      speed-dependent change.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-speed-output-1.svg" />
+    </fig>
+    <fig id="fig-harmonic-matched">
+      <caption><p>Figure 6: Speed-matched harmonic gain comparison (AB
+      capped at the maximum LF speed). Group differences in the fall-off
+      shape persist after controlling for speed.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-matched-output-1.svg" />
+    </fig>
+    <p>These profiles show how broadly each group’s model can respond
+    across multiples of the stride frequency – a proxy for how rich and
+    multi-timescale the underlying coordination is. The pattern is more
+    nuanced than “stroke suppresses higher harmonics.”</p>
+    <p>To quantify the fall-off, we fit a spectral decay rate (slope of
+    log-normalised gain vs. harmonic number) to each trial. AB gait
+    decays at a moderate rate (median slope -1.19), LF is similar
+    (-1.11), and HF decays significantly faster (-1.86). Hierarchical
+    bootstrap confirms HF falls off faster than AB
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.9, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.001); LF is not significantly different from AB
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.16, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.232), and the HF–LF contrast trends in the same direction but is
+    noisier (<inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.208).</p>
+    <p>This result initially seems paradoxical: HF has the highest
+    non-normality (Figure 2) yet the steepest fall-off – shouldn’t a
+    more “complex” operator respond more broadly? The resolution
+    involves two distinct mechanisms. First, <italic>how closely the
+    model’s internal oscillation matches the stride frequency</italic>
+    determines the absolute gain at the fundamental. HF operators place
+    their nearest mode very close to the stride frequency (median
+    distance 0.00069 vs. 0.0012 for AB), producing the highest absolute
+    gain at h1 (median 1.9 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^7]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>7</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    vs. 5.3 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^6]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>6</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    AB; bootstrap <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 1.5 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^7]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>7</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001). Second, <italic>how ill-conditioned the operator
+    is</italic> (the condition number <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>,
+    reported in Figure 2) determines how broadly the model’s response
+    spreads away from its modes to neighbouring frequencies. AB’s
+    extreme ill-conditioning (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    18,700) lets the response “leak” to harmonics that no single mode
+    directly supports. HF’s moderate conditioning
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    1,200) limits this spreading.</p>
+    <p>Crucially, the steep normalised fall-off in HF does
+    <italic>not</italic> mean higher harmonics are suppressed in
+    absolute terms. At h2–h5 the absolute gains are comparable across
+    groups or even highest in LF (h2: AB 0.7M, HF 0.9M, LF 1.6M).
+    Rather, HF’s fundamental is so strongly amplified that everything
+    else looks small by comparison.</p>
+    <p>The biological picture: able-bodied gait uses a high-dimensional,
+    broadly responsive model – the system can handle perturbations at
+    many frequencies. HF gait is sharply tuned to the stride frequency,
+    achieving strong resonance but sacrificing breadth. LF gait responds
+    weakly across all frequencies, with no dominant resonance.</p>
+  </sec>
+  <sec id="figure-4-spatial-resolvent-asymmetry-q-factor-and-knee-centred-coupling-summaries-differentiate-groups">
+    <title>Figure 4: Spatial Resolvent Asymmetry, Q-Factor, and
+    Knee-Centred Coupling Summaries Differentiate Groups</title>
+    <fig id="fig-novel-strips">
+      <caption><p>Figure 7: Speed-matched strip charts for the coarse
+      operator metrics. (A) Spatial resolvent asymmetry: ratio of
+      cross-body resolvent norms, max/min. (B) Peak Q-factor at stride
+      frequency. (C) Mean paretic→non-paretic resolvent gain. (D) Mean
+      non-paretic→paretic resolvent gain. Lines show median; error bars
+      show IQR.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-novel-strips-output-1.svg" />
+    </fig>
+    <fig id="fig-joint-summary">
+      <caption><p>Figure 8: Speed-matched summary metrics replacing the
+      full joint-level heatmaps. (E) Knee-target asymmetry, defined as
+      log(hip→non-paretic knee / hip→paretic knee). Positive values
+      indicate that hip-to-knee coupling is concentrated on the
+      non-paretic knee. (F) Non-paretic-knee directional bias, defined
+      as the mean log[(hip→non-paretic knee)/(non-paretic knee→hip)]
+      across both hips. Positive values indicate preferential drive into
+      the non-paretic knee. (G) Global pairwise asymmetry, defined as
+      the mean absolute signed log-ratio across all joint
+      pairs.</p></caption>
+      <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-joint-summary-output-1.svg" />
+    </fig>
+    <p>In healthy walking, the two legs influence each other roughly
+    symmetrically – perturbations on one side propagate to the other
+    with similar strength in both directions. Stroke disrupts this
+    balance. We quantify inter-limb coupling asymmetry as the ratio
+    between the stronger and weaker cross-body influence directions (a
+    ratio of 1 means perfect symmetry). This ratio rises monotonically
+    from AB (median 1.23) through HF (1.69) to LF (1.89), indicating
+    progressively one-sided coupling between the legs. Hierarchical
+    bootstrap confirms larger asymmetry in both stroke groups relative
+    to AB (HF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.47, 95% CI [0.24, 0.92], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.002; LF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.66, [0.28, 1.75], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001). Moreover, in LF gait the dominant direction of
+    influence runs from the paretic to the non-paretic side (mean
+    log-ratio = 0.6, 95% CI [0.28, 0.9], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001), with HF trending similarly but less certain (0.21,
+    [-0.01, 0.45], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.062). In other words, the impaired limb’s dynamics propagate
+    forcefully across the body, and the intact side must absorb and
+    accommodate those perturbations.</p>
+    <p>How narrowly tuned is each group’s coordination to the stride
+    frequency? The Q-factor measures this: higher Q means the system
+    responds strongly at stride frequency but poorly at neighbouring
+    frequencies. HF gait is the most sharply tuned (median Q = 69.6
+    vs. AB 14.3 and LF 31.3), consistent with a coordination strategy
+    that locks onto the stride rhythm but sacrifices adaptability to
+    perturbations at other frequencies. Hierarchical bootstrap confirms
+    higher Q in HF than AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 55.3, 95% CI [24.6, 93.5], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001) and in LF than AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 17.1, [2.5, 59.6], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012), while the HF–LF contrast is less certain
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.176). LF gait thus combines high spatial asymmetry with
+    moderately narrow tuning – a coordination pattern that is both
+    directionally biased and somewhat rigid.</p>
+    <p>To localise where in the kinematic chain inter-limb asymmetry is
+    concentrated, we examine hip-to-knee coupling. In AB gait, the hips
+    drive both knees roughly equally. In both stroke groups, this
+    coupling shifts toward the non-paretic knee: the log-ratio of
+    hip-to-non-paretic-knee vs. hip-to-paretic-knee coupling is near
+    zero in AB but positive in stroke (HF–AB
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.23, 95% CI [0.01, 0.65], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.034; LF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.79, [0.12, 1.39], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.016). Both stroke groups also show strong directional bias
+    <italic>into</italic> the non-paretic knee from the hips (HF: mean =
+    1.09, 95% CI [0.82, 1.36], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001; LF: mean = 1.19, [0.87, 1.48],
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001), with LF exceeding AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.83, [0.18, 1.33], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012). A broader summary of all pairwise joint asymmetries trends
+    upward in LF relative to AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.33, 95% CI [-0.02, 0.57], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.056), but the clearest finding is that stroke-related coupling
+    asymmetry is concentrated specifically around the non-paretic knee
+    rather than being diffusely spread across all joints. The intact leg
+    does not simply “compensate” in a general sense – the model reveals
+    a specific pathway through which the non-paretic knee absorbs and
+    redistributes perturbations originating from the impaired side.</p>
+  </sec>
+</sec>
+<sec id="discussion">
+  <title>Discussion</title>
+  <p>Three operator-level signatures emerge from delay-embedded DMD of
+  299 gait trials, collectively revealing that stroke reorganises–rather
+  than merely degrades–the transient dynamical structure of
+  locomotion.</p>
+  <p><bold>Speed-dependent non-normality.</bold> Able-bodied gait
+  maintains a stable, speed-invariant level of non-normality, indicating
+  that the transient complexity of the locomotor operator is robust
+  across operating points. Both stroke groups show elevated
+  speed-dependence (<inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.35]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.35</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  HF, <inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.47]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.47</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  LF vs. <inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.11]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.11</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  AB), meaning that their capacity for transient amplification is
+  fragile–contingent on walking at particular speeds. As discussed in
+  the Introduction, all three analysis frameworks–Floquet multipliers,
+  Lyapunov exponents, and DMD–fit autonomous models to a system that is
+  continuously driven and controlled
+  (<xref alt="Dingwell and Kang 2007" rid="ref-dingwell2006" ref-type="bibr">Dingwell
+  and Kang 2007</xref>;
+  <xref alt="Ting and McKay 2007" rid="ref-ting2007" ref-type="bibr">Ting
+  and McKay 2007</xref>). The maximum Lyapunov exponent
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  remains the best-validated predictor of fall risk
+  (<xref alt="Bruijn et al. 2013" rid="ref-bruijn2013" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but as a scalar divergence rate of an autonomous
+  reconstruction it cannot distinguish intrinsic instability from neural
+  driving, nor can it capture the directional or frequency-dependent
+  structure of transient dynamics. The Henrici departure, by indexing
+  how severely the autonomous linear model must distort its eigenvector
+  geometry to fit the driven, nonlinear data, captures a complementary
+  dimension of locomotor organisation. Where
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  summarises the dominant instability direction, the resolvent structure
+  maps the full landscape of transient amplification across frequencies
+  and spatial channels. The speed-dependence of this structure in stroke
+  gait–absent in able-bodied gait–suggests that the model-reality gap
+  (i.e., how “non-autonomous” or “nonlinear” the true system is relative
+  to the linear surrogate) varies with operating point in impaired but
+  not in healthy locomotion.</p>
+  <p><bold>Spectral organisation: eigenvalue proximity
+  vs. pseudospectral spreading.</bold> The harmonic resolvent profiles
+  initially appear paradoxical: HF has the highest Henrici departure yet
+  the steepest normalised harmonic fall-off, while LF has the lowest
+  non-normality yet a normalised profile similar to AB. The resolution
+  lies in recognising that two distinct mechanisms shape the
+  resolvent–<italic>eigenvalue proximity</italic> to the stride
+  frequency (which sets absolute gain at each harmonic) and
+  <italic>pseudospectral spreading</italic> via the operator’s condition
+  number (which determines how broadly gain extends away from eigenvalue
+  locations). HF operators park an eigenvalue very close to the stride
+  fundamental, producing massive h1 gain. But HF’s condition number
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 1{,}200]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mn>200</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>)
+  is an order of magnitude below AB’s (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 18{,}700]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>18</mml:mn><mml:mo>,</mml:mo><mml:mn>700</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>),
+  so the pseudospectral halo that would spread this gain to neighbouring
+  harmonics is narrower. The steep normalised fall-off in HF therefore
+  reflects disproportionate inflation of the fundamental, not
+  suppression of higher harmonics–absolute gains at h2–h5 are comparable
+  to or exceed AB’s. Conversely, LF operators are nearly
+  well-conditioned (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 46]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>46</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>),
+  meaning almost no pseudospectral spreading; their flat normalised
+  profile arises simply because no single eigenvalue dominates the
+  stride frequency. AB combines extreme ill-conditioning with moderate
+  eigenvalue–stride coupling to produce both high absolute gain and
+  broad bandwidth–the pseudospectral effects sustain resolvent gain at
+  frequencies far from any eigenvalue. From the perspective of Wu,
+  Brunton, and Revzen
+  (<xref alt="2021" rid="ref-wu2021" ref-type="bibr">2021</xref>), the
+  condition number gradient across groups reflects how differently the
+  Koopman operator’s non-normal structure is distorted by neurological
+  impairment. The non-normality they identify as a challenge for DMD
+  convergence here becomes a graded diagnostic: AB dynamics strain the
+  autonomous linear model broadly across the spectrum; HF dynamics
+  strain it acutely at one frequency; LF dynamics strain it least of
+  all.</p>
+  <p><bold>Asymmetric coupling focused on the non-paretic knee.</bold>
+  The directionality of inter-limb coupling provides perhaps the most
+  clinically informative signature. At the coarse inter-limb level, LF
+  shows clear paretic-dominant cross-body drive, with HF trending in the
+  same direction. At finer joint resolution, however, the most robust
+  effect is even more specific: hip-knee coupling becomes concentrated
+  on the non-paretic knee, and both stroke groups show strong
+  directional bias into that knee from the hips. Rather than the intact
+  side simply compensating for the impaired side in a diffuse manner,
+  the operator structure suggests that stroke channels transient
+  coupling through a knee-centered pathway on the non-paretic limb. That
+  picture remains consistent with the clinical observation that the
+  “good” leg works harder during stroke gait, but it localises the
+  asymmetry to a specific operator-level route through which
+  perturbations are absorbed and redistributed.</p>
+  <p><bold>Relationship to existing stability measures.</bold> Bruijn et
+  al.
+  (<xref alt="2013" rid="ref-bruijn2013" ref-type="bibr">2013</xref>)
+  evaluated gait stability measures against four validity criteria:
+  construct validity, convergent validity, predictive validity, and
+  discriminant validity. Floquet multipliers showed poor construct
+  validity for human gait–not only because strict periodicity is
+  violated, but because they require prohibitively large datasets
+  (&gt;10,000 strides in Revzen and Guckenheimer
+  (<xref alt="2008" rid="ref-revzen2008" ref-type="bibr">2008</xref>)
+  vs. ~15–50 strides in typical human trials), demand a reliable phase
+  estimator
+  (<xref alt="Revzen and Guckenheimer 2008" rid="ref-revzen2008" ref-type="bibr">Revzen
+  and Guckenheimer 2008</xref>,
+  <xref alt="2012" rid="ref-revzen2012" ref-type="bibr">2012</xref>),
+  and are acutely noise-sensitive. <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  showed good predictive validity but limited discriminant validity
+  between populations, and as Dingwell and Kang
+  (<xref alt="2007" rid="ref-dingwell2006" ref-type="bibr">2007</xref>)
+  demonstrated, the coexistence of positive
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  (local divergence) with orbital stability reflects the driven nature
+  of the system rather than a genuine autonomous instability. The
+  operator-level metrics introduced here show substantial discriminant
+  validity, with the strongest and most consistent separations in
+  AB-vs-stroke contrasts, and capture facets of locomotor
+  organisation–transient richness, frequency bandwidth, directional
+  coupling–that no single scalar can represent. Like DMD itself, these
+  metrics inherit the autonomous-model assumption, but they make the
+  strain of that assumption visible: non-normality is high precisely
+  where the linear autonomous model must work hardest to approximate
+  driven, nonlinear dynamics. Establishing their predictive validity for
+  fall risk and their convergent validity with
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  are natural directions for future work.</p>
+  <p><bold>Methodological considerations.</bold> Our approach builds on
+  the DMD framework of Schmid
+  (<xref alt="2010" rid="ref-schmid2010" ref-type="bibr">2010</xref>)
+  and Tu et al.
+  (<xref alt="2014" rid="ref-tu2014" ref-type="bibr">2014</xref>), with
+  delay embedding following Takens
+  (<xref alt="1981" rid="ref-takens1981" ref-type="bibr">1981</xref>).
+  Wu, Brunton, and Revzen
+  (<xref alt="2021" rid="ref-wu2021" ref-type="bibr">2021</xref>) showed
+  that DMD applied to limit-cycle data faces challenges from Krylov
+  space closure and non-normality-amplified estimation errors, and
+  characterised performance via a dataset metric (number of initial
+  conditions <inline-formula><alternatives>
+  <tex-math><![CDATA[\times]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>×</mml:mi></mml:math></alternatives></inline-formula>
+  trajectory length). Our dataset of 299 trials with 1500 time points
+  each provides substantial coverage; the stability enforcement
+  (eigenvalue projection inside the unit disk) and SVD truncation
+  (retaining &gt;99% variance) guard against the most severe numerical
+  pathologies they identify. Nevertheless, several limitations apply.
+  The analysis uses a single treadmill dataset; overground walking may
+  produce different operator structure. The choice of embedding lag
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\tau = 10]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>τ</mml:mi><mml:mo>=</mml:mo><mml:mn>10</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>)
+  is motivated by stride-period considerations at 100 Hz but has not
+  been exhaustively optimised. The linear operator is a surrogate–it
+  captures the Koopman-linearised dynamics faithfully only within the
+  delay-embedded subspace, and nonlinear effects beyond this
+  approximation are not modelled.</p>
+  <p><bold>Clinical implications.</bold> Collectively, these results
+  suggest that post-stroke locomotor impairment is not a scalar
+  degradation but a structured reorganisation of transient dynamics.
+  Restoring walking speed or step symmetry may not restore the
+  non-normal richness that characterises healthy gait. The
+  group-specific signatures identified here–fragile non-normality,
+  narrowed bandwidth in HF, and knee-centered asymmetry that is
+  strongest in LF–point toward different rehabilitation targets for
+  different functional levels. Interventions that broaden the transient
+  repertoire, such as perturbation-based balance training,
+  multi-frequency rhythmic cueing, or assistive devices that modulate
+  inter-limb coupling directionality, may prove more effective than
+  approaches targeting kinematic outcomes alone.</p>
+  <p><bold>Outlook.</bold> The present work demonstrates that
+  non-normality in data-driven linear operators is not merely a
+  numerical nuisance but a window into the transient organisation of
+  biological movement. Future extensions–incorporating residual DMD for
+  rigorous spectral convergence guarantees
+  (<xref alt="Colbrook, Ayton, and Szöke 2023" rid="ref-colbrook2021" ref-type="bibr">Colbrook,
+  Ayton, and Szöke 2023</xref>), measure-theoretic Koopman formulations
+  (<xref alt="Mezić 2005" rid="ref-mezic2005" ref-type="bibr">Mezić
+  2005</xref>,
+  <xref alt="2013" rid="ref-mezic2013" ref-type="bibr">2013</xref>), or
+  hybrid embeddings that combine delay coordinates with nonlinear
+  observables–promise richer operator-level phenotypes for clinical
+  stratification and closed-loop control.</p>
+</sec>
+</body>
+
+<back>
+<ref-list>
+  <title></title>
+  <ref id="ref-bruijn2013">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Bruijn</surname><given-names>Sjoerd M.</given-names></name>
+        <name><surname>Meijer</surname><given-names>Onno G.</given-names></name>
+        <name><surname>Beek</surname><given-names>Peter J.</given-names></name>
+        <name><surname>Dieën</surname><given-names>Jaap H. van</given-names></name>
+      </person-group>
+      <article-title>Assessing the stability of human locomotion: A review of current measures</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2013">2013</year>
+      <volume>10</volume>
+      <issue>83</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2012.0999</pub-id>
+      <fpage>20120999</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-dingwell2000">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Dingwell</surname><given-names>Jonathan B.</given-names></name>
+        <name><surname>Cusumano</surname><given-names>Joseph P.</given-names></name>
+      </person-group>
+      <article-title>Nonlinear time series analysis of normal and pathological human walking</article-title>
+      <source>Chaos</source>
+      <year iso-8601-date="2000">2000</year>
+      <volume>10</volume>
+      <issue>4</issue>
+      <pub-id pub-id-type="doi">10.1063/1.1324008</pub-id>
+      <fpage>848</fpage>
+      <lpage>863</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-winner2023">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Winner</surname><given-names>Tristan</given-names></name>
+        <name><surname>Rosenberg</surname><given-names>Michael C.</given-names></name>
+        <name><surname>Kesar</surname><given-names>Trisha M.</given-names></name>
+        <name><surname>Ting</surname><given-names>Lena H.</given-names></name>
+        <name><surname>Berman</surname><given-names>Gordon J.</given-names></name>
+      </person-group>
+      <article-title>Discovering individual-specific gait signatures from data</article-title>
+      <source>bioRxiv</source>
+      <year iso-8601-date="2023">2023</year>
+      <pub-id pub-id-type="doi">10.1101/2023.01.11.523590</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-wu2021">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wu</surname><given-names>Jiahao</given-names></name>
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+      </person-group>
+      <article-title>Challenges in Dynamic Mode Decomposition</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2021">2021</year>
+      <volume>18</volume>
+      <issue>185</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2021.0686</pub-id>
+      <fpage>20210686</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-schmid2010">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Schmid</surname><given-names>Peter J.</given-names></name>
+      </person-group>
+      <article-title>Dynamic mode decomposition of numerical and experimental data</article-title>
+      <source>Journal of Fluid Mechanics</source>
+      <year iso-8601-date="2010">2010</year>
+      <volume>656</volume>
+      <pub-id pub-id-type="doi">10.1017/S0022112010001217</pub-id>
+      <fpage>5</fpage>
+      <lpage>28</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-mezic2005">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Mezić</surname><given-names>Igor</given-names></name>
+      </person-group>
+      <article-title>Spectral properties of dynamical systems, model reduction and decompositions</article-title>
+      <source>Nonlinear Dynamics</source>
+      <year iso-8601-date="2005">2005</year>
+      <volume>41</volume>
+      <pub-id pub-id-type="doi">10.1007/s11071-005-2824-x</pub-id>
+      <fpage>309</fpage>
+      <lpage>325</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-mezic2013">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Mezić</surname><given-names>Igor</given-names></name>
+      </person-group>
+      <article-title>Analysis of fluid flows via spectral properties of the Koopman operator</article-title>
+      <source>Annual Review of Fluid Mechanics</source>
+      <year iso-8601-date="2013">2013</year>
+      <volume>45</volume>
+      <pub-id pub-id-type="doi">10.1146/annurev-fluid-011212-140652</pub-id>
+      <fpage>357</fpage>
+      <lpage>378</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-tu2014">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Tu</surname><given-names>Jonathan H.</given-names></name>
+        <name><surname>Rowley</surname><given-names>Clarence W.</given-names></name>
+        <name><surname>Luchtenburg</surname><given-names>Dirk M.</given-names></name>
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Kutz</surname><given-names>J. Nathan</given-names></name>
+      </person-group>
+      <article-title>On Dynamic Mode Decomposition: Theory and Applications</article-title>
+      <source>Journal of Computational Dynamics</source>
+      <year iso-8601-date="2014">2014</year>
+      <volume>1</volume>
+      <issue>2</issue>
+      <pub-id pub-id-type="doi">10.3934/jcd.2014.1.391</pub-id>
+      <fpage>391</fpage>
+      <lpage>421</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-trefethen2005">
+    <element-citation publication-type="book">
+      <person-group person-group-type="author">
+        <name><surname>Trefethen</surname><given-names>Lloyd N.</given-names></name>
+        <name><surname>Embree</surname><given-names>Mark</given-names></name>
+      </person-group>
+      <source>Spectra and pseudospectra: The behavior of nonnormal matrices and operators</source>
+      <publisher-name>Princeton University Press</publisher-name>
+      <year iso-8601-date="2005">2005</year>
+      <isbn>978-0-691-11946-5</isbn>
+    </element-citation>
+  </ref>
+  <ref id="ref-henrici1962">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Henrici</surname><given-names>Peter</given-names></name>
+      </person-group>
+      <article-title>Bounds for iterates, inverses, spectral variation and fields of values of non-normal matrices</article-title>
+      <source>Numerische Mathematik</source>
+      <year iso-8601-date="1962">1962</year>
+      <volume>4</volume>
+      <pub-id pub-id-type="doi">10.1007/BF01386294</pub-id>
+      <fpage>24</fpage>
+      <lpage>40</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-takens1981">
+    <element-citation publication-type="chapter">
+      <person-group person-group-type="author">
+        <name><surname>Takens</surname><given-names>Floris</given-names></name>
+      </person-group>
+      <article-title>Detecting strange attractors in turbulence</article-title>
+      <source>Dynamical systems and turbulence, warwick 1980</source>
+      <publisher-name>Springer</publisher-name>
+      <year iso-8601-date="1981">1981</year>
+      <volume>898</volume>
+      <pub-id pub-id-type="doi">10.1007/BFb0091924</pub-id>
+      <fpage>366</fpage>
+      <lpage>381</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-brunton2017">
+    <element-citation publication-type="book">
+      <person-group person-group-type="author">
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Kutz</surname><given-names>J. Nathan</given-names></name>
+      </person-group>
+      <source>Data-driven science and engineering: Machine learning, dynamical systems, and control</source>
+      <publisher-name>Cambridge University Press</publisher-name>
+      <year iso-8601-date="2019">2019</year>
+      <edition>1st</edition>
+      <pub-id pub-id-type="doi">10.1017/9781108380690</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-colbrook2021">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Colbrook</surname><given-names>Matthew J.</given-names></name>
+        <name><surname>Ayton</surname><given-names>Lorna J.</given-names></name>
+        <name><surname>Szöke</surname><given-names>Máté</given-names></name>
+      </person-group>
+      <article-title>Residual Dynamic Mode Decomposition: Robust and verified Koopmanism</article-title>
+      <source>Journal of Fluid Mechanics</source>
+      <year iso-8601-date="2023">2023</year>
+      <volume>955</volume>
+      <pub-id pub-id-type="doi">10.1017/jfm.2022.1052</pub-id>
+      <fpage>A21</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-revzen2008">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+        <name><surname>Guckenheimer</surname><given-names>John M.</given-names></name>
+      </person-group>
+      <article-title>Estimating the phase of synchronized oscillators</article-title>
+      <source>Physical Review E</source>
+      <year iso-8601-date="2008">2008</year>
+      <volume>78</volume>
+      <issue>5</issue>
+      <pub-id pub-id-type="doi">10.1103/PhysRevE.78.051907</pub-id>
+      <fpage>051907</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-ting2007">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Ting</surname><given-names>Lena H.</given-names></name>
+        <name><surname>McKay</surname><given-names>J. Lucas</given-names></name>
+      </person-group>
+      <article-title>Neuromechanics of muscle synergies for posture and movement</article-title>
+      <source>Current Opinion in Neurobiology</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>17</volume>
+      <issue>6</issue>
+      <pub-id pub-id-type="doi">10.1016/j.conb.2008.01.002</pub-id>
+      <fpage>622</fpage>
+      <lpage>628</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-dingwell2006">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Dingwell</surname><given-names>Jonathan B.</given-names></name>
+        <name><surname>Kang</surname><given-names>Hyun Gu</given-names></name>
+      </person-group>
+      <article-title>Differences between local and orbital dynamic stability of human walking</article-title>
+      <source>Journal of Biomechanical Engineering</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>129</volume>
+      <issue>4</issue>
+      <pub-id pub-id-type="doi">10.1115/1.2746383</pub-id>
+      <fpage>586</fpage>
+      <lpage>593</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-revzen2012">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+        <name><surname>Guckenheimer</surname><given-names>John M.</given-names></name>
+      </person-group>
+      <article-title>Finding the dimension of slow dynamics in a rhythmic system</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2012">2012</year>
+      <volume>9</volume>
+      <issue>70</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2011.0431</pub-id>
+      <fpage>957</fpage>
+      <lpage>971</lpage>
+    </element-citation>
+  </ref>
+</ref-list>
+</back>
+
+<sub-article article-type="notebook" id="nb-4-nb-article">
+<front-stub>
+<title-group>
+<article-title>Stroke reorganises the transient dynamical structure of
+human gait</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>Hess</surname>
+<given-names>Michael</given-names>
+</name>
+<string-name>Michael Hess</string-name>
+
+<email>mhess3@emory.edu</email>
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-1-nb-article">a</xref>
+<xref ref-type="corresp" rid="cor-1-nb-article">&#x002A;</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Berman</surname>
+<given-names>Gordon</given-names>
+</name>
+<string-name>Gordon Berman</string-name>
+
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-2-nb-article">b</xref>
+</contrib>
+</contrib-group>
+<aff id="aff-1-nb-article">
+<institution-wrap>
+<institution>Emory University, Department of Biology</institution>
+</institution-wrap>
+
+
+
+
+
+
+
+</aff>
+<aff id="aff-2-nb-article">
+<institution-wrap>
+<institution>Emory University, Departments of Biology &amp;
+Physics</institution>
+</institution-wrap>
+
+
+
+
+
+
+
+</aff>
+<author-notes>
+<corresp id="cor-1-nb-article">mhess3@emory.edu</corresp>
+</author-notes>
+</front-stub>
+
+<body>
+<sec id="abstract-nb-article">
+  <title>Abstract</title>
+  <p>Healthy walking requires flexible, multi-joint coordination that
+  can absorb perturbations across a range of frequencies and directions
+  while maintaining rhythmic locomotion. Classical gait stability
+  measures – Floquet multipliers and Lyapunov exponents – reduce this
+  rich coordination to a single number summarising how fast
+  perturbations grow or decay, discarding information about
+  <italic>which</italic> perturbation directions matter,
+  <italic>how</italic> the system responds at different frequencies, and
+  <italic>how</italic> the two limbs couple to each other. Here we fit a
+  simple linear model (delay-embedded dynamic mode decomposition) to
+  bilateral hip, knee, and ankle kinematics from 299 treadmill walking
+  trials and show that the structure of this model – specifically, how
+  far it departs from a “well-behaved” (normal) operator – provides a
+  multi-dimensional portrait of locomotor coordination that
+  distinguishes able-bodied, high-functioning stroke, and
+  low-functioning stroke gait in ways that conventional metrics cannot.
+  Able-bodied operators are highly ill-conditioned, enabling the model
+  to respond broadly across stride harmonics and maintain symmetric
+  inter-limb coupling regardless of walking speed. High-functioning
+  stroke operators concentrate their response sharply at the stride
+  frequency, achieving strong resonance but sacrificing frequency
+  breadth. Low-functioning stroke operators are nearly well-conditioned,
+  producing weak responses across all frequencies. Both stroke groups
+  show speed-dependent non-normality (absent in able-bodied gait) and
+  increased inter-limb coupling asymmetry concentrated around the
+  non-paretic knee. These signatures reveal that stroke does not merely
+  slow gait or increase variability: it restructures the dynamical
+  coordination strategy in group-specific ways, suggesting that
+  rehabilitation approaches targeting dynamical richness may complement
+  conventional kinematic goals.</p>
+</sec>
+<sec id="introduction-nb-article">
+  <title>Introduction</title>
+  <p>Walking looks simple but requires remarkably sophisticated
+  coordination. Each stride involves dozens of muscles acting across
+  multiple joints on both legs, timed to maintain balance, absorb ground
+  reaction forces, and propel the body forward. When this coordination
+  is disrupted by neurological injury such as stroke, the consequences
+  are visible not just as slower walking or asymmetric steps, but as a
+  qualitative change in how the whole system responds to the
+  moment-to-moment perturbations – from uneven ground, shifting
+  attention, or the body’s own variability – that healthy walkers handle
+  without conscious effort.</p>
+  <p>How should we measure this coordination? The dominant approach
+  treats walking as a periodic orbit and asks a single question: do
+  perturbations shrink or grow? Floquet multipliers answer this per
+  stride cycle, but require strict periodicity and very large datasets –
+  Revzen and Guckenheimer
+  (<xref alt="2008" rid="ref-revzen2008-nb-article" ref-type="bibr">2008</xref>)
+  needed over 10,000 strides from cockroach running data just to obtain
+  stable estimates, orders of magnitude more than the ~15–50 strides in
+  a typical human trial. They also demand a reliable phase estimate,
+  itself a hard problem
+  (<xref alt="Revzen and Guckenheimer 2012" rid="ref-revzen2012-nb-article" ref-type="bibr">Revzen
+  and Guckenheimer 2012</xref>;
+  <xref alt="Bruijn et al. 2013" rid="ref-bruijn2013-nb-article" ref-type="bibr">Bruijn
+  et al. 2013</xref>). The maximum Lyapunov exponent
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>)
+  relaxes the periodicity assumption and has emerged as the
+  best-validated predictor of fall risk
+  (<xref alt="Dingwell and Cusumano 2000" rid="ref-dingwell2000-nb-article" ref-type="bibr">Dingwell
+  and Cusumano 2000</xref>;
+  <xref alt="Bruijn et al. 2013" rid="ref-bruijn2013-nb-article" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but it provides only a scalar: how fast do nearby
+  trajectories pull apart? It says nothing about <italic>which
+  directions</italic> are unstable, <italic>at what frequencies</italic>
+  the system can respond, or <italic>how the two limbs talk to each
+  other</italic>. These are precisely the questions that matter for
+  understanding locomotor coordination after stroke.</p>
+  <p>Both measures also share a deeper conceptual issue: they assume the
+  system is autonomous – evolving under its own dynamics without
+  external input. Walking is not autonomous. It is continuously driven
+  by descending neural commands, modulated by sensory feedback, and
+  stabilised by reflexes
+  (<xref alt="Ting and McKay 2007" rid="ref-ting2007-nb-article" ref-type="bibr">Ting
+  and McKay 2007</xref>). The common finding that
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  is positive (local divergence) despite stable walking is a direct
+  consequence: the system is being simultaneously driven and controlled,
+  and Lyapunov analysis of the autonomous reconstruction picks up the
+  driving, not a genuine instability
+  (<xref alt="Dingwell and Kang 2007" rid="ref-dingwell2006-nb-article" ref-type="bibr">Dingwell
+  and Kang 2007</xref>).</p>
+  <p>We take a different approach. Rather than asking a scalar stability
+  question, we fit a simple linear model to the walking data and then
+  examine the <italic>structure of that model</italic> to learn about
+  the underlying coordination. Specifically, we use dynamic mode
+  decomposition (DMD) – a data-driven technique that finds the best-fit
+  linear operator <inline-formula><alternatives>
+  <tex-math><![CDATA[A]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>A</mml:mi></mml:math></alternatives></inline-formula>
+  predicting the next time step from the current one
+  (<xref alt="Schmid 2010" rid="ref-schmid2010-nb-article" ref-type="bibr">Schmid
+  2010</xref>;
+  <xref alt="Tu et al. 2014" rid="ref-tu2014-nb-article" ref-type="bibr">Tu et al.
+  2014</xref>) – applied to delay-embedded bilateral joint kinematics.
+  Delay embedding stacks successive time points into a
+  higher-dimensional state vector, allowing the linear model to capture
+  temporal dependencies that a single snapshot cannot
+  (<xref alt="Takens 1981" rid="ref-takens1981-nb-article" ref-type="bibr">Takens
+  1981</xref>;
+  <xref alt="Brunton and Kutz 2019" rid="ref-brunton2017-nb-article" ref-type="bibr">Brunton
+  and Kutz 2019</xref>).</p>
+  <p>Like Floquet and Lyapunov analysis, DMD fits an autonomous model.
+  But rather than reducing the result to eigenvalues (which determine
+  long-run stability), we examine the model’s
+  <italic>non-normality</italic>: how far the fitted operator departs
+  from having orthogonal eigenvectors. This departure has concrete
+  physical meaning. A “well-behaved” (normal) operator can only respond
+  to perturbations through its individual modes, each decaying
+  independently. A non-normal operator can transiently amplify specific
+  perturbation directions, respond at frequencies where no single mode
+  is resonant, and couple inputs and outputs in directionally specific
+  ways
+  (<xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005-nb-article" ref-type="bibr">Trefethen
+  and Embree 2005</xref>;
+  <xref alt="Henrici 1962" rid="ref-henrici1962-nb-article" ref-type="bibr">Henrici
+  1962</xref>). These are not abstract mathematical properties – they
+  map directly onto the locomotor questions we care about: How flexibly
+  can the system respond to perturbations across frequencies? How do the
+  two limbs influence each other? And does the system’s coordination
+  structure depend on walking speed, or is it robust across operating
+  conditions?</p>
+  <p>Non-normality has previously been studied in the DMD literature
+  primarily as a <italic>numerical problem</italic>: Wu, Brunton, and
+  Revzen (<xref alt="2021" rid="ref-wu2021-nb-article" ref-type="bibr">2021</xref>)
+  showed that when DMD is applied to oscillatory data, the underlying
+  operator is inherently non-normal, leading to ill-conditioning and
+  noise-amplified errors. We invert this perspective. Rather than
+  treating non-normality as a nuisance, we show that its magnitude and
+  structure – recovered from walking kinematics – are biologically
+  informative signatures of locomotor coordination. Where the fitted
+  linear model must strain hardest to approximate the true, nonlinear,
+  driven system, non-normality is highest. The pattern of that strain
+  tells us about the coordination it is trying to capture.</p>
+  <p>Post-stroke gait provides a compelling test case. The clinical
+  picture includes slower walking speeds, inter-limb asymmetry, and
+  elevated stride-to-stride variability
+  (<xref alt="Bruijn et al. 2013" rid="ref-bruijn2013-nb-article" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but these descriptions remain at the level of
+  symptoms. A deeper question is whether stroke fundamentally
+  reorganises <italic>how</italic> the locomotor system coordinates
+  itself – not just how fast or how symmetrically it walks, but the
+  structure of its perturbation responses, its frequency content, and
+  its inter-limb coupling. We test this hypothesis using 299 treadmill
+  walking trials from the open dataset of Winner et al.
+  (<xref alt="2023" rid="ref-winner2023-nb-article" ref-type="bibr">2023</xref>),
+  which includes able-bodied controls and high- and low-functioning
+  stroke survivors. Our approach complements their LSTM-based “gait
+  signatures” framework: where that work used black-box neural networks
+  to identify individual-specific dynamics, we use an explicitly
+  analysable linear operator to extract interpretable coordination
+  signatures.</p>
+</sec>
+<sec id="methods-nb-article">
+  <title>Methods</title>
+  <sec id="dataset-nb-article">
+    <title>Dataset</title>
+    <p>We analyse 299 treadmill walking trials drawn from the open
+    dataset of Winner et al.
+    (<xref alt="2023" rid="ref-winner2023-nb-article" ref-type="bibr">2023</xref>).
+    Each trial comprises 1500 time points (15 s at 100 Hz) of six
+    kinematic channels: bilateral hip, knee, and ankle sagittal-plane
+    joint angles. Trials are partitioned by metadata into able-bodied
+    (AB, <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 180]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>180</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    speed range 30–220 cm/s), high-functioning stroke (HF,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 65]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>65</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    40–127 cm/s), and low-functioning stroke (LF,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[n = 54]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>n</mml:mi><mml:mo>=</mml:mo><mml:mn>54</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    22–60 cm/s). All channels are z-scored within each trial prior to
+    analysis, so that operator properties reflect dynamical organisation
+    rather than absolute amplitude differences.</p>
+  </sec>
+  <sec id="delay-embedded-hankel-dmd-nb-article">
+    <title>Delay-Embedded Hankel DMD</title>
+    <p>We construct a delay-embedded state by stacking
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tau = 10]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>τ</mml:mi><mml:mo>=</mml:mo><mml:mn>10</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+    lags of the 6-channel observation, yielding a
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[66]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mn>66</mml:mn></mml:math></alternatives></inline-formula>-dimensional
+    augmented state vector at each time step
+    (<xref alt="Takens 1981" rid="ref-takens1981-nb-article" ref-type="bibr">Takens
+    1981</xref>). This embedding lag spans approximately one stride
+    period at typical walking cadences (100 Hz sampling), ensuring that
+    the augmented space captures at least one full cycle of the dominant
+    oscillation. The resulting Hankel matrix
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[H \in \mathbb{R}^{66 \times (T - \tau)}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>H</mml:mi><mml:mo>∈</mml:mo><mml:msup><mml:mi>ℝ</mml:mi><mml:mrow><mml:mn>66</mml:mn><mml:mo>×</mml:mo><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>T</mml:mi><mml:mo>−</mml:mo><mml:mi>τ</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    is split into input (<inline-formula><alternatives>
+    <tex-math><![CDATA[X = H_{:,1:end-1}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>X</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>H</mml:mi><mml:mrow><mml:mo>:</mml:mo><mml:mo>,</mml:mo><mml:mn>1</mml:mn><mml:mo>:</mml:mo><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>d</mml:mi><mml:mo>−</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>)
+    and output (<inline-formula><alternatives>
+    <tex-math><![CDATA[Y = H_{:,2:end}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>H</mml:mi><mml:mrow><mml:mo>:</mml:mo><mml:mo>,</mml:mo><mml:mn>2</mml:mn><mml:mo>:</mml:mo><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>d</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>)
+    matrices. We compute the truncated SVD
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[X = U \Sigma V^*]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>X</mml:mi><mml:mo>=</mml:mo><mml:mi>U</mml:mi><mml:mi mathvariant="normal">Σ</mml:mi><mml:msup><mml:mi>V</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>,
+    retaining the <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    singular values exceeding <inline-formula><alternatives>
+    <tex-math><![CDATA[10^{-6}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msup><mml:mn>10</mml:mn><mml:mrow><mml:mi>−</mml:mi><mml:mn>6</mml:mn></mml:mrow></mml:msup></mml:math></alternatives></inline-formula>
+    times the leading singular value (typically retaining &gt;99% of the
+    variance), and solve for the reduced operator
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A} = U_r^* Y V_r \Sigma_r^{-1}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover><mml:mo>=</mml:mo><mml:msubsup><mml:mi>U</mml:mi><mml:mi>r</mml:mi><mml:mo>*</mml:mo></mml:msubsup><mml:mi>Y</mml:mi><mml:msub><mml:mi>V</mml:mi><mml:mi>r</mml:mi></mml:msub><mml:msubsup><mml:mi mathvariant="normal">Σ</mml:mi><mml:mi>r</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msubsup></mml:mrow></mml:math></alternatives></inline-formula>
+    following the standard projected DMD formulation
+    (<xref alt="Tu et al. 2014" rid="ref-tu2014-nb-article" ref-type="bibr">Tu et
+    al. 2014</xref>;
+    <xref alt="Schmid 2010" rid="ref-schmid2010-nb-article" ref-type="bibr">Schmid
+    2010</xref>). To enforce stability, eigenvalues of
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover></mml:math></alternatives></inline-formula>
+    with modulus exceeding unity are projected onto the unit circle. All
+    subsequent analyses operate on this reduced operator.</p>
+  </sec>
+  <sec id="dynamical-quantities-nb-article">
+    <title>Dynamical Quantities</title>
+    <p><bold>Henrici departure from normality.</bold> We quantify global
+    non-normality as <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta = \|A^* A - A A^*\|_2 \,/\, \|A\|_2^2]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>η</mml:mi><mml:mo>=</mml:mo><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:msup><mml:mi>A</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:mi>A</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:msup><mml:mi>A</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:msub><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn></mml:msub><mml:mspace width="0.167em"></mml:mspace><mml:mi>/</mml:mi><mml:mspace width="0.167em"></mml:mspace><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mi>A</mml:mi><mml:msubsup><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn><mml:mn>2</mml:mn></mml:msubsup></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[\|\cdot\|_2]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mo>⋅</mml:mo><mml:msub><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mn>2</mml:mn></mml:msub></mml:mrow></mml:math></alternatives></inline-formula>
+    denotes the spectral (operator 2-) norm. A normal operator satisfies
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta = 0]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>η</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>;
+    larger values indicate stronger non-orthogonality of eigenvectors
+    and correspondingly greater potential for transient amplification
+    (<xref alt="Henrici 1962" rid="ref-henrici1962-nb-article" ref-type="bibr">Henrici
+    1962</xref>;
+    <xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005-nb-article" ref-type="bibr">Trefethen
+    and Embree 2005</xref>).</p>
+    <p><bold>Harmonic resolvent gain.</bold> The stride frequency
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[f_s]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+    is identified as the dominant peak (above 0.3 Hz) in the resolvent
+    gain <inline-formula><alternatives>
+    <tex-math><![CDATA[\sigma_{\max}^{-1}(e^{i\theta}I - A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:msubsup><mml:mi>σ</mml:mi><mml:mrow><mml:mi>max</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msubsup><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:msup><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    swept around the unit circle. Harmonic resolvent gains are then
+    evaluated at <inline-formula><alternatives>
+    <tex-math><![CDATA[\|(e^{i 2\pi h f_s / f_{\text{samp}}} I - A)^{-1}\|]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mn>2</mml:mn><mml:mi>π</mml:mi><mml:mi>h</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mtext mathvariant="normal">samp</mml:mtext></mml:msub></mml:mrow></mml:msup><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mi>A</mml:mi><mml:msup><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mo stretchy="false" form="postfix">∥</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    for harmonics <inline-formula><alternatives>
+    <tex-math><![CDATA[h = 1, \ldots, 5]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>h</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>…</mml:mi><mml:mo>,</mml:mo><mml:mn>5</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>,
+    quantifying how strongly the operator amplifies periodic forcing at
+    each multiple of the stride frequency.</p>
+    <p><bold>Spatial resolvent asymmetry.</bold> The full resolvent at
+    the stride frequency is mapped back to the original
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[66]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mn>66</mml:mn></mml:math></alternatives></inline-formula>-dimensional
+    (delay-embedded) joint space via <inline-formula><alternatives>
+    <tex-math><![CDATA[R = U \,(z I - \tilde{A})^{-1}\, U^*]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>R</mml:mi><mml:mo>=</mml:mo><mml:mi>U</mml:mi><mml:mspace width="0.167em"></mml:mspace><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>z</mml:mi><mml:mi>I</mml:mi><mml:mo>−</mml:mo><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover><mml:msup><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mspace width="0.167em"></mml:mspace><mml:msup><mml:mi>U</mml:mi><mml:mo>*</mml:mo></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>.
+    We extract sub-blocks corresponding to
+    paretic<inline-formula><alternatives>
+    <tex-math><![CDATA[\to]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mo>→</mml:mo></mml:math></alternatives></inline-formula>non-paretic
+    and non-paretic<inline-formula><alternatives>
+    <tex-math><![CDATA[\to]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mo>→</mml:mo></mml:math></alternatives></inline-formula>paretic
+    coupling (across all delay lags) and compute their operator norms.
+    The asymmetry index is <inline-formula><alternatives>
+    <tex-math><![CDATA[\max(G_{12}, G_{21}) / \min(G_{12}, G_{21})]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mrow><mml:mi>max</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mi>/</mml:mi><mml:mrow><mml:mi>min</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[G_{12}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>G</mml:mi><mml:mn>12</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
+    and <inline-formula><alternatives>
+    <tex-math><![CDATA[G_{21}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>G</mml:mi><mml:mn>21</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
+    are the respective sub-block norms. Signed log-ratios of pairwise
+    joint gains quantify the directionality of inter-joint coupling.</p>
+    <p><bold>Peak Q-factor.</bold> The quality factor at the stride
+    frequency is <inline-formula><alternatives>
+    <tex-math><![CDATA[Q = f_s / \Delta f]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>Q</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:mi mathvariant="normal">Δ</mml:mi><mml:mi>f</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>,
+    where <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta f]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi mathvariant="normal">Δ</mml:mi><mml:mi>f</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+    is the half-power bandwidth (frequency interval over which the
+    resolvent gain exceeds <inline-formula><alternatives>
+    <tex-math><![CDATA[\text{peak} / \sqrt{2}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mtext mathvariant="normal">peak</mml:mtext><mml:mi>/</mml:mi><mml:msqrt><mml:mn>2</mml:mn></mml:msqrt></mml:mrow></mml:math></alternatives></inline-formula>).
+    Higher Q indicates narrower frequency tuning.</p>
+    <p><bold>Operator condition number.</bold> The condition number
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa(A) = \sigma_{\max}(A) / \sigma_{\min}(A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mo>=</mml:mo><mml:msub><mml:mi>σ</mml:mi><mml:mi>max</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mi>/</mml:mi><mml:msub><mml:mi>σ</mml:mi><mml:mi>min</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    quantifies the ill-conditioning of the operator. High
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    implies highly non-orthogonal eigenvectors and determines the extent
+    of <italic>pseudospectral spreading</italic>: how far the resolvent
+    gain extends away from eigenvalue locations on the unit circle. For
+    a normal operator, <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa = 1]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+    and the resolvent is determined entirely by eigenvalue distances;
+    for a non-normal operator, the pseudospectral
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\varepsilon]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>ε</mml:mi></mml:math></alternatives></inline-formula>-contours
+    broaden with <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>,
+    elevating gain at frequencies where no eigenvalue sits nearby
+    (<xref alt="Trefethen and Embree 2005" rid="ref-trefethen2005-nb-article" ref-type="bibr">Trefethen
+    and Embree 2005</xref>).</p>
+    <p><bold>Eigenvalue–stride distance.</bold> We also report
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\min_j |\lambda_j - e^{i 2\pi f_s / f_{\text{samp}}}|]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:msub><mml:mrow><mml:mi>min</mml:mi><mml:mo>&#8289;</mml:mo></mml:mrow><mml:mi>j</mml:mi></mml:msub><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:msub><mml:mi>λ</mml:mi><mml:mi>j</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mn>2</mml:mn><mml:mi>π</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mi>/</mml:mi><mml:msub><mml:mi>f</mml:mi><mml:mtext mathvariant="normal">samp</mml:mtext></mml:msub></mml:mrow></mml:msup><mml:mo stretchy="false" form="prefix">|</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    the distance from the nearest eigenvalue of
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\tilde{A}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">̃</mml:mo></mml:mover></mml:math></alternatives></inline-formula>
+    to the stride-frequency point on the unit circle. This quantity
+    controls the peak resolvent gain at the fundamental: tighter
+    proximity yields larger absolute gain, independent of
+    non-normality.</p>
+    <p>All quantities are computed trial-by-trial. Speed-matched
+    comparisons cap AB trials at the maximum LF walking speed (60 cm/s)
+    to control for the confound that AB subjects walk faster on
+    average.</p>
+  </sec>
+  <sec id="statistical-inference-nb-article">
+    <title>Statistical Inference</title>
+    <p>Because each participant contributes multiple trials at different
+    walking speeds, inferential comparisons use a hierarchical bootstrap
+    rather than treating trials as independent replicates. Within each
+    group, subjects are resampled with replacement, and then that
+    subject’s trials are resampled with replacement within the bootstrap
+    draw. This preserves the nested subject/trial structure while
+    accommodating unequal trial counts per subject. For between-group
+    contrasts we bootstrap differences in medians; for speed-dependence
+    we bootstrap Pearson correlations; and for directional quantities
+    expressed as log-ratios we bootstrap the mean log-ratio. We report
+    percentile 95% confidence intervals and two-sided bootstrap p-values
+    computed from the fraction of bootstrap samples on either side of
+    zero. Unless otherwise noted, cross-group inference is reported on
+    the speed-matched subset.</p>
+  </sec>
+</sec>
+<sec id="results-nb-article">
+  <title>Results</title>
+  <sec id="cell-139fc012-nb-article" specific-use="notebook-content">
+  <code language="julia"># Suppress stdout and all log messages (warnings, info) for all figure cells.
+using Logging
+_silent(f) = redirect_stdout(devnull) do
+    with_logger(NullLogger()) do
+        f()
+    end
+end</code>
+  <boxed-text>
+    <preformat>_silent (generic function with 1 method)</preformat>
+  </boxed-text>
+  </sec>
+  <sec id="cell-760acdbc-nb-article" specific-use="notebook-content">
+  <sec id="figure-1-non-normality-tracks-nonlinearity-and-timescale-separation-in-simulated-systems-nb-article">
+    <title>Figure 1: Non-Normality Tracks Nonlinearity and Timescale
+    Separation in Simulated Systems</title>
+    </sec>
+    <sec id="cell-fig-simulated-nb-article" specific-use="notebook-content">
+    <code language="julia"># _silent(() -&gt; include(&quot;Figure 1.jl&quot;))
+
+include(&quot;Figure 1.jl&quot;)
+plot(fig1, fmt=:png)</code>
+    <boxed-text>
+      <preformat>
+Saved: figures/fig1_simulated_benchmarks.svg</preformat>
+    </boxed-text>
+    <boxed-text>
+      <fig id="fig-simulated-nb-article">
+        <caption><p>Figure 1: Henrici departure in simulated
+        oscillators. (A) Stuart–Landau: Henrici rises with μ as the
+        limit cycle amplitude increases. (B) FitzHugh-Nagumo: Henrici
+        rises as ε decreases and timescale separation strengthens. (C)
+        Stuart–Landau with isochron shear: Henrici rises with shear
+        parameter c. (D) Joint heatmap over (μ, c).</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-simulated-output-2.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-2abcaa46-nb-article" specific-use="notebook-content">
+    <p>Simulated benchmark oscillators establish that Henrici departure
+    in a delay-embedded DMD operator rises with three properties of the
+    underlying nonlinear flow: (A) limit-cycle amplitude (Stuart–Landau,
+    increasing <inline-formula><alternatives>
+    <tex-math><![CDATA[\mu]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>μ</mml:mi></mml:math></alternatives></inline-formula>),
+    (B) timescale separation (FitzHugh–Nagumo, decreasing
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\varepsilon]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>ε</mml:mi></mml:math></alternatives></inline-formula>),
+    and (C) isochron shear (Stuart–Landau with amplitude-dependent
+    frequency, increasing <inline-formula><alternatives>
+    <tex-math><![CDATA[c]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>c</mml:mi></mml:math></alternatives></inline-formula>).
+    Panel D confirms that these effects combine monotonically. In each
+    case the linear surrogate encodes the nonlinear geometry through
+    nearly parallel eigenvectors whose large positive and negative
+    contributions cancel on the cycle but amplify deviations off it.
+    These simulations supply the mechanistic interpretation used
+    throughout: elevated Henrici departure indexes richer transient
+    structure, reflecting the complexity of the underlying nonlinear
+    dynamics that the linear operator must approximate.</p>
+  </sec>
+  <sec id="figure-2-speed-dependent-non-normality-distinguishes-stroke-from-able-bodied-gait-nb-article">
+    <title>Figure 2: Speed-Dependent Non-Normality Distinguishes Stroke
+    from Able-Bodied Gait</title>
+    </sec>
+    <sec id="cell-fig-nonnormality-nb-article" specific-use="notebook-content">
+    <code language="julia">_silent(() -&gt; include(&quot;Figure 2.jl&quot;))
+plot(fig2, fig2b; layout=(1,2), size=(2*PUB_W, PUB_H), fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-nonnormality-nb-article">
+        <caption><p>Figure 2: Henrici departure vs walking speed for 299
+        gait trials. AB = able-bodied (steelblue), HF = high-functioning
+        stroke (orange), LF = low-functioning stroke (crimson). Lines
+        connect trials from the same subject across speeds. The strip
+        chart (right) shows speed-matched comparisons.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-nonnormality-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-fig-condnum-nb-article" specific-use="notebook-content">
+    <code language="julia">plot(fig2c; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-condnum-nb-article">
+        <caption><p>Figure 3: Operator condition number κ(A) by group
+        (speed-matched, log scale). Higher conditioning indicates more
+        ill-conditioned eigenvector geometry—a prerequisite for
+        pseudospectral spreading of resolvent gain away from eigenvalue
+        locations.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-condnum-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <code language="julia">qAB = quantile(filter(!isnan, df2[df2.group .== &quot;AB&quot;, :henrici]), [0.25, 0.5, 0.75])
+qHF = quantile(filter(!isnan, df2[df2.group .== &quot;HF&quot;, :henrici]), [0.25, 0.5, 0.75])
+qLF = quantile(filter(!isnan, df2[df2.group .== &quot;LF&quot;, :henrici]), [0.25, 0.5, 0.75])
+
+cAB = quantile(filter(!isnan, df2_sm.condnum[df2_sm.group .== &quot;AB&quot;]), [0.25, 0.5, 0.75])
+cHF = quantile(filter(!isnan, df2_sm.condnum[df2_sm.group .== &quot;HF&quot;]), [0.25, 0.5, 0.75])
+cLF = quantile(filter(!isnan, df2_sm.condnum[df2_sm.group .== &quot;LF&quot;]), [0.25, 0.5, 0.75])
+
+rAB = quantile(Float64.(filter(&gt;(0), df2.rank[df2.group .== &quot;AB&quot;])), [0.25, 0.5, 0.75])
+rHF = quantile(Float64.(filter(&gt;(0), df2.rank[df2.group .== &quot;HF&quot;])), [0.25, 0.5, 0.75])
+rLF = quantile(Float64.(filter(&gt;(0), df2.rank[df2.group .== &quot;LF&quot;])), [0.25, 0.5, 0.75])
+
+stAB   = fig2_stats.corr[&quot;AB&quot;]
+stHF   = fig2_stats.corr[&quot;HF&quot;]
+stLF   = fig2_stats.corr[&quot;LF&quot;]
+stHFAB = fig2_stats.matched_diff[&quot;HF-AB&quot;]
+stHFLF = fig2_stats.matched_diff[&quot;HF-LF&quot;]
+stLFAB = fig2_stats.matched_diff[&quot;LF-AB&quot;]
+
+scHFAB = fig2_cond_stats.matched_diff[&quot;HF-AB&quot;]
+scLFAB = fig2_cond_stats.matched_diff[&quot;LF-AB&quot;]
+
+println(&quot;&quot;&quot;
+Able-bodied gait maintains high non-normality (median \$\\eta\$ = $(round(qAB[2]; digits=2)), IQR [$(round(qAB[1]; digits=2)), $(round(qAB[3]; digits=2))]) that is not significantly correlated with walking speed (\$r\$ = $(round(stAB.point; digits=2)), 95% CI [$(round(stAB.ci[1]; digits=2)), $(round(stAB.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stAB.p)); hierarchical bootstrap). Both stroke groups show significantly stronger speed-dependence: high-functioning stroke achieves the highest peak non-normality (median \$\\eta\$ = $(round(qHF[2]; digits=2)), \$r\$ = $(round(stHF.point; digits=2)), CI [$(round(stHF.ci[1]; digits=2)), $(round(stHF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stHF.p))), while low-functioning stroke exhibits the lowest overall values (median \$\\eta\$ = $(round(qLF[2]; digits=2)), \$r\$ = $(round(stLF.point; digits=2)), CI [$(round(stLF.ci[1]; digits=2)), $(round(stLF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stLF.p))). Speed-matched comparisons confirm that HF non-normality exceeds both AB (\$\\Delta\$median = $(round(stHFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stHFAB.p))) and LF (\$\\Delta\$median = $(round(stHFLF.point; digits=3)), \$p\$ $(fmt_pvalue(stHFLF.p))), while the LF--AB contrast trends negative but remains uncertain (\$\\Delta\$median = $(round(stLFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stLFAB.p))).
+
+A second metric, the operator condition number \$\\kappa(A)\$, measures something related but distinct: how broadly the model can spread its response across frequencies beyond the locations of its individual modes. A high condition number means the model's response &quot;leaks&quot; widely -- perturbations at one frequency can be amplified at neighbouring frequencies even where no mode sits. A low condition number confines the response tightly around each mode. The groups are sharply separated: AB operators have extremely high conditioning (median \$\\kappa \\approx\$ $(round(Int, cAB[2]))), HF moderate (\$\\kappa \\approx\$ $(round(Int, cHF[2]))), and LF nearly minimal (\$\\kappa \\approx\$ $(round(Int, cLF[2]))). These differences are significant on the log scale (AB vs LF \$\\Delta\$median log \$\\kappa\$ = $(round(scLFAB.point; digits=1)), \$p\$ $(fmt_pvalue(scLFAB.p)); AB vs HF \$\\Delta\$median log \$\\kappa\$ = $(round(scHFAB.point; digits=1)), \$p\$ $(fmt_pvalue(scHFAB.p))). AB operators also retain higher SVD rank (median $(round(Int, rAB[2])) vs $(round(Int, rHF[2])) HF and $(round(Int, rLF[2])) LF out of 66 possible dimensions), indicating that the able-bodied coordination occupies a higher-dimensional subspace. As we show in the next section, this three-way gradient in conditioning -- high (AB), moderate (HF), low (LF) -- explains why the groups' frequency response profiles take such different shapes despite comparable or even elevated non-normality in HF.
+&quot;&quot;&quot;)</code>
+    <p>Able-bodied gait maintains high non-normality (median
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.96, IQR [0.95, 0.99]) that is not significantly correlated with
+    walking speed (<inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.11, 95% CI [-0.04, 0.26], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.14; hierarchical bootstrap). Both stroke groups show
+    significantly stronger speed-dependence: high-functioning stroke
+    achieves the highest peak non-normality (median
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 1.0, <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.35, CI [0.1, 0.56], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012), while low-functioning stroke exhibits the lowest overall
+    values (median <inline-formula><alternatives>
+    <tex-math><![CDATA[\eta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>η</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.89, <inline-formula><alternatives>
+    <tex-math><![CDATA[r]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>r</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.47, CI [0.12, 0.75], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.016). Speed-matched comparisons confirm that HF non-normality
+    exceeds both AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.047, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.018) and LF (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.106, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.005), while the LF–AB contrast trends negative but remains
+    uncertain (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.059, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.063).</p>
+    <p>A second metric, the operator condition number
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa(A)]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mi>A</mml:mi><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>,
+    measures something related but distinct: how broadly the model can
+    spread its response across frequencies beyond the locations of its
+    individual modes. A high condition number means the model’s response
+    “leaks” widely – perturbations at one frequency can be amplified at
+    neighbouring frequencies even where no mode sits. A low condition
+    number confines the response tightly around each mode. The groups
+    are sharply separated: AB operators have extremely high conditioning
+    (median <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    275), HF moderate (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    1475), and LF nearly minimal (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    78). These differences are significant on the log scale (AB vs LF
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    log <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    = -1.3, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.006; AB vs HF <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    log <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>
+    = 1.7, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.552). AB operators also retain higher SVD rank (median 45 vs 37
+    HF and 36 LF out of 66 possible dimensions), indicating that the
+    able-bodied coordination occupies a higher-dimensional subspace. As
+    we show in the next section, this three-way gradient in conditioning
+    – high (AB), moderate (HF), low (LF) – explains why the groups’
+    frequency response profiles take such different shapes despite
+    comparable or even elevated non-normality in HF.</p>
+    <sec id="cell-46680828-nb-article" specific-use="notebook-content">
+  </sec>
+  <sec id="figure-3-harmonic-resolvent-gain-reveals-stroke-related-collapse-of-high-frequency-coupling-nb-article">
+    <title>Figure 3: Harmonic Resolvent Gain Reveals Stroke-Related
+    Collapse of High-Frequency Coupling</title>
+    </sec>
+    <sec id="cell-fig-harmonic-all-nb-article" specific-use="notebook-content">
+    <code language="julia">_silent(() -&gt; include(&quot;Figure 3.jl&quot;))
+plot(fig3ab; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-harmonic-all-nb-article">
+        <caption><p>Figure 4: Absolute and normalised harmonic resolvent
+        gain. (A) Absolute gain at harmonics 1–5. (B) Gain normalised by
+        the fundamental, revealing fall-off shape independent of overall
+        gain level.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-all-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-fig-harmonic-speed-nb-article" specific-use="notebook-content">
+    <code language="julia">plot(fig3c; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-harmonic-speed-nb-article">
+        <caption><p>Figure 5: Normalised harmonic gain faceted by
+        walking speed bin (blue = slow, red = fast). Speed modulates the
+        gain profile within each group differently, with AB showing the
+        largest speed-dependent change.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-speed-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-fig-harmonic-matched-nb-article" specific-use="notebook-content">
+    <code language="julia">plot(fig3d; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-harmonic-matched-nb-article">
+        <caption><p>Figure 6: Speed-matched harmonic gain comparison (AB
+        capped at the maximum LF speed). Group differences in the
+        fall-off shape persist after controlling for
+        speed.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-harmonic-matched-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <code language="julia">med_h1 = Dict(g =&gt; median(filter(!isnan, df3[df3.group .== g, :gain_h1])) for g in GROUP_ORDER)
+med_h2 = Dict(g =&gt; median(filter(!isnan, df3[df3.group .== g, :gain_h2])) for g in GROUP_ORDER)
+med_h2n = Dict(g =&gt; median(filter(!isnan, df3[df3.group .== g, :gnorm_h2])) for g in GROUP_ORDER)
+med_decay = Dict(g =&gt; median(filter(!isnan, df3[df3.group .== g, :decay_rate])) for g in GROUP_ORDER)
+med_ed = Dict(g =&gt; median(filter(!isnan, df3.eig_dist[df3.group .== g])) for g in GROUP_ORDER)
+
+st_h1_hfab = fig3_stats.matched_diff[&quot;gain_h1 HF-AB&quot;]
+st_decay_hfab = fig3_stats.matched_diff[&quot;decay HF-AB&quot;]
+st_decay_lfab = fig3_stats.matched_diff[&quot;decay LF-AB&quot;]
+st_decay_hflf = fig3_stats.matched_diff[&quot;decay HF-LF&quot;]
+
+println(&quot;&quot;&quot;
+These profiles show how broadly each group's model can respond across multiples of the stride frequency -- a proxy for how rich and multi-timescale the underlying coordination is. The pattern is more nuanced than &quot;stroke suppresses higher harmonics.&quot;
+
+To quantify the fall-off, we fit a spectral decay rate (slope of log-normalised gain vs. harmonic number) to each trial. AB gait decays at a moderate rate (median slope $(round(med_decay[&quot;AB&quot;]; digits=2))), LF is similar ($(round(med_decay[&quot;LF&quot;]; digits=2))), and HF decays significantly faster ($(round(med_decay[&quot;HF&quot;]; digits=2))). Hierarchical bootstrap confirms HF falls off faster than AB (\$\\Delta\$median = $(round(st_decay_hfab.point; digits=2)), \$p\$ $(fmt_pvalue(st_decay_hfab.p))); LF is not significantly different from AB (\$\\Delta\$median = $(round(st_decay_lfab.point; digits=2)), \$p\$ $(fmt_pvalue(st_decay_lfab.p))), and the HF--LF contrast trends in the same direction but is noisier (\$p\$ $(fmt_pvalue(st_decay_hflf.p))).
+
+This result initially seems paradoxical: HF has the highest non-normality (Figure 2) yet the steepest fall-off -- shouldn't a more &quot;complex&quot; operator respond more broadly? The resolution involves two distinct mechanisms. First, *how closely the model's internal oscillation matches the stride frequency* determines the absolute gain at the fundamental. HF operators place their nearest mode very close to the stride frequency (median distance $(round(med_ed[&quot;HF&quot;]; sigdigits=2)) vs. $(round(med_ed[&quot;AB&quot;]; sigdigits=2)) for AB), producing the highest absolute gain at h1 (median $(round(med_h1[&quot;HF&quot;] / 1e7; digits=1)) \$\\times 10^7\$ vs. $(round(med_h1[&quot;AB&quot;] / 1e6; digits=1)) \$\\times 10^6\$ AB; bootstrap \$\\Delta\$median = $(round(st_h1_hfab.point / 1e7; digits=1)) \$\\times 10^7\$, \$p\$ $(fmt_pvalue(st_h1_hfab.p))). Second, *how ill-conditioned the operator is* (the condition number \$\\kappa\$, reported in Figure 2) determines how broadly the model's response spreads away from its modes to neighbouring frequencies. AB's extreme ill-conditioning (\$\\kappa \\approx\$ 18,700) lets the response &quot;leak&quot; to harmonics that no single mode directly supports. HF's moderate conditioning (\$\\kappa \\approx\$ 1,200) limits this spreading.
+
+Crucially, the steep normalised fall-off in HF does *not* mean higher harmonics are suppressed in absolute terms. At h2--h5 the absolute gains are comparable across groups or even highest in LF (h2: AB $(round(med_h2[&quot;AB&quot;] / 1e6; digits=1))M, HF $(round(med_h2[&quot;HF&quot;] / 1e6; digits=1))M, LF $(round(med_h2[&quot;LF&quot;] / 1e6; digits=1))M). Rather, HF's fundamental is so strongly amplified that everything else looks small by comparison.
+
+The biological picture: able-bodied gait uses a high-dimensional, broadly responsive model -- the system can handle perturbations at many frequencies. HF gait is sharply tuned to the stride frequency, achieving strong resonance but sacrificing breadth. LF gait responds weakly across all frequencies, with no dominant resonance.
+&quot;&quot;&quot;)</code>
+    <p>These profiles show how broadly each group’s model can respond
+    across multiples of the stride frequency – a proxy for how rich and
+    multi-timescale the underlying coordination is. The pattern is more
+    nuanced than “stroke suppresses higher harmonics.”</p>
+    <p>To quantify the fall-off, we fit a spectral decay rate (slope of
+    log-normalised gain vs. harmonic number) to each trial. AB gait
+    decays at a moderate rate (median slope -1.19), LF is similar
+    (-1.11), and HF decays significantly faster (-1.86). Hierarchical
+    bootstrap confirms HF falls off faster than AB
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.9, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.001); LF is not significantly different from AB
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = -0.16, <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.232), and the HF–LF contrast trends in the same direction but is
+    noisier (<inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.208).</p>
+    <p>This result initially seems paradoxical: HF has the highest
+    non-normality (Figure 2) yet the steepest fall-off – shouldn’t a
+    more “complex” operator respond more broadly? The resolution
+    involves two distinct mechanisms. First, <italic>how closely the
+    model’s internal oscillation matches the stride frequency</italic>
+    determines the absolute gain at the fundamental. HF operators place
+    their nearest mode very close to the stride frequency (median
+    distance 0.00069 vs. 0.0012 for AB), producing the highest absolute
+    gain at h1 (median 1.9 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^7]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>7</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    vs. 5.3 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^6]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>6</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>
+    AB; bootstrap <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 1.5 <inline-formula><alternatives>
+    <tex-math><![CDATA[\times 10^7]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>×</mml:mi><mml:msup><mml:mn>10</mml:mn><mml:mn>7</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula>,
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001). Second, <italic>how ill-conditioned the operator
+    is</italic> (the condition number <inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>κ</mml:mi></mml:math></alternatives></inline-formula>,
+    reported in Figure 2) determines how broadly the model’s response
+    spreads away from its modes to neighbouring frequencies. AB’s
+    extreme ill-conditioning (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    18,700) lets the response “leak” to harmonics that no single mode
+    directly supports. HF’s moderate conditioning
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[\kappa \approx]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo></mml:mrow></mml:math></alternatives></inline-formula>
+    1,200) limits this spreading.</p>
+    <p>Crucially, the steep normalised fall-off in HF does
+    <italic>not</italic> mean higher harmonics are suppressed in
+    absolute terms. At h2–h5 the absolute gains are comparable across
+    groups or even highest in LF (h2: AB 0.7M, HF 0.9M, LF 1.6M).
+    Rather, HF’s fundamental is so strongly amplified that everything
+    else looks small by comparison.</p>
+    <p>The biological picture: able-bodied gait uses a high-dimensional,
+    broadly responsive model – the system can handle perturbations at
+    many frequencies. HF gait is sharply tuned to the stride frequency,
+    achieving strong resonance but sacrificing breadth. LF gait responds
+    weakly across all frequencies, with no dominant resonance.</p>
+    <sec id="cell-110ddb75-nb-article" specific-use="notebook-content">
+  </sec>
+  <sec id="figure-4-spatial-resolvent-asymmetry-q-factor-and-knee-centred-coupling-summaries-differentiate-groups-nb-article">
+    <title>Figure 4: Spatial Resolvent Asymmetry, Q-Factor, and
+    Knee-Centred Coupling Summaries Differentiate Groups</title>
+    </sec>
+    <sec id="cell-fig-novel-strips-nb-article" specific-use="notebook-content">
+    <code language="julia">_silent(() -&gt; include(&quot;Figure 4.jl&quot;))
+plot(fig4ab; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-novel-strips-nb-article">
+        <caption><p>Figure 7: Speed-matched strip charts for the coarse
+        operator metrics. (A) Spatial resolvent asymmetry: ratio of
+        cross-body resolvent norms, max/min. (B) Peak Q-factor at stride
+        frequency. (C) Mean paretic→non-paretic resolvent gain. (D) Mean
+        non-paretic→paretic resolvent gain. Lines show median; error
+        bars show IQR.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-novel-strips-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <sec id="cell-fig-joint-summary-nb-article" specific-use="notebook-content">
+    <code language="julia">plot(fig4efg; fmt=:png)</code>
+    <boxed-text>
+      <fig id="fig-joint-summary-nb-article">
+        <caption><p>Figure 8: Speed-matched summary metrics replacing
+        the full joint-level heatmaps. (E) Knee-target asymmetry,
+        defined as log(hip→non-paretic knee / hip→paretic knee).
+        Positive values indicate that hip-to-knee coupling is
+        concentrated on the non-paretic knee. (F) Non-paretic-knee
+        directional bias, defined as the mean log[(hip→non-paretic
+        knee)/(non-paretic knee→hip)] across both hips. Positive values
+        indicate preferential drive into the non-paretic knee. (G)
+        Global pairwise asymmetry, defined as the mean absolute signed
+        log-ratio across all joint pairs.</p></caption>
+        <graphic mimetype="image" mime-subtype="svg+xml" xlink:href="index_files/figure-jats/fig-joint-summary-output-1.svg" />
+      </fig>
+    </boxed-text>
+    </sec>
+    <code language="julia">med_asym = Dict(g =&gt; median(filter(!isnan, df4_sm[df4_sm.group .== g, :asym])) for g in GROUP_ORDER)
+med_q = Dict(g =&gt; median(filter(!isnan, df4_sm[df4_sm.group .== g, :qfactor])) for g in GROUP_ORDER)
+
+st_asym_hfab = fig4_stats.matched_diff[&quot;asym HF-AB&quot;]
+st_asym_lfab = fig4_stats.matched_diff[&quot;asym LF-AB&quot;]
+st_q_hfab = fig4_stats.matched_diff[&quot;qfactor HF-AB&quot;]
+st_q_lfab = fig4_stats.matched_diff[&quot;qfactor LF-AB&quot;]
+st_q_hflf = fig4_stats.matched_diff[&quot;qfactor HF-LF&quot;]
+st_dir_hf = fig4_stats.within_group[&quot;dir_bias HF&quot;]
+st_dir_lf = fig4_stats.within_group[&quot;dir_bias LF&quot;]
+st_npk_hfab = fig4_stats.matched_diff[&quot;npk_inflow_asym HF-AB&quot;]
+st_npk_lfab = fig4_stats.matched_diff[&quot;npk_inflow_asym LF-AB&quot;]
+st_npkbias_hf = fig4_stats.within_group[&quot;npk_bias HF&quot;]
+st_npkbias_lf = fig4_stats.within_group[&quot;npk_bias LF&quot;]
+st_npkbias_lfab = fig4_stats.matched_diff[&quot;npk_bias LF-AB&quot;]
+st_global_lfab = fig4_stats.matched_diff[&quot;global_pair_asym LF-AB&quot;]
+
+println(&quot;&quot;&quot;
+In healthy walking, the two legs influence each other roughly symmetrically -- perturbations on one side propagate to the other with similar strength in both directions. Stroke disrupts this balance. We quantify inter-limb coupling asymmetry as the ratio between the stronger and weaker cross-body influence directions (a ratio of 1 means perfect symmetry). This ratio rises monotonically from AB (median $(round(med_asym[&quot;AB&quot;]; digits=2))) through HF ($(round(med_asym[&quot;HF&quot;]; digits=2))) to LF ($(round(med_asym[&quot;LF&quot;]; digits=2))), indicating progressively one-sided coupling between the legs. Hierarchical bootstrap confirms larger asymmetry in both stroke groups relative to AB (HF--AB \$\\Delta\$median = $(round(st_asym_hfab.point; digits=2)), 95% CI [$(round(st_asym_hfab.ci[1]; digits=2)), $(round(st_asym_hfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_asym_hfab.p)); LF--AB \$\\Delta\$ = $(round(st_asym_lfab.point; digits=2)), [$(round(st_asym_lfab.ci[1]; digits=2)), $(round(st_asym_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_asym_lfab.p))). Moreover, in LF gait the dominant direction of influence runs from the paretic to the non-paretic side (mean log-ratio = $(round(st_dir_lf.point; digits=2)), 95% CI [$(round(st_dir_lf.ci[1]; digits=2)), $(round(st_dir_lf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_dir_lf.p))), with HF trending similarly but less certain ($(round(st_dir_hf.point; digits=2)), [$(round(st_dir_hf.ci[1]; digits=2)), $(round(st_dir_hf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_dir_hf.p))). In other words, the impaired limb's dynamics propagate forcefully across the body, and the intact side must absorb and accommodate those perturbations.
+
+How narrowly tuned is each group's coordination to the stride frequency? The Q-factor measures this: higher Q means the system responds strongly at stride frequency but poorly at neighbouring frequencies. HF gait is the most sharply tuned (median Q = $(round(med_q[&quot;HF&quot;]; digits=1)) vs. AB $(round(med_q[&quot;AB&quot;]; digits=1)) and LF $(round(med_q[&quot;LF&quot;]; digits=1))), consistent with a coordination strategy that locks onto the stride rhythm but sacrifices adaptability to perturbations at other frequencies. Hierarchical bootstrap confirms higher Q in HF than AB (\$\\Delta\$median = $(round(st_q_hfab.point; digits=1)), 95% CI [$(round(st_q_hfab.ci[1]; digits=1)), $(round(st_q_hfab.ci[2]; digits=1))], \$p\$ $(fmt_pvalue(st_q_hfab.p))) and in LF than AB (\$\\Delta\$ = $(round(st_q_lfab.point; digits=1)), [$(round(st_q_lfab.ci[1]; digits=1)), $(round(st_q_lfab.ci[2]; digits=1))], \$p\$ $(fmt_pvalue(st_q_lfab.p))), while the HF--LF contrast is less certain (\$p\$ $(fmt_pvalue(st_q_hflf.p))). LF gait thus combines high spatial asymmetry with moderately narrow tuning -- a coordination pattern that is both directionally biased and somewhat rigid.
+
+To localise where in the kinematic chain inter-limb asymmetry is concentrated, we examine hip-to-knee coupling. In AB gait, the hips drive both knees roughly equally. In both stroke groups, this coupling shifts toward the non-paretic knee: the log-ratio of hip-to-non-paretic-knee vs. hip-to-paretic-knee coupling is near zero in AB but positive in stroke (HF--AB \$\\Delta\$median = $(round(st_npk_hfab.point; digits=2)), 95% CI [$(round(st_npk_hfab.ci[1]; digits=2)), $(round(st_npk_hfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npk_hfab.p)); LF--AB \$\\Delta\$ = $(round(st_npk_lfab.point; digits=2)), [$(round(st_npk_lfab.ci[1]; digits=2)), $(round(st_npk_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npk_lfab.p))). Both stroke groups also show strong directional bias *into* the non-paretic knee from the hips (HF: mean = $(round(st_npkbias_hf.point; digits=2)), 95% CI [$(round(st_npkbias_hf.ci[1]; digits=2)), $(round(st_npkbias_hf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_hf.p)); LF: mean = $(round(st_npkbias_lf.point; digits=2)), [$(round(st_npkbias_lf.ci[1]; digits=2)), $(round(st_npkbias_lf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_lf.p))), with LF exceeding AB (\$\\Delta\$median = $(round(st_npkbias_lfab.point; digits=2)), [$(round(st_npkbias_lfab.ci[1]; digits=2)), $(round(st_npkbias_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_lfab.p))). A broader summary of all pairwise joint asymmetries trends upward in LF relative to AB (\$\\Delta\$median = $(round(st_global_lfab.point; digits=2)), 95% CI [$(round(st_global_lfab.ci[1]; digits=2)), $(round(st_global_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_global_lfab.p))), but the clearest finding is that stroke-related coupling asymmetry is concentrated specifically around the non-paretic knee rather than being diffusely spread across all joints. The intact leg does not simply &quot;compensate&quot; in a general sense -- the model reveals a specific pathway through which the non-paretic knee absorbs and redistributes perturbations originating from the impaired side.
+&quot;&quot;&quot;)</code>
+    <p>In healthy walking, the two legs influence each other roughly
+    symmetrically – perturbations on one side propagate to the other
+    with similar strength in both directions. Stroke disrupts this
+    balance. We quantify inter-limb coupling asymmetry as the ratio
+    between the stronger and weaker cross-body influence directions (a
+    ratio of 1 means perfect symmetry). This ratio rises monotonically
+    from AB (median 1.23) through HF (1.69) to LF (1.89), indicating
+    progressively one-sided coupling between the legs. Hierarchical
+    bootstrap confirms larger asymmetry in both stroke groups relative
+    to AB (HF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.47, 95% CI [0.24, 0.92], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.002; LF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.66, [0.28, 1.75], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001). Moreover, in LF gait the dominant direction of
+    influence runs from the paretic to the non-paretic side (mean
+    log-ratio = 0.6, 95% CI [0.28, 0.9], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001), with HF trending similarly but less certain (0.21,
+    [-0.01, 0.45], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.062). In other words, the impaired limb’s dynamics propagate
+    forcefully across the body, and the intact side must absorb and
+    accommodate those perturbations.</p>
+    <p>How narrowly tuned is each group’s coordination to the stride
+    frequency? The Q-factor measures this: higher Q means the system
+    responds strongly at stride frequency but poorly at neighbouring
+    frequencies. HF gait is the most sharply tuned (median Q = 69.6
+    vs. AB 14.3 and LF 31.3), consistent with a coordination strategy
+    that locks onto the stride rhythm but sacrifices adaptability to
+    perturbations at other frequencies. Hierarchical bootstrap confirms
+    higher Q in HF than AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 55.3, 95% CI [24.6, 93.5], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001) and in LF than AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 17.1, [2.5, 59.6], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012), while the HF–LF contrast is less certain
+    (<inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.176). LF gait thus combines high spatial asymmetry with
+    moderately narrow tuning – a coordination pattern that is both
+    directionally biased and somewhat rigid.</p>
+    <p>To localise where in the kinematic chain inter-limb asymmetry is
+    concentrated, we examine hip-to-knee coupling. In AB gait, the hips
+    drive both knees roughly equally. In both stroke groups, this
+    coupling shifts toward the non-paretic knee: the log-ratio of
+    hip-to-non-paretic-knee vs. hip-to-paretic-knee coupling is near
+    zero in AB but positive in stroke (HF–AB
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.23, 95% CI [0.01, 0.65], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.034; LF–AB <inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.79, [0.12, 1.39], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.016). Both stroke groups also show strong directional bias
+    <italic>into</italic> the non-paretic knee from the hips (HF: mean =
+    1.09, 95% CI [0.82, 1.36], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001; LF: mean = 1.19, [0.87, 1.48],
+    <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    &lt; 0.001), with LF exceeding AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.83, [0.18, 1.33], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.012). A broader summary of all pairwise joint asymmetries trends
+    upward in LF relative to AB (<inline-formula><alternatives>
+    <tex-math><![CDATA[\Delta]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi mathvariant="normal">Δ</mml:mi></mml:math></alternatives></inline-formula>median
+    = 0.33, 95% CI [-0.02, 0.57], <inline-formula><alternatives>
+    <tex-math><![CDATA[p]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>p</mml:mi></mml:math></alternatives></inline-formula>
+    = 0.056), but the clearest finding is that stroke-related coupling
+    asymmetry is concentrated specifically around the non-paretic knee
+    rather than being diffusely spread across all joints. The intact leg
+    does not simply “compensate” in a general sense – the model reveals
+    a specific pathway through which the non-paretic knee absorbs and
+    redistributes perturbations originating from the impaired side.</p>
+    <sec id="f48523cd-nb-article" specific-use="notebook-content">
+  </sec>
+</sec>
+<sec id="discussion-nb-article">
+  <title>Discussion</title>
+  <p>Three operator-level signatures emerge from delay-embedded DMD of
+  299 gait trials, collectively revealing that stroke reorganises–rather
+  than merely degrades–the transient dynamical structure of
+  locomotion.</p>
+  <p><bold>Speed-dependent non-normality.</bold> Able-bodied gait
+  maintains a stable, speed-invariant level of non-normality, indicating
+  that the transient complexity of the locomotor operator is robust
+  across operating points. Both stroke groups show elevated
+  speed-dependence (<inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.35]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.35</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  HF, <inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.47]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.47</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  LF vs. <inline-formula><alternatives>
+  <tex-math><![CDATA[r = 0.11]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>r</mml:mi><mml:mo>=</mml:mo><mml:mn>0.11</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>
+  AB), meaning that their capacity for transient amplification is
+  fragile–contingent on walking at particular speeds. As discussed in
+  the Introduction, all three analysis frameworks–Floquet multipliers,
+  Lyapunov exponents, and DMD–fit autonomous models to a system that is
+  continuously driven and controlled
+  (<xref alt="Dingwell and Kang 2007" rid="ref-dingwell2006-nb-article" ref-type="bibr">Dingwell
+  and Kang 2007</xref>;
+  <xref alt="Ting and McKay 2007" rid="ref-ting2007-nb-article" ref-type="bibr">Ting
+  and McKay 2007</xref>). The maximum Lyapunov exponent
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  remains the best-validated predictor of fall risk
+  (<xref alt="Bruijn et al. 2013" rid="ref-bruijn2013-nb-article" ref-type="bibr">Bruijn
+  et al. 2013</xref>), but as a scalar divergence rate of an autonomous
+  reconstruction it cannot distinguish intrinsic instability from neural
+  driving, nor can it capture the directional or frequency-dependent
+  structure of transient dynamics. The Henrici departure, by indexing
+  how severely the autonomous linear model must distort its eigenvector
+  geometry to fit the driven, nonlinear data, captures a complementary
+  dimension of locomotor organisation. Where
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  summarises the dominant instability direction, the resolvent structure
+  maps the full landscape of transient amplification across frequencies
+  and spatial channels. The speed-dependence of this structure in stroke
+  gait–absent in able-bodied gait–suggests that the model-reality gap
+  (i.e., how “non-autonomous” or “nonlinear” the true system is relative
+  to the linear surrogate) varies with operating point in impaired but
+  not in healthy locomotion.</p>
+  <p><bold>Spectral organisation: eigenvalue proximity
+  vs. pseudospectral spreading.</bold> The harmonic resolvent profiles
+  initially appear paradoxical: HF has the highest Henrici departure yet
+  the steepest normalised harmonic fall-off, while LF has the lowest
+  non-normality yet a normalised profile similar to AB. The resolution
+  lies in recognising that two distinct mechanisms shape the
+  resolvent–<italic>eigenvalue proximity</italic> to the stride
+  frequency (which sets absolute gain at each harmonic) and
+  <italic>pseudospectral spreading</italic> via the operator’s condition
+  number (which determines how broadly gain extends away from eigenvalue
+  locations). HF operators park an eigenvalue very close to the stride
+  fundamental, producing massive h1 gain. But HF’s condition number
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 1{,}200]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mn>200</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>)
+  is an order of magnitude below AB’s (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 18{,}700]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>18</mml:mn><mml:mo>,</mml:mo><mml:mn>700</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>),
+  so the pseudospectral halo that would spread this gain to neighbouring
+  harmonics is narrower. The steep normalised fall-off in HF therefore
+  reflects disproportionate inflation of the fundamental, not
+  suppression of higher harmonics–absolute gains at h2–h5 are comparable
+  to or exceed AB’s. Conversely, LF operators are nearly
+  well-conditioned (<inline-formula><alternatives>
+  <tex-math><![CDATA[\kappa \approx 46]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>κ</mml:mi><mml:mo>≈</mml:mo><mml:mn>46</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>),
+  meaning almost no pseudospectral spreading; their flat normalised
+  profile arises simply because no single eigenvalue dominates the
+  stride frequency. AB combines extreme ill-conditioning with moderate
+  eigenvalue–stride coupling to produce both high absolute gain and
+  broad bandwidth–the pseudospectral effects sustain resolvent gain at
+  frequencies far from any eigenvalue. From the perspective of Wu,
+  Brunton, and Revzen
+  (<xref alt="2021" rid="ref-wu2021-nb-article" ref-type="bibr">2021</xref>), the
+  condition number gradient across groups reflects how differently the
+  Koopman operator’s non-normal structure is distorted by neurological
+  impairment. The non-normality they identify as a challenge for DMD
+  convergence here becomes a graded diagnostic: AB dynamics strain the
+  autonomous linear model broadly across the spectrum; HF dynamics
+  strain it acutely at one frequency; LF dynamics strain it least of
+  all.</p>
+  <p><bold>Asymmetric coupling focused on the non-paretic knee.</bold>
+  The directionality of inter-limb coupling provides perhaps the most
+  clinically informative signature. At the coarse inter-limb level, LF
+  shows clear paretic-dominant cross-body drive, with HF trending in the
+  same direction. At finer joint resolution, however, the most robust
+  effect is even more specific: hip-knee coupling becomes concentrated
+  on the non-paretic knee, and both stroke groups show strong
+  directional bias into that knee from the hips. Rather than the intact
+  side simply compensating for the impaired side in a diffuse manner,
+  the operator structure suggests that stroke channels transient
+  coupling through a knee-centered pathway on the non-paretic limb. That
+  picture remains consistent with the clinical observation that the
+  “good” leg works harder during stroke gait, but it localises the
+  asymmetry to a specific operator-level route through which
+  perturbations are absorbed and redistributed.</p>
+  <p><bold>Relationship to existing stability measures.</bold> Bruijn et
+  al.
+  (<xref alt="2013" rid="ref-bruijn2013-nb-article" ref-type="bibr">2013</xref>)
+  evaluated gait stability measures against four validity criteria:
+  construct validity, convergent validity, predictive validity, and
+  discriminant validity. Floquet multipliers showed poor construct
+  validity for human gait–not only because strict periodicity is
+  violated, but because they require prohibitively large datasets
+  (&gt;10,000 strides in Revzen and Guckenheimer
+  (<xref alt="2008" rid="ref-revzen2008-nb-article" ref-type="bibr">2008</xref>)
+  vs. ~15–50 strides in typical human trials), demand a reliable phase
+  estimator
+  (<xref alt="Revzen and Guckenheimer 2008" rid="ref-revzen2008-nb-article" ref-type="bibr">Revzen
+  and Guckenheimer 2008</xref>,
+  <xref alt="2012" rid="ref-revzen2012-nb-article" ref-type="bibr">2012</xref>),
+  and are acutely noise-sensitive. <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  showed good predictive validity but limited discriminant validity
+  between populations, and as Dingwell and Kang
+  (<xref alt="2007" rid="ref-dingwell2006-nb-article" ref-type="bibr">2007</xref>)
+  demonstrated, the coexistence of positive
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  (local divergence) with orbital stability reflects the driven nature
+  of the system rather than a genuine autonomous instability. The
+  operator-level metrics introduced here show substantial discriminant
+  validity, with the strongest and most consistent separations in
+  AB-vs-stroke contrasts, and capture facets of locomotor
+  organisation–transient richness, frequency bandwidth, directional
+  coupling–that no single scalar can represent. Like DMD itself, these
+  metrics inherit the autonomous-model assumption, but they make the
+  strain of that assumption visible: non-normality is high precisely
+  where the linear autonomous model must work hardest to approximate
+  driven, nonlinear dynamics. Establishing their predictive validity for
+  fall risk and their convergent validity with
+  <inline-formula><alternatives>
+  <tex-math><![CDATA[\lambda_S]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:msub><mml:mi>λ</mml:mi><mml:mi>S</mml:mi></mml:msub></mml:math></alternatives></inline-formula>
+  are natural directions for future work.</p>
+  <p><bold>Methodological considerations.</bold> Our approach builds on
+  the DMD framework of Schmid
+  (<xref alt="2010" rid="ref-schmid2010-nb-article" ref-type="bibr">2010</xref>)
+  and Tu et al.
+  (<xref alt="2014" rid="ref-tu2014-nb-article" ref-type="bibr">2014</xref>), with
+  delay embedding following Takens
+  (<xref alt="1981" rid="ref-takens1981-nb-article" ref-type="bibr">1981</xref>).
+  Wu, Brunton, and Revzen
+  (<xref alt="2021" rid="ref-wu2021-nb-article" ref-type="bibr">2021</xref>) showed
+  that DMD applied to limit-cycle data faces challenges from Krylov
+  space closure and non-normality-amplified estimation errors, and
+  characterised performance via a dataset metric (number of initial
+  conditions <inline-formula><alternatives>
+  <tex-math><![CDATA[\times]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>×</mml:mi></mml:math></alternatives></inline-formula>
+  trajectory length). Our dataset of 299 trials with 1500 time points
+  each provides substantial coverage; the stability enforcement
+  (eigenvalue projection inside the unit disk) and SVD truncation
+  (retaining &gt;99% variance) guard against the most severe numerical
+  pathologies they identify. Nevertheless, several limitations apply.
+  The analysis uses a single treadmill dataset; overground walking may
+  produce different operator structure. The choice of embedding lag
+  (<inline-formula><alternatives>
+  <tex-math><![CDATA[\tau = 10]]></tex-math>
+  <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>τ</mml:mi><mml:mo>=</mml:mo><mml:mn>10</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>)
+  is motivated by stride-period considerations at 100 Hz but has not
+  been exhaustively optimised. The linear operator is a surrogate–it
+  captures the Koopman-linearised dynamics faithfully only within the
+  delay-embedded subspace, and nonlinear effects beyond this
+  approximation are not modelled.</p>
+  <p><bold>Clinical implications.</bold> Collectively, these results
+  suggest that post-stroke locomotor impairment is not a scalar
+  degradation but a structured reorganisation of transient dynamics.
+  Restoring walking speed or step symmetry may not restore the
+  non-normal richness that characterises healthy gait. The
+  group-specific signatures identified here–fragile non-normality,
+  narrowed bandwidth in HF, and knee-centered asymmetry that is
+  strongest in LF–point toward different rehabilitation targets for
+  different functional levels. Interventions that broaden the transient
+  repertoire, such as perturbation-based balance training,
+  multi-frequency rhythmic cueing, or assistive devices that modulate
+  inter-limb coupling directionality, may prove more effective than
+  approaches targeting kinematic outcomes alone.</p>
+  <p><bold>Outlook.</bold> The present work demonstrates that
+  non-normality in data-driven linear operators is not merely a
+  numerical nuisance but a window into the transient organisation of
+  biological movement. Future extensions–incorporating residual DMD for
+  rigorous spectral convergence guarantees
+  (<xref alt="Colbrook, Ayton, and Szöke 2023" rid="ref-colbrook2021-nb-article" ref-type="bibr">Colbrook,
+  Ayton, and Szöke 2023</xref>), measure-theoretic Koopman formulations
+  (<xref alt="Mezić 2005" rid="ref-mezic2005-nb-article" ref-type="bibr">Mezić
+  2005</xref>,
+  <xref alt="2013" rid="ref-mezic2013-nb-article" ref-type="bibr">2013</xref>), or
+  hybrid embeddings that combine delay coordinates with nonlinear
+  observables–promise richer operator-level phenotypes for clinical
+  stratification and closed-loop control.</p>
+  </sec>
+</sec>
+</body>
+
+
+
+<back>
+<ref-list>
+  <title></title>
+  <ref id="ref-bruijn2013-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Bruijn</surname><given-names>Sjoerd M.</given-names></name>
+        <name><surname>Meijer</surname><given-names>Onno G.</given-names></name>
+        <name><surname>Beek</surname><given-names>Peter J.</given-names></name>
+        <name><surname>Dieën</surname><given-names>Jaap H. van</given-names></name>
+      </person-group>
+      <article-title>Assessing the stability of human locomotion: A review of current measures</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2013">2013</year>
+      <volume>10</volume>
+      <issue>83</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2012.0999</pub-id>
+      <fpage>20120999</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-dingwell2000-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Dingwell</surname><given-names>Jonathan B.</given-names></name>
+        <name><surname>Cusumano</surname><given-names>Joseph P.</given-names></name>
+      </person-group>
+      <article-title>Nonlinear time series analysis of normal and pathological human walking</article-title>
+      <source>Chaos</source>
+      <year iso-8601-date="2000">2000</year>
+      <volume>10</volume>
+      <issue>4</issue>
+      <pub-id pub-id-type="doi">10.1063/1.1324008</pub-id>
+      <fpage>848</fpage>
+      <lpage>863</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-winner2023-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Winner</surname><given-names>Tristan</given-names></name>
+        <name><surname>Rosenberg</surname><given-names>Michael C.</given-names></name>
+        <name><surname>Kesar</surname><given-names>Trisha M.</given-names></name>
+        <name><surname>Ting</surname><given-names>Lena H.</given-names></name>
+        <name><surname>Berman</surname><given-names>Gordon J.</given-names></name>
+      </person-group>
+      <article-title>Discovering individual-specific gait signatures from data</article-title>
+      <source>bioRxiv</source>
+      <year iso-8601-date="2023">2023</year>
+      <pub-id pub-id-type="doi">10.1101/2023.01.11.523590</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-wu2021-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Wu</surname><given-names>Jiahao</given-names></name>
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+      </person-group>
+      <article-title>Challenges in Dynamic Mode Decomposition</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2021">2021</year>
+      <volume>18</volume>
+      <issue>185</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2021.0686</pub-id>
+      <fpage>20210686</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-schmid2010-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Schmid</surname><given-names>Peter J.</given-names></name>
+      </person-group>
+      <article-title>Dynamic mode decomposition of numerical and experimental data</article-title>
+      <source>Journal of Fluid Mechanics</source>
+      <year iso-8601-date="2010">2010</year>
+      <volume>656</volume>
+      <pub-id pub-id-type="doi">10.1017/S0022112010001217</pub-id>
+      <fpage>5</fpage>
+      <lpage>28</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-mezic2005-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Mezić</surname><given-names>Igor</given-names></name>
+      </person-group>
+      <article-title>Spectral properties of dynamical systems, model reduction and decompositions</article-title>
+      <source>Nonlinear Dynamics</source>
+      <year iso-8601-date="2005">2005</year>
+      <volume>41</volume>
+      <pub-id pub-id-type="doi">10.1007/s11071-005-2824-x</pub-id>
+      <fpage>309</fpage>
+      <lpage>325</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-mezic2013-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Mezić</surname><given-names>Igor</given-names></name>
+      </person-group>
+      <article-title>Analysis of fluid flows via spectral properties of the Koopman operator</article-title>
+      <source>Annual Review of Fluid Mechanics</source>
+      <year iso-8601-date="2013">2013</year>
+      <volume>45</volume>
+      <pub-id pub-id-type="doi">10.1146/annurev-fluid-011212-140652</pub-id>
+      <fpage>357</fpage>
+      <lpage>378</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-tu2014-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Tu</surname><given-names>Jonathan H.</given-names></name>
+        <name><surname>Rowley</surname><given-names>Clarence W.</given-names></name>
+        <name><surname>Luchtenburg</surname><given-names>Dirk M.</given-names></name>
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Kutz</surname><given-names>J. Nathan</given-names></name>
+      </person-group>
+      <article-title>On Dynamic Mode Decomposition: Theory and Applications</article-title>
+      <source>Journal of Computational Dynamics</source>
+      <year iso-8601-date="2014">2014</year>
+      <volume>1</volume>
+      <issue>2</issue>
+      <pub-id pub-id-type="doi">10.3934/jcd.2014.1.391</pub-id>
+      <fpage>391</fpage>
+      <lpage>421</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-trefethen2005-nb-article">
+    <element-citation publication-type="book">
+      <person-group person-group-type="author">
+        <name><surname>Trefethen</surname><given-names>Lloyd N.</given-names></name>
+        <name><surname>Embree</surname><given-names>Mark</given-names></name>
+      </person-group>
+      <source>Spectra and pseudospectra: The behavior of nonnormal matrices and operators</source>
+      <publisher-name>Princeton University Press</publisher-name>
+      <year iso-8601-date="2005">2005</year>
+      <isbn>978-0-691-11946-5</isbn>
+    </element-citation>
+  </ref>
+  <ref id="ref-henrici1962-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Henrici</surname><given-names>Peter</given-names></name>
+      </person-group>
+      <article-title>Bounds for iterates, inverses, spectral variation and fields of values of non-normal matrices</article-title>
+      <source>Numerische Mathematik</source>
+      <year iso-8601-date="1962">1962</year>
+      <volume>4</volume>
+      <pub-id pub-id-type="doi">10.1007/BF01386294</pub-id>
+      <fpage>24</fpage>
+      <lpage>40</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-takens1981-nb-article">
+    <element-citation publication-type="chapter">
+      <person-group person-group-type="author">
+        <name><surname>Takens</surname><given-names>Floris</given-names></name>
+      </person-group>
+      <article-title>Detecting strange attractors in turbulence</article-title>
+      <source>Dynamical systems and turbulence, warwick 1980</source>
+      <publisher-name>Springer</publisher-name>
+      <year iso-8601-date="1981">1981</year>
+      <volume>898</volume>
+      <pub-id pub-id-type="doi">10.1007/BFb0091924</pub-id>
+      <fpage>366</fpage>
+      <lpage>381</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-brunton2017-nb-article">
+    <element-citation publication-type="book">
+      <person-group person-group-type="author">
+        <name><surname>Brunton</surname><given-names>Steven L.</given-names></name>
+        <name><surname>Kutz</surname><given-names>J. Nathan</given-names></name>
+      </person-group>
+      <source>Data-driven science and engineering: Machine learning, dynamical systems, and control</source>
+      <publisher-name>Cambridge University Press</publisher-name>
+      <year iso-8601-date="2019">2019</year>
+      <edition>1st</edition>
+      <pub-id pub-id-type="doi">10.1017/9781108380690</pub-id>
+    </element-citation>
+  </ref>
+  <ref id="ref-colbrook2021-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Colbrook</surname><given-names>Matthew J.</given-names></name>
+        <name><surname>Ayton</surname><given-names>Lorna J.</given-names></name>
+        <name><surname>Szöke</surname><given-names>Máté</given-names></name>
+      </person-group>
+      <article-title>Residual Dynamic Mode Decomposition: Robust and verified Koopmanism</article-title>
+      <source>Journal of Fluid Mechanics</source>
+      <year iso-8601-date="2023">2023</year>
+      <volume>955</volume>
+      <pub-id pub-id-type="doi">10.1017/jfm.2022.1052</pub-id>
+      <fpage>A21</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-revzen2008-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+        <name><surname>Guckenheimer</surname><given-names>John M.</given-names></name>
+      </person-group>
+      <article-title>Estimating the phase of synchronized oscillators</article-title>
+      <source>Physical Review E</source>
+      <year iso-8601-date="2008">2008</year>
+      <volume>78</volume>
+      <issue>5</issue>
+      <pub-id pub-id-type="doi">10.1103/PhysRevE.78.051907</pub-id>
+      <fpage>051907</fpage>
+      <lpage></lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-ting2007-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Ting</surname><given-names>Lena H.</given-names></name>
+        <name><surname>McKay</surname><given-names>J. Lucas</given-names></name>
+      </person-group>
+      <article-title>Neuromechanics of muscle synergies for posture and movement</article-title>
+      <source>Current Opinion in Neurobiology</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>17</volume>
+      <issue>6</issue>
+      <pub-id pub-id-type="doi">10.1016/j.conb.2008.01.002</pub-id>
+      <fpage>622</fpage>
+      <lpage>628</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-dingwell2006-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Dingwell</surname><given-names>Jonathan B.</given-names></name>
+        <name><surname>Kang</surname><given-names>Hyun Gu</given-names></name>
+      </person-group>
+      <article-title>Differences between local and orbital dynamic stability of human walking</article-title>
+      <source>Journal of Biomechanical Engineering</source>
+      <year iso-8601-date="2007">2007</year>
+      <volume>129</volume>
+      <issue>4</issue>
+      <pub-id pub-id-type="doi">10.1115/1.2746383</pub-id>
+      <fpage>586</fpage>
+      <lpage>593</lpage>
+    </element-citation>
+  </ref>
+  <ref id="ref-revzen2012-nb-article">
+    <element-citation publication-type="article-journal">
+      <person-group person-group-type="author">
+        <name><surname>Revzen</surname><given-names>Shai</given-names></name>
+        <name><surname>Guckenheimer</surname><given-names>John M.</given-names></name>
+      </person-group>
+      <article-title>Finding the dimension of slow dynamics in a rhythmic system</article-title>
+      <source>Journal of The Royal Society Interface</source>
+      <year iso-8601-date="2012">2012</year>
+      <volume>9</volume>
+      <issue>70</issue>
+      <pub-id pub-id-type="doi">10.1098/rsif.2011.0431</pub-id>
+      <fpage>957</fpage>
+      <lpage>971</lpage>
+    </element-citation>
+  </ref>
+</ref-list>
+</back>
+
+
+</sub-article>
+
+</article>

@@ -1,0 +1,5 @@
+/.quarto/
+**/*.quarto_ipynb
+old_scripts
+.codex
+.pixi

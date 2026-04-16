@@ -1,0 +1,154 @@
+name: Render Manuscript and Weekly Updates
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.12'
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Cache Julia dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.julia/artifacts
+            ~/.julia/compiled
+            ~/.julia/packages
+            ~/.julia/registries
+          key: ${{ runner.os }}-julia-${{ hashFiles('Project.toml', 'Manifest.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-
+
+      - name: Instantiate Julia environment
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+
+      - name: Render manuscript (HTML + PDF)
+        run: |
+          quarto render index.qmd --to html
+          quarto render index.qmd --to pdf
+
+      - name: Render weekly updates (HTML + PDF)
+        shell: bash
+        run: |
+          shopt -s nullglob
+          weekly_files=(weekly_updates/*.qmd)
+
+          if [ ${#weekly_files[@]} -eq 0 ]; then
+            echo "No weekly update files found in weekly_updates/."
+            exit 0
+          fi
+
+          for file in "${weekly_files[@]}"; do
+            echo "Rendering ${file}"
+            quarto render "${file}" --to html
+            quarto render "${file}" --to pdf
+          done
+
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Assemble Pages site content
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf _site
+          mkdir -p _site
+
+          # Publish the manuscript at the site root so Pages opens it directly.
+          cp -r _manuscript/* _site/
+          touch _site/.nojekyll
+
+          # Copy weekly update outputs and their support directories.
+          mkdir -p _site/weekly_updates
+          shopt -s nullglob
+
+          for f in weekly_updates/*.html weekly_updates/*.pdf; do
+            cp "$f" _site/weekly_updates/
+          done
+
+          for d in weekly_updates/*_files; do
+            cp -r "$d" _site/weekly_updates/
+          done
+
+          if [ -d weekly_updates/site_libs ]; then
+            cp -r weekly_updates/site_libs _site/weekly_updates/
+          fi
+
+          # Build a simple index of weekly reports for quick advisor access.
+          {
+            echo '<!doctype html>'
+            echo '<html lang="en"><head><meta charset="utf-8">'
+            echo '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            echo '<title>Weekly Progress Updates</title>'
+            echo '<style>body{font-family:Georgia,serif;max-width:900px;margin:2rem auto;padding:0 1rem;line-height:1.5}h1{margin-bottom:0.2rem}ul{padding-left:1.2rem}li{margin:0.4rem 0}a{margin-right:0.8rem}</style>'
+            echo '</head><body>'
+            echo '<h1>Weekly Progress Updates</h1>'
+            echo '<p><a href="../index.html">Manuscript HTML</a><a href="../index.pdf">Manuscript PDF</a></p>'
+            echo '<ul>'
+            for html in _site/weekly_updates/*.html; do
+              base=$(basename "$html" .html)
+              [ "$base" = "index" ] && continue
+              printf '<li><strong>%s</strong> <a href="%s.html">HTML</a><a href="%s.pdf">PDF</a></li>\n' "$base" "$base" "$base"
+            done
+            echo '</ul>'
+            echo '</body></html>'
+          } > _site/weekly_updates/index.html
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        if: github.event_name != 'pull_request'
+        uses: actions/deploy-pages@v4
+
+      - name: Upload manuscript artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-rendered
+          path: |
+            _manuscript/index.html
+            _manuscript/index.pdf
+          if-no-files-found: warn
+
+      - name: Upload weekly update artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-updates-rendered
+          path: |
+            weekly_updates/*.html
+            weekly_updates/*.pdf
+          if-no-files-found: warn
