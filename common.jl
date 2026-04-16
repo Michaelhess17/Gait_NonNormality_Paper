@@ -78,10 +78,22 @@ const GROUP_COLORS = Dict(
 )
 
 # ── Data paths ─────────────────────────────────────────────────────────────────
-const DATA_PATH = "/home/michael/Synology/Julia/data/all_human_data.npy"
-const META_PATH = "/home/michael/Synology/Julia/data/all_human_data_metadata.csv"
+const LEGACY_DATA_DIR = "/home/michael/Synology/Julia/data"
+const REPO_DATA_DIR   = joinpath(@__DIR__, "data")
+const DATA_DIR = get(ENV, "GAIT_DATA_DIR",
+                     isdir(REPO_DATA_DIR) ? REPO_DATA_DIR : LEGACY_DATA_DIR)
+const DATA_PATH = joinpath(DATA_DIR, "all_human_data.npy")
+const META_PATH = joinpath(DATA_DIR, "all_human_data_metadata.csv")
 
 function load_gait_data()
+    if !isfile(DATA_PATH) || !isfile(META_PATH)
+        missing = String[]
+        !isfile(DATA_PATH) && push!(missing, DATA_PATH)
+        !isfile(META_PATH) && push!(missing, META_PATH)
+        msg = "Missing required gait data file(s):\n  " * join(missing, "\n  ") *
+              "\nSet GAIT_DATA_DIR to a directory containing all_human_data.npy and all_human_data_metadata.csv"
+        error(msg)
+    end
     data      = npzread(DATA_PATH)
     meta      = CSV.read(META_PATH, DataFrame)
     return data, meta[!, "speed"], meta[!, "lf_or_hf"], meta[!, "subject"]
