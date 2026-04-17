@@ -87,9 +87,8 @@ jobs:
 
           for file in "${weekly_files[@]}"; do
             echo "Rendering ${file}"
-            # Weekly reports are standalone docs, so render outside manuscript mode.
-            quarto render "${file}" --to html --no-project
-            quarto render "${file}" --to pdf --no-project
+            quarto render "${file}" --to html
+            quarto render "${file}" --to pdf
           done
 
           echo "Weekly render outputs:"

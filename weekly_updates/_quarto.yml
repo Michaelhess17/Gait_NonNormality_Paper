@@ -1,0 +1,13 @@
+project:
+  type: default
+
+format:
+  html:
+    format-links:
+      - pdf
+  pdf: default
+
+execute:
+  echo: true
+  warning: false
+  message: false
