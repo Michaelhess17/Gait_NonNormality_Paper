@@ -76,6 +76,7 @@ jobs:
       - name: Render weekly updates (HTML + PDF)
         shell: bash
         run: |
+          set -euo pipefail
           shopt -s nullglob
           weekly_files=(weekly_updates/*.qmd)
 
@@ -86,9 +87,13 @@ jobs:
 
           for file in "${weekly_files[@]}"; do
             echo "Rendering ${file}"
-            quarto render "${file}" --to html
-            quarto render "${file}" --to pdf
+            # Weekly reports are standalone docs, so render outside manuscript mode.
+            quarto render "${file}" --to html --no-project
+            quarto render "${file}" --to pdf --no-project
           done
+
+          echo "Weekly render outputs:"
+          ls -1 weekly_updates/*.html weekly_updates/*.pdf
 
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request'
