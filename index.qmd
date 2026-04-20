@@ -291,22 +291,19 @@ To localise where in the kinematic chain inter-limb asymmetry is concentrated, w
 ```{julia}
 #| label: fig-explore-berg-rank
 #| fig-format: png
-#| fig-cap: "Exploratory (D1-D2): Subject-level associations between Berg score and (D1) rank intercept and (D2) rank slope from per-subject linear fits of rank versus speed."
+#| fig-cap: "Exploratory (D2): Subject-level association between Berg score and rank slope from per-subject linear fits of rank versus speed."
 #| output: true
 
 plot(fig5d_berg; fmt=:png)
 ```
 
-For the Berg comparisons, each subject is summarized by a per-subject linear fit:
+For the Berg comparison, each subject is summarized by a per-subject linear fit:
 
 $$
 	ext{rank}(v) = \alpha_s + \beta_s\,(v-\bar v_s),
 $$
 
-where $v$ is walking speed and $\bar v_s$ is that subject's mean speed. We use:
-
-- rank intercept ($\alpha_s$): fitted rank at the subject's mean speed (a baseline dimensionality summary), and
-- rank slope ($\beta_s$): change in rank per cm/s (speed sensitivity of dimensionality).
+where $v$ is walking speed and $\bar v_s$ is that subject's mean speed. The displayed panel uses rank slope ($\beta_s$), i.e., change in rank per cm/s (speed sensitivity of dimensionality).
 
 ## Discussion
 

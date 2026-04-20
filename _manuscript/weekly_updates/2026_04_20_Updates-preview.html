@@ -200,7 +200,7 @@
 
        <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>This week focused on two threads: (1) tightening the main manuscript narrative around interpretable operator-level mechanisms, and (2) building an explicit exploratory analysis pipeline to explain the high non-normality observed in HF gait despite lower dimensionality and steeper normalized harmonic fall-off.</p>
+<p>This week focused on two threads: (1) tightening the main manuscript narrative around interpretable operator-level mechanisms and their biological implications, and (2) building an explicit exploratory analysis pipeline to explain the high non-normality observed in HF gait despite lower dimensionality and steeper normalized harmonic fall-off.</p>
 </section>
 <section id="accomplishments" class="level2">
 <h2 class="anchored" data-anchor-id="accomplishments">Accomplishments</h2>
@@ -285,25 +285,19 @@
 <section id="challenges-open-questions" class="level2">
 <h2 class="anchored" data-anchor-id="challenges-open-questions">Challenges / Open Questions</h2>
 <ul>
-<li>Visual interpretability remains the main challenge:
+<li>Interpretability remains the main challenge:
 <ul>
-<li>Some exploratory panels were initially too abstract/noisy and required simplification.</li>
-<li>Need to decide which exploratory figures are explanatory enough for the manuscript versus supplement.</li>
+<li>Does the concentration-vs-breadth framing make sense to readers? Is it clear enough? Do we need to simplify further or add more analyses to clarify the key points?</li>
+<li>Need to decide which exploratory figures are explanatory/helpful enough for the manuscript versus supplement.</li>
 </ul></li>
-<li>The rank-int vs Berg panel changed less visually than expected after centering, which is plausible because:
-<ul>
-<li>centering primarily redefines the intercept reference point,</li>
-<li>rank slopes are unchanged by centering,</li>
-<li>with small sample size, visual differences can be modest even when definitions are improved.</li>
-</ul></li>
-<li>Sample size for clinical linkage is still small (<code>n=13</code> with complete Berg/Fugl), so uncertainty remains wide for many effects.</li>
+<li>Sample size for clinical linkage is small (<code>n=13</code> with complete Berg/Fugl), so uncertainty remains wide for many effects.</li>
 <li>Need to avoid over-interpretation of metrics (e.g., gain/rank) as causal measures without stronger mechanistic justification.</li>
 </ul>
 </section>
 <section id="plan-for-next-week" class="level2">
 <h2 class="anchored" data-anchor-id="plan-for-next-week">Plan for Next Week</h2>
 <ul>
-<li>Tighten narrative around operator-level mechanisms, their implications, and tradeoffs in main text. Some figures will be moved to supplement if they are not needed for the core narrative.</li>
+<li>Tighten narrative around operator-level mechanisms, their biological implications, and tradeoffs in main text. Some figures will be moved to supplement if they are not needed for the core narrative.</li>
 <li>Finalize placement and wording of exploratory panels now integrated into <code>index.qmd</code>:
 <ul>
 <li>Keep B1, C, D1/D2 (Berg), and F1 as currently selected.</li>

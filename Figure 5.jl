@@ -394,6 +394,8 @@ end
 
 # ── Clinical linkage (stroke subjects only) ───────────────────────────────────
 score_paths = [
+    joinpath(DATA_DIR, "subject_scores.csv"),
+    joinpath(@__DIR__, "data", "subject_scores.csv"),
     expanduser("~/Documents/Synology_local/Python/Gait-Signatures/data/subject_scores.csv"),
     expanduser("~/Synology/Python/Gait-Signatures/data/subject_scores.csv"),
 ]
@@ -403,6 +405,7 @@ df_clin = DataFrame()
 if isnothing(score_path)
     @warn "No clinical score CSV found in expected paths. Skipping clinical analyses."
 else
+    println("Using clinical score file: $(score_paths[score_path])")
     clin_raw = CSV.read(score_paths[score_path], DataFrame; header=false)
     ncol(clin_raw) < 3 && error("Expected at least 3 columns in subject score file")
     rename!(clin_raw, [:subject_raw, :berg_raw, :fugl_raw])
@@ -614,13 +617,10 @@ if nrow(df_clin) > 0
         return sp
     end
 
-    pD1 = clin_scatter(df_clin, :rank_int, :berg,
-                       "(D1) Mean-speed rank vs Berg",
-                       "Rank intercept (fitted at subject mean speed)", "Berg score")
     pD2 = clin_scatter(df_clin, :rank_slope, :berg,
                        "(D2) Rank speed sensitivity vs Berg",
                        "Rank slope (delta rank per cm/s)", "Berg score")
-    fig5d_berg = plot(pD1, pD2; layout=(1,2), size=(2*PUB_W, PUB_H))
+    fig5d_berg = plot(pD2; size=(1.2*PUB_W, 1.1*PUB_H))
     savefig(fig5d_berg, "figures/fig5d_berg_scatter.svg")
 end
 
