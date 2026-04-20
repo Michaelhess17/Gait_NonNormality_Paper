@@ -147,11 +147,19 @@ plot(fig5b; fmt=:png)
 ```{julia}
 #| label: fig-explore-attenuation
 #| fig-format: png
-#| fig-cap: "Exploratory (C): HF effect-size attenuation as mechanistic components are added sequentially (group+speed, +rank, +eigenvalue distance, +eta). Larger drops indicate greater explanatory contribution of the added component."
+#| fig-cap: "Exploratory (C): Sequentially adjusted HF coefficient (beta_HF) from linear models. beta_HF is the adjusted difference between HF and AB at matched covariates. Steps add group+speed, then rank, then eigenvalue distance, then eta."
 #| output: true
 
 plot(fig5c; fmt=:png)
 ```
+
+In panel C, "HF effect size" means the regression coefficient $\beta_{HF}$ from a model where AB is the reference group and HF/LF are indicator terms. At each step we re-fit
+
+$$
+y = \beta_0 + \beta_{HF}\,\mathbf{1}_{HF} + \beta_{LF}\,\mathbf{1}_{LF} + \text{covariates} + \varepsilon,
+$$
+
+so $\beta_{HF}$ is the adjusted HF--AB contrast for that outcome (either decay rate or $\log_{10}(C_1)$). If adding a covariate strongly reduces $|\beta_{HF}|$, that covariate explains part of the HF--AB difference.
 
 ### Figure 3: Harmonic Resolvent Gain Reveals Stroke-Related Collapse of High-Frequency Coupling
 
@@ -283,11 +291,22 @@ To localise where in the kinematic chain inter-limb asymmetry is concentrated, w
 ```{julia}
 #| label: fig-explore-berg-rank
 #| fig-format: png
-#| fig-cap: "Exploratory (D1-D2): Subject-level associations between Berg score and (D1) baseline rank and (D2) rank speed-sensitivity."
+#| fig-cap: "Exploratory (D1-D2): Subject-level associations between Berg score and (D1) rank intercept and (D2) rank slope from per-subject linear fits of rank versus speed."
 #| output: true
 
 plot(fig5d_berg; fmt=:png)
 ```
+
+For the Berg comparisons, each subject is summarized by a per-subject linear fit:
+
+$$
+	ext{rank}(v) = \alpha_s + \beta_s\,(v-\bar v_s),
+$$
+
+where $v$ is walking speed and $\bar v_s$ is that subject's mean speed. We use:
+
+- rank intercept ($\alpha_s$): fitted rank at the subject's mean speed (a baseline dimensionality summary), and
+- rank slope ($\beta_s$): change in rank per cm/s (speed sensitivity of dimensionality).
 
 ## Discussion
 

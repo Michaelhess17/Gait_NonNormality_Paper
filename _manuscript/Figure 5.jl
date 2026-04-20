@@ -158,7 +158,9 @@ function intercept_slope(speed::AbstractVector, y::AbstractVector)
     length(v) == 0 && return (NaN, NaN)
     length(v) == 1 && return (v[1], NaN)
     std(x) == 0 && return (mean(v), 0.0)
-    X = hcat(ones(length(v)), x)
+    # Center speed so intercept is the subject's fitted value at their mean speed.
+    x_center = x .- mean(x)
+    X = hcat(ones(length(v)), x_center)
     β = X \ v
     return (β[1], β[2])
 end
@@ -568,9 +570,9 @@ savefig(fig5b, "figures/fig5b_eta_speed_slope.svg")
 function attenuation_plot(dfA::DataFrame, dfB::DataFrame)
     x = 1:nrow(dfA)
     labs = ["group+speed", "+rank", "+eigdist", "+eta"]
-    sp = pub_plot(; xlabel="Added component", ylabel="HF effect size (beta)",
+    sp = pub_plot(; xlabel="Added component", ylabel="beta_HF (HF vs AB, adjusted)",
                   xticks=(x, labs), xrotation=18,
-                  title="(C) How HF effect changes as components are added", legend=:topright)
+                  title="(C) HF coefficient after sequential adjustment", legend=:topright)
     for (dfm, lab, col) in ((dfA, "decay_rate", :steelblue), (dfB, "log10(C1)", :darkorange))
         y = Float64.(dfm.beta_hf)
         lo = Float64.(dfm.ci_lo)
@@ -613,11 +615,11 @@ if nrow(df_clin) > 0
     end
 
     pD1 = clin_scatter(df_clin, :rank_int, :berg,
-                       "(D1) Baseline rank vs Berg",
-                       "Rank intercept", "Berg score")
+                       "(D1) Mean-speed rank vs Berg",
+                       "Rank intercept (fitted at subject mean speed)", "Berg score")
     pD2 = clin_scatter(df_clin, :rank_slope, :berg,
-                       "(D2) Rank speed-slope vs Berg",
-                       "Rank slope", "Berg score")
+                       "(D2) Rank speed sensitivity vs Berg",
+                       "Rank slope (delta rank per cm/s)", "Berg score")
     fig5d_berg = plot(pD1, pD2; layout=(1,2), size=(2*PUB_W, PUB_H))
     savefig(fig5d_berg, "figures/fig5d_berg_scatter.svg")
 end

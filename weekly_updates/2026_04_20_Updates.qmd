@@ -26,7 +26,20 @@ This week focused on two threads: (1) tightening the main manuscript narrative a
   - Revised manuscript wording/captions to align with those changes.
   - Added hierarchical bootstrap confidence intervals for all main effects in the manuscript.
   - Added several new exploratory analyses to probe mechanistic interpretations of the main findings, particularly around the HF non-normality pattern.
-- New exploratory pipeline:
+  - Added an exploratory model to test what causes the HF-vs-AB difference in spectral concentration (C1):
+    - Outcome being modeled: spectral concentration, defined as `C1 = gain at fundamental / mean(gain at harmonics 2-5)`.
+    - We model `log10(C1)`, where larger values mean a stronger concentration of amplification at the fundamental relative to higher harmonics.
+    - Core question: after matching for walking speed, how much larger is `log10(C1)` in HF than AB?
+    - Model form (plain language): outcome = group terms (HF, LF) + speed + optional mechanism terms.
+    - The reported "HF effect" is the HF-vs-AB group coefficient from that model.
+    - We then add mechanism terms one at a time (`rank`, then `eigenvalue distance`, then `eta`) and check whether the HF-vs-AB coefficient shrinks.
+    - If it shrinks after adding a term, that term explains part of the HF-vs-AB difference.
+  - Added a section comparing some non-normality trends with the Berg scores for each stroke subject:
+    - For each subject, fit rank as a function of speed.
+    - `rank_int` = the subject's typical rank at their own average speed (baseline dimensionality).
+    - `rank_slope` = how much their rank changes as speed changes (speed sensitivity of dimensionality).
+    - Correlated those two metrics with Berg scores across subjects to see if more severe impairment (lower Berg) is associated with lower baseline rank and/or steeper speed sensitivity of rank.
+- New exploratory metrics and figures:
   - Added `Figure 5.jl` as a standalone exploratory script (not required for the core manuscript figures).
   - Script computes trial-level and subject-level mechanistic metrics, speed sensitivities, attenuation models, and clinical associations.
   - Clinical score merge implemented from subject-level Berg and Fugl-Meyer files.
@@ -45,16 +58,21 @@ Key exploratory quantitative results from `Figure 5.jl`:
   - AB: `eta_slope ~ 0.0000`
   - HF: `eta_slope ~ 0.0000` (broader spread than AB)
   - LF: `eta_slope ~ 0.0061`
-- HF attenuation on concentration outcome (`log10(C1)`):
-  - group+speed: `beta_HF = 0.7335`
-  - +rank: `beta_HF = 0.5142`
-  - +eigdist: `beta_HF = 0.3053`
-  - +eta: `beta_HF = 0.3117`
-- Interpretation of attenuation pattern:
-  - A large share of HF concentration is explained by rank and eigenvalue proximity.
-  - Adding eta after those terms changes little for `C1`.
+- Stepwise HF-vs-AB comparison for concentration (`log10(C1)`):
+  - after controlling only for speed: HF-AB difference = `0.7335`
+  - after additionally controlling for rank: HF-AB difference = `0.5142`
+  - after additionally controlling for eigenvalue distance: HF-AB difference = `0.3053`
+  - after additionally controlling for eta: HF-AB difference = `0.3117`
+- Reading these numbers:
+  - The first number (`0.7335`) is the HF-vs-AB difference in `log10(C1)` after adjusting for speed only.
+  - Each subsequent number is the same HF-vs-AB difference after adding one more explanatory variable.
+  - The drop from `0.7335 -> 0.3053` indicates rank + eigenvalue distance explain a substantial portion of the HF-vs-AB concentration difference.
+- The same stepwise model was also run for spectral decay rate as a secondary outcome; the concentration outcome above is the one summarized in this section because it was the clearest mechanistically.
+- Interpretation of that stepwise pattern:
+  - Most of the HF-vs-AB concentration difference is reduced once rank and eigenvalue distance are included.
+  - Adding eta at the end changes little, suggesting eta contributes less additional explanatory power for this specific outcome.
 - Berg correlations (stroke subjects, n=13):
-  - `rank_int`: `r = 0.754` (95% CI [0.219, 0.947])
+  - `rank_int`: `r = -0.075` (95% CI [-0.593, 0.542])
   - `rank_slope`: `r = -0.810` (95% CI [-0.938, -0.484])
 
 These findings support a tradeoff framing: AB shows broader, distributed responsiveness; HF appears more concentrated (high fundamental emphasis relative to available dimensions); LF appears lower-capacity overall.
@@ -65,6 +83,10 @@ These findings support a tradeoff framing: AB shows broader, distributed respons
 - Visual interpretability remains the main challenge:
   - Some exploratory panels were initially too abstract/noisy and required simplification.
   - Need to decide which exploratory figures are explanatory enough for the manuscript versus supplement.
+- The rank-int vs Berg panel changed less visually than expected after centering, which is plausible because:
+  - centering primarily redefines the intercept reference point,
+  - rank slopes are unchanged by centering,
+  - with small sample size, visual differences can be modest even when definitions are improved.
 - Sample size for clinical linkage is still small (`n=13` with complete Berg/Fugl), so uncertainty remains wide for many effects.
 - Need to avoid over-interpretation of metrics (e.g., gain/rank) as causal measures without stronger mechanistic justification.
 
