@@ -1,0 +1,47 @@
+---
+title: "Weekly Progress Update"
+author: "Michael Hess"
+date: today
+format:
+  html:
+    format-links:
+      - pdf
+  pdf: default
+jupyter: julia-1.12
+engine: julia
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Summary
+
+Short overview of this week's progress.
+
+## Accomplishments
+
+- Item 1
+- Item 2
+- Item 3
+
+## Results and Figures
+
+Include figures, tables, or key numbers from this week.
+
+```{julia}
+# Example reproducible Julia chunk.
+using Statistics
+vals = [1.0, 2.0, 3.0, 4.0]
+mean(vals)
+```
+
+## Challenges / Open Questions
+
+- Blocker 1
+- Question 1
+
+## Plan for Next Week
+
+- Next step 1
+- Next step 2

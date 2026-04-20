@@ -1,0 +1,78 @@
+---
+title: "Weekly Progress Update (04-20-2026)"
+author: "Michael Hess"
+date: today
+format:
+  html:
+    format-links:
+      - pdf
+  pdf: default
+jupyter: julia-1.12
+engine: julia
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Summary
+
+This week focused on two threads: (1) tightening the main manuscript narrative around interpretable operator-level mechanisms, and (2) building an explicit exploratory analysis pipeline to explain the high non-normality observed in HF gait despite lower dimensionality and steeper normalized harmonic fall-off. 
+
+## Accomplishments
+
+- Main analysis updates:
+  - Updated speed-matching so AB is capped at the HF maximum speed (127 cm/s), rather than LF maximum speed.
+  - Revised manuscript wording/captions to align with those changes.
+  - Added hierarchical bootstrap confidence intervals for all main effects in the manuscript.
+  - Added several new exploratory analyses to probe mechanistic interpretations of the main findings, particularly around the HF non-normality pattern.
+- New exploratory pipeline:
+  - Added `Figure 5.jl` as a standalone exploratory script (not required for the core manuscript figures).
+  - Script computes trial-level and subject-level mechanistic metrics, speed sensitivities, attenuation models, and clinical associations.
+  - Clinical score merge implemented from subject-level Berg and Fugl-Meyer files.
+- New exploratory figures generated:
+  - `fig5a_resolvent_norm_curve.svg`: group median resolvent breadth curves, normalized by each trial's fundamental.
+  - `fig5b_eta_speed_slope.svg`: subject-level speed sensitivity of dynamical strain.
+  - `fig5c_hf_attenuation.svg`: incremental attenuation of HF effect as components are added.
+  - `fig5d_berg_scatter.svg`: Berg vs rank intercept and rank slope.
+  - `fig5f1_gain_per_rank.svg`: fundamental gain normalized by rank.
+
+## Results and Figures
+
+Key exploratory quantitative results from `Figure 5.jl`:
+
+- Speed sensitivity (subject-level medians):
+  - AB: `eta_slope ~ 0.0000`
+  - HF: `eta_slope ~ 0.0000` (broader spread than AB)
+  - LF: `eta_slope ~ 0.0061`
+- HF attenuation on concentration outcome (`log10(C1)`):
+  - group+speed: `beta_HF = 0.7335`
+  - +rank: `beta_HF = 0.5142`
+  - +eigdist: `beta_HF = 0.3053`
+  - +eta: `beta_HF = 0.3117`
+- Interpretation of attenuation pattern:
+  - A large share of HF concentration is explained by rank and eigenvalue proximity.
+  - Adding eta after those terms changes little for `C1`.
+- Berg correlations (stroke subjects, n=13):
+  - `rank_int`: `r = 0.754` (95% CI [0.219, 0.947])
+  - `rank_slope`: `r = -0.810` (95% CI [-0.938, -0.484])
+
+These findings support a tradeoff framing: AB shows broader, distributed responsiveness; HF appears more concentrated (high fundamental emphasis relative to available dimensions); LF appears lower-capacity overall.
+
+
+## Challenges / Open Questions
+
+- Visual interpretability remains the main challenge:
+  - Some exploratory panels were initially too abstract/noisy and required simplification.
+  - Need to decide which exploratory figures are explanatory enough for the manuscript versus supplement.
+- Sample size for clinical linkage is still small (`n=13` with complete Berg/Fugl), so uncertainty remains wide for many effects.
+- Need to avoid over-interpretation of metrics (e.g., gain/rank) as causal measures without stronger mechanistic justification.
+
+## Plan for Next Week
+
+- Tighten narrative around operator-level mechanisms, their implications, and tradeoffs in main text. Some figures will be moved to supplement if they are not needed for the core narrative.
+- Finalize placement and wording of exploratory panels now integrated into `index.qmd`:
+  - Keep B1, C, D1/D2 (Berg), and F1 as currently selected.
+- Tighten text around the concentration-vs-breadth interpretation. Determine whether further simplification or clearer analyses are needed to make the key points more understandable.
+- Decide whether to keep exploratory content in main text or move part to supplement after feedback.
+- Will probably primarily work on the perspective paper while waiting for feedback on the main manuscript.

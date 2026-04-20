@@ -163,10 +163,10 @@ end
 
 # Speed-matching helper.
 function speed_match_flag(speed_all, group_all)
-    max_lf    = maximum(speed_all[group_all .== "LF"])
     max_hf    = maximum(speed_all[group_all .== "HF"])
-    speed_cap = min(max_lf, max_hf)
-    return (group_all .!= "AB") .| (speed_all .<= speed_cap), speed_cap
+    ab_mask   = group_all .== "AB"
+    keep_mask = .!ab_mask .| (speed_all .<= max_hf)
+    return keep_mask, max_hf
 end
 
 # ── Hierarchical bootstrap helpers ────────────────────────────────────────────

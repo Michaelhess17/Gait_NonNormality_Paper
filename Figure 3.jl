@@ -3,7 +3,7 @@
 #
 # Panel A: absolute gain at harmonics 1–5, all trials
 # Panel B: normalised fall-off (gain / gain_h1), all trials
-# Panel C: normalised gain faceted by speed bin (AB / HF / LF columns)
+# Panel C: absolute gain faceted by speed bin (AB / HF / LF columns)
 # Panel D: speed-matched comparison, normalised fall-off
 
 include("common.jl")
@@ -168,18 +168,18 @@ for g in GROUP_ORDER
 end
 hline!(pB, [1.0]; ls=:dash, color=:gray60, lw=1, label="")
 
-# ── Panel C: speed-bin lines ───────────────────────────────────────────────────
+# ── Panel C: speed-bin lines (absolute gain) ──────────────────────────────────
 speed_bin_edges  = [0, 40, 60, 90, 130, 250]
 speed_bin_labels = ["<40", "40–60", "60–90", "90–130", ">130  cm/s"]
 
-all_norm = filter(x -> isfinite(x) && x > 0, vec(Matrix(df3[:, norm_cols])))
-ratio_ymin = 10.0 ^ floor(log10(minimum(all_norm)))
-ratio_ymax = 10.0 ^ ceil( log10(maximum(all_norm)))
+all_raw = filter(x -> isfinite(x) && x > 0, vec(Matrix(df3[:, raw_cols])))
+raw_ymin = 10.0 ^ floor(log10(minimum(all_raw)))
+raw_ymax = 10.0 ^ ceil( log10(maximum(all_raw)))
 
 speed_panels = map(GROUP_ORDER) do g
-    sp = pub_plot(; yscale=:log10, ylims=(ratio_ymin, ratio_ymax), xticks=xtk,
+    sp = pub_plot(; yscale=:log10, ylims=(raw_ymin, raw_ymax), xticks=xtk,
                     xlabel="Harmonic",
-                    ylabel=(g == "AB" ? "Gain / gain h=1" : ""),
+                    ylabel=(g == "AB" ? "Resolvent gain" : ""),
                     title=g, legend=:bottomleft,
                     size=(PUB_W3*0.8, PUB_H),
                     guidefontsize=PUB_GUIDE_FS+2,
@@ -194,13 +194,12 @@ speed_panels = map(GROUP_ORDER) do g
     for (rk, bi) in enumerate(pres)
         lo, hi  = speed_bin_edges[bi], speed_bin_edges[bi+1]
         df_bin  = df3[(df3.speed .>= lo) .& (df3.speed .< hi) .& (df3.group .== g), :]
-        med, _, _ = profile_stats(df_bin, g, norm_cols)
+        med, _, _ = profile_stats(df_bin, g, raw_cols)
         ok = .!isnan.(med); any(ok) || continue
         t  = np <= 1 ? 1.0 : (rk-1)/(np-1)
         plot!(sp, harm_xs[ok], med[ok]; lw=3.0, color=RGB(t, 0.0, 1.0-t),
               label=speed_bin_labels[bi])
     end
-    hline!(sp, [1.0]; ls=:dash, color=:gray60, lw=1, label="")
     sp
 end
 

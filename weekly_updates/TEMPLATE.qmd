@@ -1,5 +1,5 @@
 ---
-title: "Weekly Progress Update"
+title: "Weekly Progress Update (Template)"
 author: "Michael Hess"
 date: today
 format:

@@ -1,0 +1,1152 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{acacac}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Stroke reorganises the transient dynamical structure of human gait},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Stroke reorganises the transient dynamical structure of human
+gait}
+\author{Michael Hess \and Gordon Berman}
+\date{}
+\begin{document}
+\maketitle
+
+
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, colback=white, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, breakable, rightrule=.15mm, toprule=.15mm, titlerule=0mm, colframe=quarto-callout-note-color-frame, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, arc=.35mm, bottomrule=.15mm, toptitle=1mm, left=2mm, leftrule=.75mm, opacitybacktitle=0.6]
+
+Project navigation: \href{weekly_updates/}{Weekly updates} \textbar{}
+\href{index.pdf}{Manuscript PDF}
+
+\end{tcolorbox}
+
+\subsection{Abstract}\label{abstract}
+
+Healthy walking requires flexible, multi-joint coordination that can
+absorb perturbations across a range of frequencies and directions while
+maintaining rhythmic locomotion. Classical gait stability measures --
+Floquet multipliers and Lyapunov exponents -- reduce this rich
+coordination to a single number summarising how fast perturbations grow
+or decay, discarding information about \emph{which} perturbation
+directions matter, \emph{how} the system responds at different
+frequencies, and \emph{how} the two limbs couple to each other. Here we
+fit a simple linear model (delay-embedded dynamic mode decomposition) to
+bilateral hip, knee, and ankle kinematics from 299 treadmill walking
+trials and show that the structure of this model -- specifically, how
+far it departs from a ``well-behaved'' (normal) operator -- provides a
+multi-dimensional portrait of locomotor coordination that distinguishes
+able-bodied, high-functioning stroke, and low-functioning stroke gait in
+ways that conventional metrics cannot. Able-bodied operators maintain
+high, speed-invariant non-normality (Henrici departure \(\eta\)) and
+occupy a high-dimensional subspace, supporting broad frequency
+responsiveness across harmonics of the stride cycle. High-functioning
+stroke operators show speed-dependent \(\eta\) and park an eigenvalue
+very close to the stride frequency, producing sharply tuned resonance at
+the fundamental but steep harmonic fall-off. Low-functioning stroke
+operators show rising \(\eta\) with speed but weak absolute
+responsiveness across all frequencies. Both stroke groups show increased
+inter-limb coupling asymmetry concentrated around the non-paretic knee.
+These signatures reveal that stroke does not merely slow gait or
+increase variability: it restructures the dynamical coordination
+strategy in group-specific ways, suggesting that rehabilitation
+approaches targeting dynamical richness may complement conventional
+kinematic goals.
+
+\subsection{Introduction}\label{introduction}
+
+Walking looks simple but requires remarkably sophisticated coordination.
+Each stride involves dozens of muscles acting across multiple joints on
+both legs, timed to maintain balance, absorb ground reaction forces, and
+propel the body forward. When this coordination is disrupted by
+neurological injury such as stroke, the consequences are visible not
+just as slower walking or asymmetric steps, but as a qualitative change
+in how the whole system responds to the moment-to-moment perturbations
+-- from uneven ground, shifting attention, or the body's own variability
+-- that healthy walkers handle without conscious effort.
+
+How should we measure this coordination? The dominant approach treats
+walking as a periodic orbit and asks a single question: do perturbations
+shrink or grow? Floquet multipliers answer this per stride cycle, but
+require strict periodicity and very large datasets -- Revzen and
+Guckenheimer (2008) needed over 10,000 strides from cockroach running
+data just to obtain stable estimates, orders of magnitude more than the
+\textasciitilde15--50 strides in a typical human trial. They also demand
+a reliable phase estimate, itself a hard problem (Revzen and
+Guckenheimer 2012; Bruijn et al. 2013). The maximum Lyapunov exponent
+(\(\lambda_S\)) relaxes the periodicity assumption and has emerged as
+the best-validated predictor of fall risk (Dingwell and Cusumano 2000;
+Bruijn et al. 2013), but it provides only a scalar: how fast do nearby
+trajectories pull apart? It says nothing about \emph{which directions}
+are unstable, \emph{at what frequencies} the system can respond, or
+\emph{how the two limbs talk to each other}. These are precisely the
+questions that matter for understanding locomotor coordination after
+stroke.
+
+Both measures also share a deeper conceptual issue: they assume the
+system is autonomous -- evolving under its own dynamics without external
+input. Walking is not autonomous. It is continuously driven by
+descending neural commands, modulated by sensory feedback, and
+stabilised by reflexes (Ting and McKay 2007). The common finding that
+\(\lambda_S\) is positive (local divergence) despite stable walking is a
+direct consequence: the system is being simultaneously driven and
+controlled, and Lyapunov analysis of the autonomous reconstruction picks
+up the driving, not a genuine instability (Dingwell and Kang 2007).
+
+We take a different approach. Rather than asking a scalar stability
+question, we fit a simple linear model to the walking data and then
+examine the \emph{structure of that model} to learn about the underlying
+coordination. Specifically, we use dynamic mode decomposition (DMD) -- a
+data-driven technique that finds the best-fit linear operator \(A\)
+predicting the next time step from the current one (Schmid 2010; Tu et
+al. 2014) -- applied to delay-embedded bilateral joint kinematics. Delay
+embedding stacks successive time points into a higher-dimensional state
+vector, allowing the linear model to capture temporal dependencies that
+a single snapshot cannot (Takens 1981; Brunton and Kutz 2019).
+
+Like Floquet and Lyapunov analysis, DMD fits an autonomous model. But
+rather than reducing the result to eigenvalues (which determine long-run
+stability), we examine the model's \emph{non-normality}: how far the
+fitted operator departs from having orthogonal eigenvectors. This
+departure has concrete physical meaning. A ``well-behaved'' (normal)
+operator can only respond to perturbations through its individual modes,
+each decaying independently. A non-normal operator can transiently
+amplify specific perturbation directions, respond at frequencies where
+no single mode is resonant, and couple inputs and outputs in
+directionally specific ways (Trefethen and Embree 2005; Henrici 1962).
+These are not abstract mathematical properties -- they map directly onto
+the locomotor questions we care about: How flexibly can the system
+respond to perturbations across frequencies? How do the two limbs
+influence each other? And does the system's coordination structure
+depend on walking speed, or is it robust across operating conditions?
+
+Non-normality has previously been studied in the DMD literature
+primarily as a \emph{numerical problem}: Wu, Brunton, and Revzen (2021)
+showed that when DMD is applied to oscillatory data, the underlying
+operator is inherently non-normal, leading to ill-conditioning and
+noise-amplified errors. We invert this perspective. Rather than treating
+non-normality as a nuisance, we show that its magnitude and structure --
+recovered from walking kinematics -- are biologically informative
+signatures of locomotor coordination. The more complex the underlying
+dynamics that the linear operator must encode, the more non-normal
+eigenvector geometry it must deploy to do so. We term this encoding
+demand ``dynamical strain'' (\(\eta\), quantified as the Henrici
+departure from normality): a measure of how hard the linear model must
+work to represent the nonlinear, multi-timescale coordination underlying
+each walking trial.
+
+Post-stroke gait provides a compelling test case. The clinical picture
+includes slower walking speeds, inter-limb asymmetry, and elevated
+stride-to-stride variability (Bruijn et al. 2013), but these
+descriptions remain at the level of symptoms. A deeper question is
+whether stroke fundamentally reorganises \emph{how} the locomotor system
+coordinates itself -- not just how fast or how symmetrically it walks,
+but the structure of its perturbation responses, its frequency content,
+and its inter-limb coupling. We test this hypothesis using 299 treadmill
+walking trials from the open dataset of Winner et al. (2023), which
+includes able-bodied controls and high- and low-functioning stroke
+survivors. Our approach complements their LSTM-based ``gait signatures''
+framework: where that work used black-box neural networks to identify
+individual-specific dynamics, we use an explicitly analysable linear
+operator to extract interpretable coordination signatures.
+
+\subsection{Methods}\label{methods}
+
+\subsubsection{Dataset}\label{dataset}
+
+We analyse 299 treadmill walking trials drawn from the open dataset of
+Winner et al. (2023). Each trial comprises 1500 time points (15 s at 100
+Hz) of six kinematic channels: bilateral hip, knee, and ankle
+sagittal-plane joint angles. Trials are partitioned by metadata into
+able-bodied (AB, \(n = 180\); speed range 30--220 cm/s),
+high-functioning stroke (HF, \(n = 65\); 40--127 cm/s), and
+low-functioning stroke (LF, \(n = 54\); 22--60 cm/s). All channels are
+z-scored within each trial prior to analysis, so that operator
+properties reflect dynamical organisation rather than absolute amplitude
+differences.
+
+\subsubsection{Delay-Embedded Hankel
+DMD}\label{delay-embedded-hankel-dmd}
+
+We construct a delay-embedded state by stacking \(\tau = 10\) lags of
+the 6-channel observation, yielding a \(66\)-dimensional augmented state
+vector at each time step (Takens 1981). This embedding lag spans
+approximately one stride period at typical walking cadences (100 Hz
+sampling), ensuring that the augmented space captures at least one full
+cycle of the dominant oscillation. The resulting Hankel matrix
+\(H \in \mathbb{R}^{66 \times (T - \tau)}\) is split into input
+(\(X = H_{:,1:end-1}\)) and output (\(Y = H_{:,2:end}\)) matrices. We
+compute the truncated SVD \(X = U \Sigma V^*\), retaining the \(r\)
+singular values exceeding \(10^{-6}\) times the leading singular value
+(typically retaining \textgreater99\% of the variance), and solve for
+the reduced operator \(\tilde{A} = U_r^* Y V_r \Sigma_r^{-1}\) following
+the standard projected DMD formulation (Tu et al. 2014; Schmid 2010). To
+enforce stability, eigenvalues of \(\tilde{A}\) with modulus exceeding
+unity are projected onto the unit circle. All subsequent analyses
+operate on this reduced operator.
+
+\subsubsection{Dynamical Quantities}\label{dynamical-quantities}
+
+\textbf{Henrici departure from normality.} We quantify global
+non-normality as \(\eta = \|A^* A - A A^*\|_2 \,/\, \|A\|_2^2\), where
+\(\|\cdot\|_2\) denotes the spectral (operator 2-) norm. A normal
+operator satisfies \(\eta = 0\); larger values indicate stronger
+non-orthogonality of eigenvectors and correspondingly greater potential
+for transient amplification (Henrici 1962; Trefethen and Embree 2005).
+
+\textbf{Harmonic resolvent gain.} The stride frequency \(f_s\) is
+identified as the dominant peak (above 0.3 Hz) in the resolvent gain
+\(\sigma_{\max}^{-1}(e^{i\theta}I - A)\) swept around the unit circle.
+Harmonic resolvent gains are then evaluated at
+\(\|(e^{i 2\pi h f_s / f_{\text{samp}}} I - A)^{-1}\|\) for harmonics
+\(h = 1, \ldots, 5\), quantifying how strongly the operator amplifies
+periodic forcing at each multiple of the stride frequency.
+
+\textbf{Spatial resolvent asymmetry.} The full resolvent at the stride
+frequency is mapped back to the original \(66\)-dimensional
+(delay-embedded) joint space via
+\(R = U \,(z I - \tilde{A})^{-1}\, U^*\). We extract sub-blocks
+corresponding to paretic\(\to\)non-paretic and non-paretic\(\to\)paretic
+coupling (across all delay lags) and compute their operator norms. The
+asymmetry index is \(\max(G_{12}, G_{21}) / \min(G_{12}, G_{21})\),
+where \(G_{12}\) and \(G_{21}\) are the respective sub-block norms.
+Signed log-ratios of pairwise joint gains quantify the directionality of
+inter-joint coupling.
+
+\textbf{Peak Q-factor.} The quality factor at the stride frequency is
+\(Q = f_s / \Delta f\), where \(\Delta f\) is the half-power bandwidth
+(frequency interval over which the resolvent gain exceeds
+\(\text{peak} / \sqrt{2}\)). Higher Q indicates narrower frequency
+tuning.
+
+\textbf{Eigenvalue--stride distance.} We also report
+\(\min_j |\lambda_j - e^{i 2\pi f_s / f_{\text{samp}}}|\), the distance
+from the nearest eigenvalue of \(\tilde{A}\) to the stride-frequency
+point on the unit circle. This quantity controls the peak resolvent gain
+at the fundamental: tighter proximity yields larger absolute gain,
+independent of non-normality.
+
+All quantities are computed trial-by-trial. Speed-matched comparisons
+cap AB trials at the maximum HF walking speed (127 cm/s) to control for
+the confound that AB subjects walk faster on average.
+
+\subsubsection{Statistical Inference}\label{statistical-inference}
+
+Because each participant contributes multiple trials at different
+walking speeds, inferential comparisons use a hierarchical bootstrap
+rather than treating trials as independent replicates. Within each
+group, subjects are resampled with replacement, and then that subject's
+trials are resampled with replacement within the bootstrap draw. This
+preserves the nested subject/trial structure while accommodating unequal
+trial counts per subject. For between-group contrasts we bootstrap
+differences in medians; for speed-dependence we bootstrap Pearson
+correlations; and for directional quantities expressed as log-ratios we
+bootstrap the mean log-ratio. We report percentile 95\% confidence
+intervals and two-sided bootstrap p-values computed from the fraction of
+bootstrap samples on either side of zero. Unless otherwise noted,
+cross-group inference is reported on the speed-matched subset.
+
+\subsection{Results}\label{results}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\subsubsection{Figure 1: Non-Normality Tracks Nonlinearity and Timescale
+Separation in Simulated
+Systems}\label{figure-1-non-normality-tracks-nonlinearity-and-timescale-separation-in-simulated-systems}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{verbatim}
+
+Saved: figures/fig1_simulated_benchmarks.svg
+\end{verbatim}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-simulated-output-2.pdf}}
+
+}
+
+\caption{\label{fig-simulated}Henrici departure in simulated
+oscillators. (A) Stuart--Landau: Henrici rises with μ as the limit cycle
+amplitude increases. (B) FitzHugh-Nagumo: Henrici rises as ε decreases
+and timescale separation strengthens. (C) Stuart--Landau with isochron
+shear: Henrici rises with shear parameter c.~(D) Henrici heatmap over
+(μ, c), showing how non-normality grows across joint amplitude-shear
+settings.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+Simulated benchmark oscillators establish that dynamical strain
+(\(\eta\)) in a delay-embedded DMD operator rises with three properties
+of the underlying nonlinear flow: (A) limit-cycle amplitude
+(Stuart--Landau, increasing \(\mu\)), (B) timescale separation
+(FitzHugh--Nagumo, decreasing \(\varepsilon\)), and (C) isochron shear
+(Stuart--Landau with amplitude-dependent frequency, increasing \(c\)).
+Panel D extends this by mapping \(\eta\) across the joint \((\mu, c)\)
+space, highlighting how amplitude and shear jointly amplify
+non-normality. These benchmarks validate \(\eta\) as a graded index of
+dynamical complexity and confirm that the delay-embedded DMD framework
+reliably recovers the degree of nonlinearity in the generating system.
+
+\subsubsection{Figure 2: Speed-Dependent Non-Normality Distinguishes
+Stroke from Able-Bodied
+Gait}\label{figure-2-speed-dependent-non-normality-distinguishes-stroke-from-able-bodied-gait}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-nonnormality-output-1.pdf}}
+
+}
+
+\caption{\label{fig-nonnormality}Henrici departure vs walking speed for
+299 gait trials. AB = able-bodied (steelblue), HF = high-functioning
+stroke (orange), LF = low-functioning stroke (crimson). Lines connect
+trials from the same subject across speeds. The strip chart (right)
+shows speed-matched comparisons.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+Able-bodied gait maintains high dynamical strain (median \(\eta\) =
+0.96, IQR {[}0.95, 0.99{]}) that is not significantly correlated with
+walking speed (\(r\) = 0.11, 95\% CI {[}-0.04, 0.26{]}, \(p\) = 0.14;
+hierarchical bootstrap). This speed-invariance indicates a robust
+coordination strategy: the amount of non-normal encoding the linear
+model must deploy does not change with walking speed. Both stroke groups
+show significantly stronger speed-dependence: high-functioning stroke
+achieves the highest peak \(\eta\) (median 1.0, \(r\) = 0.35, CI {[}0.1,
+0.56{]}, \(p\) = 0.012), while low-functioning stroke exhibits the
+lowest overall values (median 0.89, \(r\) = 0.47, CI {[}0.12, 0.75{]},
+\(p\) = 0.016). Speed-matched comparisons (AB capped at \(\leq\) 127
+cm/s) confirm that HF \(\eta\) exceeds both AB (\(\Delta\)median =
+0.029, \(p\) = 0.094) and LF (\(\Delta\)median = 0.106, \(p\) = 0.005),
+while the LF--AB contrast trends negative but remains uncertain
+(\(\Delta\)median = -0.077, \(p\) = 0.032).
+
+AB operators also retain higher SVD rank (median 45 vs 37 HF and 36 LF
+out of 66 possible dimensions), indicating that able-bodied coordination
+occupies a higher-dimensional subspace. This dimensionality gradient --
+AB \(>\) HF \(>\) LF -- means that AB operators can distribute transient
+amplification across more directions and frequencies, while stroke
+operators must concentrate their non-normal encoding into fewer
+dimensions.
+
+\subsubsection{Exploratory: Speed Sensitivity and HF Component
+Decomposition}\label{exploratory-speed-sensitivity-and-hf-component-decomposition}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-explore-eta-slope-output-1.pdf}}
+
+}
+
+\caption{\label{fig-explore-eta-slope}Exploratory (B1): Subject-level
+speed sensitivity of dynamical strain (d eta / d speed). Able-bodied
+subjects cluster near zero, while stroke groups show broader and more
+positive speed sensitivity.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-explore-attenuation-output-1.pdf}}
+
+}
+
+\caption{\label{fig-explore-attenuation}Exploratory (C): HF effect-size
+attenuation as mechanistic components are added sequentially
+(group+speed, +rank, +eigenvalue distance, +eta). Larger drops indicate
+greater explanatory contribution of the added component.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\subsubsection{Figure 3: Harmonic Resolvent Gain Reveals Stroke-Related
+Collapse of High-Frequency
+Coupling}\label{figure-3-harmonic-resolvent-gain-reveals-stroke-related-collapse-of-high-frequency-coupling}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-harmonic-all-output-1.pdf}}
+
+}
+
+\caption{\label{fig-harmonic-all}Absolute and normalised harmonic
+resolvent gain. (A) Absolute gain at harmonics 1--5. (B) Gain normalised
+by the fundamental, revealing fall-off shape independent of overall gain
+level.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-harmonic-speed-output-1.pdf}}
+
+}
+
+\caption{\label{fig-harmonic-speed}Absolute harmonic gain faceted by
+walking speed bin (blue = slow, red = fast). Speed modulates the gain
+profile within each group differently, with AB showing the largest
+speed-dependent change.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-harmonic-matched-output-1.pdf}}
+
+}
+
+\caption{\label{fig-harmonic-matched}Speed-matched harmonic gain
+comparison (AB capped at the maximum HF speed). Group differences in the
+fall-off shape persist after controlling for speed.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+These profiles show how broadly each group's model can respond across
+multiples of the stride frequency -- a proxy for how rich and
+multi-timescale the underlying coordination is. The pattern is more
+nuanced than ``stroke suppresses higher harmonics.''
+
+To quantify the fall-off, we fit a spectral decay rate (slope of
+log-normalised gain vs.~harmonic number) to each trial. AB gait decays
+at a moderate rate (median slope -1.19), LF is similar (-1.11), and HF
+decays significantly faster (-1.86). Hierarchical bootstrap confirms HF
+falls off faster than AB (\(\Delta\)median = -0.79, \(p\) = 0.013); LF
+is not significantly different from AB (\(\Delta\)median = -0.04, \(p\)
+= 0.672), and the HF--LF contrast trends in the same direction but is
+noisier (\(p\) = 0.208).
+
+This result initially seems paradoxical: HF has the highest dynamical
+strain (Figure 2) yet the steepest fall-off -- shouldn't a more
+``complex'' operator respond more broadly? The resolution lies in two
+factors: \emph{eigenvalue proximity} and \emph{dimensionality}. HF
+operators place their nearest eigenvalue very close to the stride
+frequency on the unit circle (median distance 0.00069 vs.~0.0012 for
+AB), producing the highest absolute gain at h=1 (median 1.9
+\(\times 10^7\) vs.~5.3 \(\times 10^6\) AB; bootstrap \(\Delta\)median =
+1.4 \(\times 10^7\), \(p\) = 0.001). This tight eigenvalue proximity
+inflates the fundamental so strongly that normalised higher harmonics
+appear suppressed -- but they are not suppressed in absolute terms. At
+h2--h5 the absolute gains are comparable across groups or even highest
+in LF (h2: AB 0.7M, HF 0.9M, LF 1.6M). The steep normalised fall-off in
+HF reflects disproportionate amplification at the fundamental, not a
+loss of higher-harmonic responsiveness.
+
+Dimensionality completes the picture. AB operators occupy a
+higher-dimensional subspace (higher retained rank; see Figure 2), so
+transient amplification can be distributed across more directions and
+frequencies, supporting broad harmonic bandwidth. HF operators
+concentrate their high dynamical strain into fewer dimensions, yielding
+sharp stride-frequency tuning (high h=1, high Q) rather than broad
+harmonic support -- a ``narrow but intense'' transient strategy. LF
+operators, with both lower dimensionality and lower \(\eta\), respond
+weakly across all frequencies.
+
+The biological picture: able-bodied gait uses a high-dimensional,
+broadly responsive operator -- the system can handle perturbations at
+many frequencies. HF gait is sharply tuned to the stride frequency,
+achieving strong resonance but sacrificing breadth. LF gait responds
+weakly across all frequencies, with no dominant resonance.
+
+\subsubsection{Exploratory: Resolvent Breadth and
+Gain-Per-Rank}\label{exploratory-resolvent-breadth-and-gain-per-rank}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-explore-resolvent-breadth-output-1.pdf}}
+
+}
+
+\caption{\label{fig-explore-resolvent-breadth}Exploratory (A):
+Group-median resolvent gain curves normalised by each trial's
+fundamental frequency and gain at the fundamental. Curves that remain
+elevated at higher f/f\_stride indicate broader frequency
+responsiveness.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-explore-gain-rank-output-1.pdf}}
+
+}
+
+\caption{\label{fig-explore-gain-rank}Exploratory (F1): Fundamental gain
+normalised by retained operator rank (log10(gain\_h1/rank)), probing
+concentration of amplification relative to dimensionality.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\subsubsection{Figure 4: Spatial Resolvent Asymmetry, Q-Factor, and
+Knee-Centred Coupling Summaries Differentiate
+Groups}\label{figure-4-spatial-resolvent-asymmetry-q-factor-and-knee-centred-coupling-summaries-differentiate-groups}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-novel-strips-output-1.pdf}}
+
+}
+
+\caption{\label{fig-novel-strips}Speed-matched strip charts for the
+coarse operator metrics. (A) Spatial resolvent asymmetry: ratio of
+cross-body resolvent norms, max/min. (B) Peak Q-factor at stride
+frequency. (C) Mean paretic→non-paretic resolvent gain. (D) Mean
+non-paretic→paretic resolvent gain. Lines show median; error bars show
+IQR.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-joint-summary-output-1.pdf}}
+
+}
+
+\caption{\label{fig-joint-summary}Speed-matched summary metrics
+replacing the full joint-level heatmaps. (E) Knee-target asymmetry,
+defined as log(hip→non-paretic knee / hip→paretic knee). Positive values
+indicate that hip-to-knee coupling is concentrated on the non-paretic
+knee. (F) Non-paretic-knee directional bias, defined as the mean
+log{[}(hip→non-paretic knee)/(non-paretic knee→hip){]} across both hips.
+Positive values indicate preferential drive into the non-paretic knee.
+(G) Global pairwise asymmetry, defined as the mean absolute signed
+log-ratio across all joint pairs.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+In healthy walking, the two legs influence each other roughly
+symmetrically -- perturbations on one side propagate to the other with
+similar strength in both directions. Stroke disrupts this balance. We
+quantify inter-limb coupling asymmetry as the ratio between the stronger
+and weaker cross-body influence directions (a ratio of 1 means perfect
+symmetry). This ratio rises monotonically from AB (median 1.26) through
+HF (1.69) to LF (1.89), indicating progressively one-sided coupling
+between the legs. Hierarchical bootstrap confirms larger asymmetry in
+both stroke groups relative to AB (HF--AB \(\Delta\)median = 0.44, 95\%
+CI {[}0.18, 0.87{]}, \(p\) = 0.002; LF--AB \(\Delta\) = 0.63, {[}0.22,
+1.71{]}, \(p\) \textless{} 0.001). Moreover, in LF gait the dominant
+direction of influence runs from the paretic to the non-paretic side
+(mean log-ratio = 0.6, 95\% CI {[}0.28, 0.9{]}, \(p\) \textless{}
+0.001), with HF trending similarly but less certain (0.21, {[}-0.01,
+0.45{]}, \(p\) = 0.062). In other words, the impaired limb's dynamics
+propagate forcefully across the body, and the intact side must absorb
+and accommodate those perturbations.
+
+How narrowly tuned is each group's coordination to the stride frequency?
+The Q-factor measures this: higher Q means the system responds strongly
+at stride frequency but poorly at neighbouring frequencies. HF gait is
+the most sharply tuned (median Q = 69.6 vs.~AB 33.5 and LF 31.3),
+consistent with a coordination strategy that locks onto the stride
+rhythm but sacrifices adaptability to perturbations at other
+frequencies. Hierarchical bootstrap confirms higher Q in HF than AB
+(\(\Delta\)median = 36.0, 95\% CI {[}3.1, 74.7{]}, \(p\) = 0.034) and in
+LF than AB (\(\Delta\) = -2.2, {[}-18.5, 40.5{]}, \(p\) = 0.947), while
+the HF--LF contrast is less certain (\(p\) = 0.176). LF gait thus
+combines high spatial asymmetry with moderately narrow tuning -- a
+coordination pattern that is both directionally biased and somewhat
+rigid.
+
+To localise where in the kinematic chain inter-limb asymmetry is
+concentrated, we examine hip-to-knee coupling. In AB gait, the hips
+drive both knees roughly equally. In both stroke groups, this coupling
+shifts toward the non-paretic knee: the log-ratio of
+hip-to-non-paretic-knee vs.~hip-to-paretic-knee coupling is near zero in
+AB but positive in stroke (HF--AB \(\Delta\)median = 0.24, 95\% CI
+{[}0.02, 0.65{]}, \(p\) = 0.023; LF--AB \(\Delta\) = 0.81, {[}0.13,
+1.42{]}, \(p\) = 0.02). Both stroke groups also show strong directional
+bias \emph{into} the non-paretic knee from the hips (HF: mean = 1.09,
+95\% CI {[}0.82, 1.36{]}, \(p\) \textless{} 0.001; LF: mean = 1.19,
+{[}0.87, 1.48{]}, \(p\) \textless{} 0.001), with LF exceeding AB
+(\(\Delta\)median = 0.69, {[}0.22, 1.0{]}, \(p\) = 0.018). A broader
+summary of all pairwise joint asymmetries trends upward in LF relative
+to AB (\(\Delta\)median = 0.33, 95\% CI {[}0.04, 0.48{]}, \(p\) =
+0.022), but the clearest finding is that stroke-related coupling
+asymmetry is concentrated specifically around the non-paretic knee
+rather than being diffusely spread across all joints. The intact leg
+does not simply ``compensate'' in a general sense -- the model reveals a
+specific pathway through which the non-paretic knee absorbs and
+redistributes perturbations originating from the impaired side.
+
+\subsubsection{Exploratory: Clinical Association with
+Berg}\label{exploratory-clinical-association-with-berg}
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/mediabag/index_files/figure-pdf/fig-explore-berg-rank-output-1.pdf}}
+
+}
+
+\caption{\label{fig-explore-berg-rank}Exploratory (D1-D2): Subject-level
+associations between Berg score and (D1) baseline rank and (D2) rank
+speed-sensitivity.}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\subsection{Discussion}\label{discussion}
+
+Three operator-level signatures emerge from delay-embedded DMD of 299
+gait trials, collectively revealing that stroke reorganises--rather than
+merely degrades--the transient dynamical structure of locomotion.
+
+\textbf{Speed-dependent dynamical strain distinguishes coordination
+strategies.} The central finding is that the dynamical strain (\(\eta\))
+the linear operator must deploy to encode walking kinematics is
+\emph{speed-invariant} in able-bodied gait but \emph{speed-dependent} in
+both stroke groups. This difference has a clear interpretation:
+able-bodied coordination is robust -- the same dynamical strategy works
+across a wide range of walking speeds. In stroke, the coordination
+strategy itself is fragile: faster walking demands progressively more
+non-normal encoding, suggesting that speed challenges the damaged system
+in a way it does not challenge the intact system. HF achieves the
+highest peak \(\eta\) values, indicating that the underlying dynamics
+are the most complex for the linear model to represent; LF shows rising
+\(\eta\) with speed but lower absolute values, consistent with simpler
+(but still speed-dependent) underlying coordination.
+
+As discussed in the Introduction, all three analysis frameworks--Floquet
+multipliers, Lyapunov exponents, and DMD--fit autonomous models to a
+system that is continuously driven and controlled (Dingwell and Kang
+2007; Ting and McKay 2007). The maximum Lyapunov exponent \(\lambda_S\)
+remains the best-validated predictor of fall risk (Bruijn et al. 2013),
+but as a scalar divergence rate of an autonomous reconstruction it
+cannot distinguish intrinsic instability from neural driving, nor can it
+capture the directional or frequency-dependent structure of transient
+dynamics. Dynamical strain, by indexing how much non-normal eigenvector
+geometry the autonomous linear model must deploy to encode the driven,
+nonlinear data, captures a complementary dimension of locomotor
+organisation. Where \(\lambda_S\) summarises the dominant instability
+direction, the resolvent structure maps the full landscape of transient
+amplification across frequencies and spatial channels.
+
+\textbf{Eigenvalue proximity and dimensionality shape spectral
+organisation.} The harmonic resolvent profiles initially appear
+paradoxical: HF has the highest dynamical strain yet the steepest
+normalised harmonic fall-off. The resolution lies in eigenvalue
+proximity: HF operators park an eigenvalue very close to the stride
+frequency on the unit circle, producing massive gain at the fundamental.
+This tight proximity inflates h=1 so strongly that normalised higher
+harmonics appear suppressed -- but absolute gains at h2--h5 are
+comparable to or exceed AB's. The steep normalised fall-off in HF
+reflects concentrated resonance at one frequency, not a loss of
+multi-scale responsiveness.
+
+Dimensionality completes this picture. AB operators retain the highest
+SVD rank, meaning transient amplification can be distributed across more
+directions and frequencies, supporting the broad harmonic bandwidth
+observed in Figure 3. HF operators concentrate their high dynamical
+strain into fewer dimensions, yielding the ``narrow but intense''
+spectral profile -- sharp stride-frequency tuning rather than broad
+harmonic support. LF operators, with both lower dimensionality and lower
+\(\eta\), respond weakly across all frequencies. From the perspective of
+Wu, Brunton, and Revzen (2021), the non-normality they identify as a
+challenge for DMD convergence here becomes a graded diagnostic: AB
+dynamics demand broad spectral coverage from the autonomous linear
+model; HF dynamics demand acute coverage at one frequency; LF dynamics
+demand the least coverage of all.
+
+\textbf{Asymmetric coupling focused on the non-paretic knee.} The
+directionality of inter-limb coupling provides perhaps the most
+clinically informative signature. At the coarse inter-limb level, LF
+shows clear paretic-dominant cross-body drive, with HF trending in the
+same direction. At finer joint resolution, however, the most robust
+effect is even more specific: hip-knee coupling becomes concentrated on
+the non-paretic knee, and both stroke groups show strong directional
+bias into that knee from the hips. Rather than the intact side simply
+compensating for the impaired side in a diffuse manner, the operator
+structure suggests that stroke channels transient coupling through a
+knee-centered pathway on the non-paretic limb. That picture remains
+consistent with the clinical observation that the ``good'' leg works
+harder during stroke gait, but it localises the asymmetry to a specific
+operator-level route through which perturbations are absorbed and
+redistributed.
+
+\textbf{Relationship to existing stability measures.} Bruijn et al.
+(2013) evaluated gait stability measures against four validity criteria:
+construct validity, convergent validity, predictive validity, and
+discriminant validity. Floquet multipliers showed poor construct
+validity for human gait--not only because strict periodicity is
+violated, but because they require prohibitively large datasets
+(\textgreater10,000 strides in Revzen and Guckenheimer (2008)
+vs.~\textasciitilde15--50 strides in typical human trials), demand a
+reliable phase estimator (Revzen and Guckenheimer 2008, 2012), and are
+acutely noise-sensitive. \(\lambda_S\) showed good predictive validity
+but limited discriminant validity between populations, and as Dingwell
+and Kang (2007) demonstrated, the coexistence of positive \(\lambda_S\)
+(local divergence) with orbital stability reflects the driven nature of
+the system rather than a genuine autonomous instability. The
+operator-level metrics introduced here show substantial discriminant
+validity, with the strongest and most consistent separations in
+AB-vs-stroke contrasts, and capture facets of locomotor
+organisation--transient richness, frequency bandwidth, directional
+coupling--that no single scalar can represent. Like DMD itself, these
+metrics inherit the autonomous-model assumption, but they make the
+demands of that assumption visible: \(\eta\) indexes how much non-normal
+eigenvector geometry the linear model must deploy to encode the
+underlying dynamics. Establishing predictive validity for fall risk and
+convergent validity with \(\lambda_S\) are natural directions for future
+work.
+
+\textbf{Methodological considerations.} Our approach builds on the DMD
+framework of Schmid (2010) and Tu et al. (2014), with delay embedding
+following Takens (1981). Wu, Brunton, and Revzen (2021) showed that DMD
+applied to limit-cycle data faces challenges from Krylov space closure
+and non-normality-amplified estimation errors, and characterised
+performance via a dataset metric (number of initial conditions
+\(\times\) trajectory length). Our dataset of 299 trials with 1500 time
+points each provides substantial coverage; the stability enforcement
+(eigenvalue projection inside the unit disk) and SVD truncation
+(retaining \textgreater99\% variance) guard against the most severe
+numerical pathologies they identify. Nevertheless, several limitations
+apply. The analysis uses a single treadmill dataset; overground walking
+may produce different operator structure. The choice of embedding lag
+(\(\tau = 10\)) is motivated by stride-period considerations at 100 Hz
+but has not been exhaustively optimised. The linear operator is a
+surrogate--it captures the Koopman-linearised dynamics faithfully only
+within the delay-embedded subspace, and nonlinear effects beyond this
+approximation are not modelled. Speed-matched comparisons cap AB trials
+at the maximum HF walking speed (127 cm/s); cross-group comparisons at
+higher speeds are not possible because AB is the only group that
+regularly walks above this threshold.
+
+\textbf{Clinical implications.} Collectively, these results suggest that
+post-stroke locomotor impairment is not a scalar degradation but a
+structured reorganisation of transient dynamics. Restoring walking speed
+or step symmetry may not restore the dimensional richness and robust
+dynamical encoding (speed-invariant \(\eta\)) that characterise healthy
+gait. The group-specific signatures identified here--speed-fragile
+encoding concentrated in few dimensions in HF, rising encoding demand
+with weak absolute responsiveness in LF, and knee-centered coupling
+asymmetry that is strongest in LF--point toward different rehabilitation
+targets for different functional levels. Interventions that broaden the
+transient repertoire, such as perturbation-based balance training,
+multi-frequency rhythmic cueing, or assistive devices that modulate
+inter-limb coupling directionality, may prove more effective than
+approaches targeting kinematic outcomes alone.
+
+\textbf{Outlook.} The present work demonstrates that non-normality in
+data-driven linear operators is not merely a numerical nuisance but a
+window into the transient organisation of biological movement. A direct
+next test of the dimensionality hypothesis is to quantify whether rank
+mediates spectral breadth: regress decay slope and Q-factor on group
+with and without rank, and bootstrap within-group partial correlations
+between rank and (i) decay slope, (ii) h2/h1, and (iii) Q. If HF effects
+attenuate after conditioning on rank, that would support the
+``concentrated low-dimensional amplification'' mechanism. Future
+extensions--incorporating residual DMD for rigorous spectral convergence
+guarantees (Colbrook, Ayton, and Szöke 2023), measure-theoretic Koopman
+formulations (Mezić 2005, 2013), or hybrid embeddings that combine delay
+coordinates with nonlinear observables--promise richer operator-level
+phenotypes for clinical stratification and closed-loop control.
+
+\textsubscript{Source:
+\href{https://michaelhess17.github.io/Gait_NonNormality_Paper/index.qmd.html}{Article
+Notebook}}
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-bruijn2013}
+Bruijn, Sjoerd M., Onno G. Meijer, Peter J. Beek, and Jaap H. van Dieën.
+2013. {``Assessing the Stability of Human Locomotion: A Review of
+Current Measures.''} \emph{Journal of The Royal Society Interface} 10
+(83): 20120999. \url{https://doi.org/10.1098/rsif.2012.0999}.
+
+\bibitem[\citeproctext]{ref-brunton2017}
+Brunton, Steven L., and J. Nathan Kutz. 2019. \emph{Data-Driven Science
+and Engineering: Machine Learning, Dynamical Systems, and Control}. 1st
+ed. Cambridge University Press.
+\url{https://doi.org/10.1017/9781108380690}.
+
+\bibitem[\citeproctext]{ref-colbrook2021}
+Colbrook, Matthew J., Lorna J. Ayton, and Máté Szöke. 2023. {``Residual
+{Dynamic} {Mode} {Decomposition}: Robust and Verified {Koopmanism}.''}
+\emph{Journal of Fluid Mechanics} 955: A21.
+\url{https://doi.org/10.1017/jfm.2022.1052}.
+
+\bibitem[\citeproctext]{ref-dingwell2000}
+Dingwell, Jonathan B., and Joseph P. Cusumano. 2000. {``Nonlinear Time
+Series Analysis of Normal and Pathological Human Walking.''}
+\emph{Chaos} 10 (4): 848--63. \url{https://doi.org/10.1063/1.1324008}.
+
+\bibitem[\citeproctext]{ref-dingwell2006}
+Dingwell, Jonathan B., and Hyun Gu Kang. 2007. {``Differences Between
+Local and Orbital Dynamic Stability of Human Walking.''} \emph{Journal
+of Biomechanical Engineering} 129 (4): 586--93.
+\url{https://doi.org/10.1115/1.2746383}.
+
+\bibitem[\citeproctext]{ref-henrici1962}
+Henrici, Peter. 1962. {``Bounds for Iterates, Inverses, Spectral
+Variation and Fields of Values of Non-Normal Matrices.''}
+\emph{Numerische Mathematik} 4: 24--40.
+\url{https://doi.org/10.1007/BF01386294}.
+
+\bibitem[\citeproctext]{ref-mezic2005}
+Mezić, Igor. 2005. {``Spectral Properties of Dynamical Systems, Model
+Reduction and Decompositions.''} \emph{Nonlinear Dynamics} 41: 309--25.
+\url{https://doi.org/10.1007/s11071-005-2824-x}.
+
+\bibitem[\citeproctext]{ref-mezic2013}
+---------. 2013. {``Analysis of Fluid Flows via Spectral Properties of
+the {Koopman} Operator.''} \emph{Annual Review of Fluid Mechanics} 45:
+357--78. \url{https://doi.org/10.1146/annurev-fluid-011212-140652}.
+
+\bibitem[\citeproctext]{ref-revzen2008}
+Revzen, Shai, and John M. Guckenheimer. 2008. {``Estimating the Phase of
+Synchronized Oscillators.''} \emph{Physical Review E} 78 (5): 051907.
+\url{https://doi.org/10.1103/PhysRevE.78.051907}.
+
+\bibitem[\citeproctext]{ref-revzen2012}
+---------. 2012. {``Finding the Dimension of Slow Dynamics in a Rhythmic
+System.''} \emph{Journal of The Royal Society Interface} 9 (70):
+957--71. \url{https://doi.org/10.1098/rsif.2011.0431}.
+
+\bibitem[\citeproctext]{ref-schmid2010}
+Schmid, Peter J. 2010. {``Dynamic Mode Decomposition of Numerical and
+Experimental Data.''} \emph{Journal of Fluid Mechanics} 656: 5--28.
+\url{https://doi.org/10.1017/S0022112010001217}.
+
+\bibitem[\citeproctext]{ref-takens1981}
+Takens, Floris. 1981. {``Detecting Strange Attractors in Turbulence.''}
+In \emph{Dynamical Systems and Turbulence, Warwick 1980}, 898:366--81.
+Lecture Notes in Mathematics. Springer.
+\url{https://doi.org/10.1007/BFb0091924}.
+
+\bibitem[\citeproctext]{ref-ting2007}
+Ting, Lena H., and J. Lucas McKay. 2007. {``Neuromechanics of Muscle
+Synergies for Posture and Movement.''} \emph{Current Opinion in
+Neurobiology} 17 (6): 622--28.
+\url{https://doi.org/10.1016/j.conb.2008.01.002}.
+
+\bibitem[\citeproctext]{ref-trefethen2005}
+Trefethen, Lloyd N., and Mark Embree. 2005. \emph{Spectra and
+Pseudospectra: The Behavior of Nonnormal Matrices and Operators}.
+Princeton University Press.
+
+\bibitem[\citeproctext]{ref-tu2014}
+Tu, Jonathan H., Clarence W. Rowley, Dirk M. Luchtenburg, Steven L.
+Brunton, and J. Nathan Kutz. 2014. {``On {Dynamic} {Mode}
+{Decomposition}: {Theory} and {Applications}.''} \emph{Journal of
+Computational Dynamics} 1 (2): 391--421.
+\url{https://doi.org/10.3934/jcd.2014.1.391}.
+
+\bibitem[\citeproctext]{ref-winner2023}
+Winner, Tristan, Michael C. Rosenberg, Trisha M. Kesar, Lena H. Ting,
+and Gordon J. Berman. 2023. {``Discovering Individual-Specific Gait
+Signatures from Data.''} \emph{bioRxiv}.
+\url{https://doi.org/10.1101/2023.01.11.523590}.
+
+\bibitem[\citeproctext]{ref-wu2021}
+Wu, Jiahao, Steven L. Brunton, and Shai Revzen. 2021. {``Challenges in
+{Dynamic} {Mode} {Decomposition}.''} \emph{Journal of The Royal Society
+Interface} 18 (185): 20210686.
+\url{https://doi.org/10.1098/rsif.2021.0686}.
+
+\end{CSLReferences}
+
+
+
+
+\end{document}

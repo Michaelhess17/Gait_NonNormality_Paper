@@ -199,8 +199,8 @@ end
 
 pA4 = make_strip(df4_sm, :asym,    "Max/Min cross-body gain",        "(A)  Spatial asymmetry")
 pB4 = make_strip(df4_sm, :qfactor, "f_stride / FWHM",                "(B)  Peak Q-factor"; ysc=:log10)
-pC4 = make_strip(df4_sm, :G_p2np,  "Mean resolvent gain",             "(C)  Paretic → Non-paretic")
-pD4 = make_strip(df4_sm, :G_np2p,  "Mean resolvent gain",             "(D)  Non-paretic → Paretic")
+pC4 = make_strip(df4_sm, :G_p2np,  "Mean resolvent gain",             "(C)  Paretic → Non-paretic", ysc=:identity)
+pD4 = make_strip(df4_sm, :G_np2p,  "Mean resolvent gain",             "(D)  Non-paretic → Paretic", ysc=:identity)
 
 fig4ab = plot(pA4, pB4, pC4, pD4; layout=(2,2), size=(2*PUB_W, 2*PUB_H))
 savefig(fig4ab, "figures/fig4ab_novel_metrics_strips.svg")
