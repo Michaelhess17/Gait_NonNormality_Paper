@@ -21,7 +21,7 @@ Project navigation: [Weekly updates](weekly_updates/) | [Manuscript PDF](index.p
 :::
 
 ## Abstract
-Healthy walking requires flexible, multi-joint coordination that can absorb perturbations across a range of frequencies and directions while maintaining rhythmic locomotion. Classical gait stability measures -- Floquet multipliers and Lyapunov exponents -- reduce this rich coordination to a single number summarising how fast perturbations grow or decay, discarding information about *which* perturbation directions matter, *how* the system responds at different frequencies, and *how* the two limbs couple to each other. Here we fit a simple linear model (delay-embedded dynamic mode decomposition) to bilateral hip, knee, and ankle kinematics from 299 treadmill walking trials and show that the structure of this model -- specifically, how far it departs from a "well-behaved" (normal) operator -- provides a multi-dimensional portrait of locomotor coordination that distinguishes able-bodied, high-functioning stroke, and low-functioning stroke gait in ways that conventional metrics cannot. Able-bodied operators maintain high, speed-invariant non-normality (Henrici departure $\eta$) and occupy a high-dimensional subspace, supporting broad frequency responsiveness across harmonics of the stride cycle. High-functioning stroke operators show speed-dependent $\eta$ and park an eigenvalue very close to the stride frequency, producing sharply tuned resonance at the fundamental but steep harmonic fall-off. Low-functioning stroke operators show rising $\eta$ with speed but weak absolute responsiveness across all frequencies. Both stroke groups show increased inter-limb coupling asymmetry concentrated around the non-paretic knee. These signatures reveal that stroke does not merely slow gait or increase variability: it restructures the dynamical coordination strategy in group-specific ways, suggesting that rehabilitation approaches targeting dynamical richness may complement conventional kinematic goals.
+Healthy walking absorbs perturbations across a range of frequencies and directions, integrating rhythmic activity across both limbs and multiple joints. Classical measures of gait stability -- Floquet multipliers and the maximum Lyapunov exponent -- summarise this bilateral, multi-joint coordination with a single number describing how fast perturbations grow or decay, and by construction cannot report which directions matter, at which frequencies the system responds, or how the two limbs couple to one another. Here we show that fitting a simple linear model to walking kinematics and examining its geometry -- rather than only its growth rates -- recovers these missing aspects of coordination directly from data. Applied to treadmill walking trials from able-bodied and post-stroke participants, three properties of the fitted model capture distinct features of gait: how broadly the system can amplify transient perturbations, how wide a band of frequencies it can respond to, and how symmetrically the two limbs drive one another. These properties jointly separate able-bodied, high-functioning post-stroke, and low-functioning post-stroke gait into distinct coordination regimes. Able-bodied gait is broadly responsive and symmetric across limbs; high-functioning stroke gait concentrates its response sharply at stride frequency, achieving strong rhythmic resonance but narrow frequency breadth; low-functioning stroke gait is weakly responsive across the spectrum. Both stroke groups channel inter-limb coupling through the non-paretic knee, and speed-dependent changes in coordination dimensionality correlate with clinical balance function. These results suggest that post-stroke locomotor impairment is not a uniform degradation of healthy gait along a single axis, but a structured reorganisation of coordination that takes different forms in different functional groups -- and that the geometry of a data-driven model of walking, not just its stability, carries biological information.
 
 ## Introduction
 
@@ -48,6 +48,8 @@ We analyse 299 treadmill walking trials drawn from the open dataset of @winner20
 ### Delay-Embedded Hankel DMD
 
 We construct a delay-embedded state by stacking $\tau = 10$ lags of the 6-channel observation, yielding a $66$-dimensional augmented state vector at each time step [@takens1981]. This embedding lag spans approximately one stride period at typical walking cadences (100 Hz sampling), ensuring that the augmented space captures at least one full cycle of the dominant oscillation. The resulting Hankel matrix $H \in \mathbb{R}^{66 \times (T - \tau)}$ is split into input ($X = H_{:,1:end-1}$) and output ($Y = H_{:,2:end}$) matrices. We compute the truncated SVD $X = U \Sigma V^*$, retaining the $r$ singular values exceeding $10^{-6}$ times the leading singular value (typically retaining >99% of the variance), and solve for the reduced operator $\tilde{A} = U_r^* Y V_r \Sigma_r^{-1}$ following the standard projected DMD formulation [@tu2014; @schmid2010]. To enforce stability, eigenvalues of $\tilde{A}$ with modulus exceeding unity are projected onto the unit circle. All subsequent analyses operate on this reduced operator.
+
+Sensitivity analyses over embedding lag show that the main group-level contrasts are robust provided the embedding captures approximately a full stride cycle and the retained subspace is not dimensionality-impoverished; performance degrades primarily when lags are too short to capture cycle structure.
 
 ### Dynamical Quantities
 
@@ -101,11 +103,11 @@ Simulated benchmark oscillators establish that dynamical strain ($\eta$) in a de
 ```{julia}
 #| label: fig-nonnormality
 #| fig-format: png
-#| fig-cap: "Henrici departure vs walking speed for 299 gait trials. AB = able-bodied (steelblue), HF = high-functioning stroke (orange), LF = low-functioning stroke (crimson). Lines connect trials from the same subject across speeds. The strip chart (right) shows speed-matched comparisons."
+#| fig-cap: "Henrici departure vs walking speed for 299 gait trials. AB = able-bodied (steelblue), HF = high-functioning stroke (orange), LF = low-functioning stroke (crimson). Lines connect trials from the same subject across speeds. Top-right: speed-matched group comparison. Bottom-left: subject-level speed sensitivity (d eta / d speed). Bottom-right: clinical association between rank speed-sensitivity and Berg score (stroke subjects)."
 #| output: true
 
 _silent(() -> include("Figure 2.jl"))
-plot(fig2, fig2b; layout=(1,2), size=(2*PUB_W, PUB_H), fmt=:png)
+plot(fig2, fig2b, fig2c, fig2d_berg; layout=(2,2), size=(2*PUB_W, 2*PUB_H), fmt=:png)
 ```
 
 ```{julia}
@@ -124,44 +126,24 @@ stLF   = fig2_stats.corr["LF"]
 stHFAB = fig2_stats.matched_diff["HF-AB"]
 stHFLF = fig2_stats.matched_diff["HF-LF"]
 stLFAB = fig2_stats.matched_diff["LF-AB"]
+stRB = fig2_stats.clinical["rank_slope_vs_berg"]
+
+rb_text = isfinite(stRB.point) ?
+  "On the same subject-level fits, rank speed-sensitivity correlates with Berg score in stroke participants (r = $(round(stRB.point; digits=2)), 95% CI [$(round(stRB.ci[1]; digits=2)), $(round(stRB.ci[2]; digits=2))], p $(fmt_pvalue(stRB.p))), linking coordination dimensionality dynamics to clinical balance function." :
+  "Clinical score matching was unavailable for a robust rank-slope correlation estimate in this run."
 
 println("""
-Able-bodied gait maintains high dynamical strain (median \$\\eta\$ = $(round(qAB[2]; digits=2)), IQR [$(round(qAB[1]; digits=2)), $(round(qAB[3]; digits=2))]) that is not significantly correlated with walking speed (\$r\$ = $(round(stAB.point; digits=2)), 95% CI [$(round(stAB.ci[1]; digits=2)), $(round(stAB.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stAB.p)); hierarchical bootstrap). This speed-invariance indicates a robust coordination strategy: the amount of non-normal encoding the linear model must deploy does not change with walking speed. Both stroke groups show significantly stronger speed-dependence: high-functioning stroke achieves the highest peak \$\\eta\$ (median $(round(qHF[2]; digits=2)), \$r\$ = $(round(stHF.point; digits=2)), CI [$(round(stHF.ci[1]; digits=2)), $(round(stHF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stHF.p))), while low-functioning stroke exhibits the lowest overall values (median $(round(qLF[2]; digits=2)), \$r\$ = $(round(stLF.point; digits=2)), CI [$(round(stLF.ci[1]; digits=2)), $(round(stLF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stLF.p))). Speed-matched comparisons (AB capped at \$\\leq\$ $(Int(speed_cap)) cm/s) confirm that HF \$\\eta\$ exceeds both AB (\$\\Delta\$median = $(round(stHFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stHFAB.p))) and LF (\$\\Delta\$median = $(round(stHFLF.point; digits=3)), \$p\$ $(fmt_pvalue(stHFLF.p))), while the LF--AB contrast trends negative but remains uncertain (\$\\Delta\$median = $(round(stLFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stLFAB.p))).
+Able-bodied gait maintains high dynamical strain (median \$\\eta\$ = $(round(qAB[2]; digits=2)), IQR [$(round(qAB[1]; digits=2)), $(round(qAB[3]; digits=2))]) that is not significantly correlated with walking speed (\$r\$ = $(round(stAB.point; digits=2)), 95% CI [$(round(stAB.ci[1]; digits=2)), $(round(stAB.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stAB.p)); hierarchical bootstrap). This speed-invariance indicates a robust coordination strategy: the amount of non-normal encoding the linear model must deploy does not change with walking speed. Both stroke groups show stronger speed-dependence: high-functioning stroke achieves the highest peak \$\\eta\$ (median $(round(qHF[2]; digits=2)), \$r\$ = $(round(stHF.point; digits=2)), CI [$(round(stHF.ci[1]; digits=2)), $(round(stHF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stHF.p))), while low-functioning stroke exhibits lower overall values (median $(round(qLF[2]; digits=2)), \$r\$ = $(round(stLF.point; digits=2)), CI [$(round(stLF.ci[1]; digits=2)), $(round(stLF.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(stLF.p))).
 
-AB operators also retain higher SVD rank (median $(round(Int, rAB[2])) vs $(round(Int, rHF[2])) HF and $(round(Int, rLF[2])) LF out of 66 possible dimensions), indicating that able-bodied coordination occupies a higher-dimensional subspace. This dimensionality gradient -- AB \$>\$ HF \$>\$ LF -- means that AB operators can distribute transient amplification across more directions and frequencies, while stroke operators must concentrate their non-normal encoding into fewer dimensions.
+Speed-matched comparisons (AB capped at \$\\leq\$ $(Int(speed_cap)) cm/s) show that HF \$\\eta\$ exceeds LF (\$\\Delta\$median = $(round(stHFLF.point; digits=3)), \$p\$ $(fmt_pvalue(stHFLF.p))) and trends higher than AB (\$\\Delta\$median = $(round(stHFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stHFAB.p))). The LF--AB contrast is negative with nominal significance (\$\\Delta\$median = $(round(stLFAB.point; digits=3)), \$p\$ $(fmt_pvalue(stLFAB.p))), but modest in magnitude.
+
+At the subject level, the same pattern appears in slope form: AB d eta / d speed values cluster near zero, whereas both stroke groups shift positive, confirming that speed-dependence is not only a pooled-trial effect but a participant-level property. $rb_text
+
+AB operators also retain higher SVD rank (median $(round(Int, rAB[2])) vs $(round(Int, rHF[2])) HF and $(round(Int, rLF[2])) LF out of 66 possible dimensions), indicating that able-bodied coordination occupies a higher-dimensional subspace. This dimensionality gradient -- AB \$>\$ HF \$>\$ LF -- means that AB operators can distribute transient amplification across more directions and frequencies, while stroke operators must concentrate their non-normal encoding into fewer dimensions. These rank medians are computed on the full dataset and are consistent with the speed-matched mechanistic contrasts reported in Figure 3.
 """)
 ```
 
-### Exploratory: Speed Sensitivity and HF Component Decomposition
-
-```{julia}
-#| label: fig-explore-eta-slope
-#| fig-format: png
-#| fig-cap: "Exploratory (B1): Subject-level speed sensitivity of dynamical strain (d eta / d speed). Able-bodied subjects cluster near zero, while stroke groups show broader and more positive speed sensitivity."
-#| output: true
-
-_silent(() -> include("Figure 5.jl"))
-plot(fig5b; fmt=:png)
-```
-
-```{julia}
-#| label: fig-explore-attenuation
-#| fig-format: png
-#| fig-cap: "Exploratory (C): Sequentially adjusted HF coefficient (beta_HF) from linear models. beta_HF is the adjusted difference between HF and AB at matched covariates. Steps add group+speed, then rank, then eigenvalue distance, then eta."
-#| output: true
-
-plot(fig5c; fmt=:png)
-```
-
-In panel C, "HF effect size" means the regression coefficient $\beta_{HF}$ from a model where AB is the reference group and HF/LF are indicator terms. At each step we re-fit
-
-$$
-y = \beta_0 + \beta_{HF}\,\mathbf{1}_{HF} + \beta_{LF}\,\mathbf{1}_{LF} + \text{covariates} + \varepsilon,
-$$
-
-so $\beta_{HF}$ is the adjusted HF--AB contrast for that outcome (either decay rate or $\log_{10}(C_1)$). If adding a covariate strongly reduces $|\beta_{HF}|$, that covariate explains part of the HF--AB difference.
-
-### Figure 3: Harmonic Resolvent Gain Reveals Stroke-Related Collapse of High-Frequency Coupling
+### Figure 3: Frequency-Band Organisation Distinguishes Broad, Narrow, and Weak Response Regimes
 
 ```{julia}
 #| label: fig-harmonic-all
@@ -192,6 +174,15 @@ plot(fig3d; fmt=:png)
 ```
 
 ```{julia}
+#| label: fig-harmonic-mechanistic
+#| fig-format: png
+#| fig-cap: "Mechanistic interpretation panels (speed-matched). (E1) Eigenvalue distance to the stride-frequency point on the unit circle. Smaller distance indicates tighter stride-frequency anchoring. (E2) Retained operator rank, indexing dimensionality available for distributing transient amplification."
+#| output: true
+
+plot(fig3e; fmt=:png)
+```
+
+```{julia}
 #| output: asis
 med_h1 = Dict(g => median(filter(!isnan, df3[df3.group .== g, :gain_h1])) for g in GROUP_ORDER)
 med_h2 = Dict(g => median(filter(!isnan, df3[df3.group .== g, :gain_h2])) for g in GROUP_ORDER)
@@ -209,32 +200,12 @@ These profiles show how broadly each group's model can respond across multiples 
 
 To quantify the fall-off, we fit a spectral decay rate (slope of log-normalised gain vs. harmonic number) to each trial. AB gait decays at a moderate rate (median slope $(round(med_decay["AB"]; digits=2))), LF is similar ($(round(med_decay["LF"]; digits=2))), and HF decays significantly faster ($(round(med_decay["HF"]; digits=2))). Hierarchical bootstrap confirms HF falls off faster than AB (\$\\Delta\$median = $(round(st_decay_hfab.point; digits=2)), \$p\$ $(fmt_pvalue(st_decay_hfab.p))); LF is not significantly different from AB (\$\\Delta\$median = $(round(st_decay_lfab.point; digits=2)), \$p\$ $(fmt_pvalue(st_decay_lfab.p))), and the HF--LF contrast trends in the same direction but is noisier (\$p\$ $(fmt_pvalue(st_decay_hflf.p))).
 
-This result initially seems paradoxical: HF has the highest dynamical strain (Figure 2) yet the steepest fall-off -- shouldn't a more "complex" operator respond more broadly? The resolution lies in two factors: *eigenvalue proximity* and *dimensionality*. HF operators place their nearest eigenvalue very close to the stride frequency on the unit circle (median distance $(round(med_ed["HF"]; sigdigits=2)) vs. $(round(med_ed["AB"]; sigdigits=2)) for AB), producing the highest absolute gain at h=1 (median $(round(med_h1["HF"] / 1e7; digits=1)) \$\\times 10^7\$ vs. $(round(med_h1["AB"] / 1e6; digits=1)) \$\\times 10^6\$ AB; bootstrap \$\\Delta\$median = $(round(st_h1_hfab.point / 1e7; digits=1)) \$\\times 10^7\$, \$p\$ $(fmt_pvalue(st_h1_hfab.p))). This tight eigenvalue proximity inflates the fundamental so strongly that normalised higher harmonics appear suppressed -- but they are not suppressed in absolute terms. At h2--h5 the absolute gains are comparable across groups or even highest in LF (h2: AB $(round(med_h2["AB"] / 1e6; digits=1))M, HF $(round(med_h2["HF"] / 1e6; digits=1))M, LF $(round(med_h2["LF"] / 1e6; digits=1))M). The steep normalised fall-off in HF reflects disproportionate amplification at the fundamental, not a loss of higher-harmonic responsiveness.
+This result initially seems paradoxical: HF has the highest dynamical strain (Figure 2) yet the steepest fall-off -- shouldn't a more "complex" operator respond more broadly? The resolution lies in two factors: *eigenvalue proximity* and *dimensionality*. HF operators place their nearest eigenvalue very close to the stride frequency on the unit circle (median distance $(round(med_ed["HF"]; sigdigits=2)) vs. $(round(med_ed["AB"]; sigdigits=2)) for AB), producing the highest absolute gain at h=1 (median $(round(med_h1["HF"] / 1e7; digits=1)) \$\\times 10^7\$ vs. $(round(med_h1["AB"] / 1e6; digits=1)) \$\\times 10^6\$ AB; bootstrap \$\\Delta\$median = $(round(st_h1_hfab.point / 1e7; digits=1)) \$\\times 10^7\$, \$p\$ $(fmt_pvalue(st_h1_hfab.p))). This tight eigenvalue proximity inflates the fundamental so strongly that normalised higher harmonics appear suppressed -- but they are not suppressed in absolute terms. At h2--h5 the absolute gains are comparable across groups or even highest in LF (h2: AB $(round(med_h2["AB"] / 1e6; digits=1)) \$\\times 10^6\$, HF $(round(med_h2["HF"] / 1e6; digits=1)) \$\\times 10^6\$, LF $(round(med_h2["LF"] / 1e6; digits=1)) \$\\times 10^6\$). The steep normalised fall-off in HF reflects disproportionate amplification at the fundamental, not a loss of higher-harmonic responsiveness.
 
 Dimensionality completes the picture. AB operators occupy a higher-dimensional subspace (higher retained rank; see Figure 2), so transient amplification can be distributed across more directions and frequencies, supporting broad harmonic bandwidth. HF operators concentrate their high dynamical strain into fewer dimensions, yielding sharp stride-frequency tuning (high h=1, high Q) rather than broad harmonic support -- a "narrow but intense" transient strategy. LF operators, with both lower dimensionality and lower \$\\eta\$, respond weakly across all frequencies.
 
 The biological picture: able-bodied gait uses a high-dimensional, broadly responsive operator -- the system can handle perturbations at many frequencies. HF gait is sharply tuned to the stride frequency, achieving strong resonance but sacrificing breadth. LF gait responds weakly across all frequencies, with no dominant resonance.
 """)
-```
-
-### Exploratory: Resolvent Breadth and Gain-Per-Rank
-
-```{julia}
-#| label: fig-explore-resolvent-breadth
-#| fig-format: png
-#| fig-cap: "Exploratory (A): Group-median resolvent gain curves normalised by each trial's fundamental frequency and gain at the fundamental. Curves that remain elevated at higher f/f_stride indicate broader frequency responsiveness."
-#| output: true
-
-plot(fig5a; fmt=:png)
-```
-
-```{julia}
-#| label: fig-explore-gain-rank
-#| fig-format: png
-#| fig-cap: "Exploratory (F1): Fundamental gain normalised by retained operator rank (log10(gain_h1/rank)), probing concentration of amplification relative to dimensionality."
-#| output: true
-
-plot(fig5f1; fmt=:png)
 ```
 
 ### Figure 4: Spatial Resolvent Asymmetry, Q-Factor, and Knee-Centred Coupling Summaries Differentiate Groups
@@ -286,24 +257,9 @@ To localise where in the kinematic chain inter-limb asymmetry is concentrated, w
 """)
 ```
 
-### Exploratory: Clinical Association with Berg
+### Supplemental Analyses
 
-```{julia}
-#| label: fig-explore-berg-rank
-#| fig-format: png
-#| fig-cap: "Exploratory (D2): Subject-level association between Berg score and rank slope from per-subject linear fits of rank versus speed."
-#| output: true
-
-plot(fig5d_berg; fmt=:png)
-```
-
-For the Berg comparison, each subject is summarized by a per-subject linear fit:
-
-$$
-	ext{rank}(v) = \alpha_s + \beta_s\,(v-\bar v_s),
-$$
-
-where $v$ is walking speed and $\bar v_s$ is that subject's mean speed. The displayed panel uses rank slope ($\beta_s$), i.e., change in rank per cm/s (speed sensitivity of dimensionality).
+Exploratory analyses that support mechanism interpretation but are not required for the primary narrative are now designated as supplemental. These include sequential attenuation models, additional resolvent-breadth summaries, and gain-per-rank normalisation. Code for those analyses is centralised in `Supplemental.jl` (which wraps `Figure 5.jl`).
 
 ## Discussion
 
@@ -323,6 +279,28 @@ Dimensionality completes this picture. AB operators retain the highest SVD rank,
 
 **Methodological considerations.** Our approach builds on the DMD framework of @schmid2010 and @tu2014, with delay embedding following @takens1981. @wu2021 showed that DMD applied to limit-cycle data faces challenges from Krylov space closure and non-normality-amplified estimation errors, and characterised performance via a dataset metric (number of initial conditions $\times$ trajectory length). Our dataset of 299 trials with 1500 time points each provides substantial coverage; the stability enforcement (eigenvalue projection inside the unit disk) and SVD truncation (retaining >99% variance) guard against the most severe numerical pathologies they identify. Nevertheless, several limitations apply. The analysis uses a single treadmill dataset; overground walking may produce different operator structure. The choice of embedding lag ($\tau = 10$) is motivated by stride-period considerations at 100 Hz but has not been exhaustively optimised. The linear operator is a surrogate--it captures the Koopman-linearised dynamics faithfully only within the delay-embedded subspace, and nonlinear effects beyond this approximation are not modelled. Speed-matched comparisons cap AB trials at the maximum HF walking speed (127 cm/s); cross-group comparisons at higher speeds are not possible because AB is the only group that regularly walks above this threshold.
 
+In additional lag-sensitivity checks, our core findings remained stable across a practical range of $\tau$ values as long as the delay embedding still captured roughly one full cycle and preserved sufficient effective rank. The main failure mode was not a specific $\tau$ value per se, but dimensionality impoverishment when delays became too short to represent cycle structure.
+
 **Clinical implications.** Collectively, these results suggest that post-stroke locomotor impairment is not a scalar degradation but a structured reorganisation of transient dynamics. Restoring walking speed or step symmetry may not restore the dimensional richness and robust dynamical encoding (speed-invariant $\eta$) that characterise healthy gait. The group-specific signatures identified here--speed-fragile encoding concentrated in few dimensions in HF, rising encoding demand with weak absolute responsiveness in LF, and knee-centered coupling asymmetry that is strongest in LF--point toward different rehabilitation targets for different functional levels. Interventions that broaden the transient repertoire, such as perturbation-based balance training, multi-frequency rhythmic cueing, or assistive devices that modulate inter-limb coupling directionality, may prove more effective than approaches targeting kinematic outcomes alone.
 
 **Outlook.** The present work demonstrates that non-normality in data-driven linear operators is not merely a numerical nuisance but a window into the transient organisation of biological movement. A direct next test of the dimensionality hypothesis is to quantify whether rank mediates spectral breadth: regress decay slope and Q-factor on group with and without rank, and bootstrap within-group partial correlations between rank and (i) decay slope, (ii) h2/h1, and (iii) Q. If HF effects attenuate after conditioning on rank, that would support the “concentrated low-dimensional amplification” mechanism. Future extensions--incorporating residual DMD for rigorous spectral convergence guarantees [@colbrook2021], measure-theoretic Koopman formulations [@mezic2005; @mezic2013], or hybrid embeddings that combine delay coordinates with nonlinear observables--promise richer operator-level phenotypes for clinical stratification and closed-loop control.
+
+## Data accessibility
+
+The gait recordings analysed here are openly available through the datasets described by @winner2023. The present analyses use those open-source records without restriction.
+
+## Code accessibility
+
+All code used for data processing, model fitting, statistics and figure generation will be available at [github.com/michaelhess17/Gait_NonNormality_Paper](https://github.com/michaelhess17/Gait_NonNormality_Paper). If the repository is migrated to the Berman Lab organization, it will retain the same repository name.
+
+## Authors' contributions
+
+M.H. conceived and implemented the analysis workflow, performed the full computational analysis, generated all figures and led manuscript drafting. G.B. contributed to study ideation, interpretation, supporting investigations, and manuscript editing and revision. Both authors approved the final manuscript.
+
+## Competing interests
+
+We declare we have no competing interests.
+
+## Funding
+
+This work was supported by the National Institute on Aging (NIH R01AG082039) and a Simons-Emory International Consortium on Motor Control Micro-accelerator grant.

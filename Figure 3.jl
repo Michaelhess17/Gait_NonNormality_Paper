@@ -251,6 +251,34 @@ fig3_stats = (
                                         d0.decay_rate[ok0], d0.subject[ok0];
                                         n_boot=4000, seed=207)
         end,
+        "eigdist HF-AB" => begin
+            d1, d0 = boot_group(df3_sm, "HF"), boot_group(df3_sm, "AB")
+            ok1, ok0 = .!isnan.(d1.eig_dist), .!isnan.(d0.eig_dist)
+            hierarchical_bootstrap_diff(d1.eig_dist[ok1], d1.subject[ok1],
+                                        d0.eig_dist[ok0], d0.subject[ok0];
+                                        n_boot=4000, seed=209)
+        end,
+        "eigdist LF-AB" => begin
+            d1, d0 = boot_group(df3_sm, "LF"), boot_group(df3_sm, "AB")
+            ok1, ok0 = .!isnan.(d1.eig_dist), .!isnan.(d0.eig_dist)
+            hierarchical_bootstrap_diff(d1.eig_dist[ok1], d1.subject[ok1],
+                                        d0.eig_dist[ok0], d0.subject[ok0];
+                                        n_boot=4000, seed=210)
+        end,
+        "rank HF-AB" => begin
+            d1, d0 = boot_group(df3_sm, "HF"), boot_group(df3_sm, "AB")
+            ok1, ok0 = d1.rank .> 0, d0.rank .> 0
+            hierarchical_bootstrap_diff(Float64.(d1.rank[ok1]), d1.subject[ok1],
+                                        Float64.(d0.rank[ok0]), d0.subject[ok0];
+                                        n_boot=4000, seed=211)
+        end,
+        "rank LF-AB" => begin
+            d1, d0 = boot_group(df3_sm, "LF"), boot_group(df3_sm, "AB")
+            ok1, ok0 = d1.rank .> 0, d0.rank .> 0
+            hierarchical_bootstrap_diff(Float64.(d1.rank[ok1]), d1.subject[ok1],
+                                        Float64.(d0.rank[ok0]), d0.subject[ok0];
+                                        n_boot=4000, seed=212)
+        end,
         "decay HF-LF" => begin
             d1, d0 = boot_group(df3_sm, "HF"), boot_group(df3_sm, "LF")
             ok1, ok0 = .!isnan.(d1.decay_rate), .!isnan.(d0.decay_rate)
@@ -264,7 +292,8 @@ fig3_stats = (
 println("\n═══ Figure 3 hierarchical bootstrap ═══")
 for key in ("gain_h1 HF-AB", "gain_h1 HF-LF", "gnorm_h2 HF-AB",
             "gnorm_h2 HF-LF", "gnorm_h2 LF-AB",
-            "decay HF-AB", "decay LF-AB", "decay HF-LF")
+        "decay HF-AB", "decay LF-AB", "decay HF-LF",
+        "eigdist HF-AB", "eigdist LF-AB", "rank HF-AB", "rank LF-AB")
     st = fig3_stats.matched_diff[key]
     @printf("%-20s  Δmedian = %.4e  95%% CI [%.4e, %.4e]  p %s\n",
             key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
@@ -280,6 +309,36 @@ for g in GROUP_ORDER
 end
 hline!(pD, [1.0]; ls=:dash, color=:gray60, lw=1, label="")
 
+# ── Panel E: Mechanistic interpretation (speed-matched) ─────────────────────
+function strip_panel(df_plot, col::Symbol; ttl::String, ylab::String, ysc=:identity)
+    sp = pub_plot(; title=ttl, ylabel=ylab, yscale=ysc,
+                    xticks=(1:3, GROUP_ORDER), legend=false)
+    rng = MersenneTwister(31 + hash(String(col)) % 10_000)
+    for (i, g) in enumerate(GROUP_ORDER)
+        vals = filter(!isnan, Float64.(df_plot[df_plot.group .== g, col]))
+        n = length(vals)
+        xs = i .+ 0.22 .* (rand(rng, n) .- 0.5)
+        scatter!(sp, xs, vals; color=GROUP_COLORS[g], alpha=0.70,
+                 markersize=PUB_MSIZ-1, markerstrokewidth=0, label="")
+        if n > 0
+            q = quantile(vals, [0.25, 0.5, 0.75])
+            plot!(sp, [i-0.22, i+0.22], [q[2], q[2]]; color=:black, lw=3, label="")
+            plot!(sp, [i, i], [q[1], q[3]];             color=:black, lw=2, label="")
+        end
+    end
+    return sp
+end
+
+df3_mech = df3_sm[(df3_sm.rank .> 0) .& .!isnan.(df3_sm.eig_dist), :]
+pE1 = strip_panel(df3_mech, :eig_dist;
+                  ttl="(E1) Eigenvalue distance to stride point",
+                  ylab="min |lambda - exp(i*2pi*f_stride/fs)|",
+                  ysc=:log10)
+pE2 = strip_panel(df3_mech, :rank;
+                  ttl="(E2) Retained operator rank",
+                  ylab="rank",
+                  ysc=:identity)
+
 # ── Save ───────────────────────────────────────────────────────────────────────
 fig3ab = plot(pA, pB; layout=(1,2), size=(2*PUB_W, PUB_H))
 savefig(fig3ab, "figures/fig3ab_harmonic_gain_all.svg")
@@ -290,6 +349,9 @@ savefig(fig3c, "figures/fig3c_harmonic_speed_bins.svg")
 fig3d = plot(pD; size=(1.5*PUB_W, 1.5*PUB_H))
 savefig(fig3d, "figures/fig3d_harmonic_speed_matched.svg")
 
-println("\nSaved: figures/fig3ab, fig3c, fig3d")
+fig3e = plot(pE1, pE2; layout=(1,2), size=(2*PUB_W, PUB_H))
+savefig(fig3e, "figures/fig3e_mechanistic_panels.svg")
+
+println("\nSaved: figures/fig3ab, fig3c, fig3d, fig3e")
 
 fig3_df = df3
