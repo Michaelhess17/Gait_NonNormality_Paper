@@ -1,0 +1,16 @@
+- [DONE] Move Figure 4 labels/legend outside plotting area for the 3-panel harmonic-speed figure.
+- [DONE] Write extremely detailed figure captions for each figure in the manuscript draft.
+- [DONE] Add speed-dimensionality plots: rank vs speed and participation ratio vs speed.
+- [DONE] Add AB-only speed dependence plots for coarse Figure 4 metrics (spatial asymmetry and peak Q-factor).
+
+- [NEXT] Use participation ratio instead of rank for E2 (fully swap E2 if desired, not just add panel).
+- [NEXT] Add phase-randomized/surrogate versions of Figure 3.
+  - Could compare to FFT alone.
+- [NEXT] Using Henrici at lowest speed, predict fastest speed or self-selected speed.
+- [NEXT] Compare to Taniel's second paper results (speed dependencies / dynamic changes in AB).
+  - Extend AB speed analyses toward individual-level structure across participants.
+  - Add resolvent asymmetry heatmaps for common vs subject-specific structure.
+
+- [BLOCKED EXTERNAL] Get fly/mouse data from Josh (for next paper).
+- [NEXT] Add driving/noise to SL solves and show Henrici.
+

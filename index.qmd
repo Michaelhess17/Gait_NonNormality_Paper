@@ -87,7 +87,7 @@ end
 ```{julia}
 #| label: fig-simulated
 #| fig-format: png
-#| fig-cap: "Henrici departure in simulated oscillators. (A) Stuart–Landau: Henrici rises with μ as the limit cycle amplitude increases. (B) FitzHugh-Nagumo: Henrici rises as ε decreases and timescale separation strengthens. (C) Stuart–Landau with isochron shear: Henrici rises with shear parameter c. (D) Henrici heatmap over (μ, c), showing how non-normality grows across joint amplitude-shear settings."
+#| fig-cap: "Henrici departure from normality in simulated benchmark systems used to validate the interpretation of dynamical strain. (A) Stuart-Landau oscillator: as control parameter mu increases, limit-cycle amplitude grows and the fitted delay-embedded DMD operator becomes progressively more non-normal (higher eta). (B) FitzHugh-Nagumo oscillator: decreasing epsilon increases fast-slow timescale separation and produces a monotonic increase in eta. (C) Stuart-Landau oscillator with isochron shear: increasing shear parameter c raises eta, showing that amplitude-dependent phase warping is also captured as non-normal geometry in the fitted operator. (D) Two-parameter map over (mu, c), demonstrating that amplitude and shear combine to increase eta across broad regions of parameter space rather than at a narrow tuning point."
 #| output: true
 
 # _silent(() -> include("Figure 1.jl"))
@@ -103,7 +103,7 @@ Simulated benchmark oscillators establish that dynamical strain ($\eta$) in a de
 ```{julia}
 #| label: fig-nonnormality
 #| fig-format: png
-#| fig-cap: "Henrici departure vs walking speed for 299 gait trials. AB = able-bodied (steelblue), HF = high-functioning stroke (orange), LF = low-functioning stroke (crimson). Lines connect trials from the same subject across speeds. Top-right: speed-matched group comparison. Bottom-left: subject-level speed sensitivity (d eta / d speed). Bottom-right: clinical association between rank speed-sensitivity and Berg score (stroke subjects)."
+#| fig-cap: "Dynamical strain (Henrici departure, eta) as a function of walking speed across 299 treadmill trials (AB steelblue, HF orange, LF crimson). Main panel: each point is one trial and thin within-subject line segments connect repeated speeds for the same participant, allowing speed trends to be read within person rather than only at the pooled level. Upper-right panel: speed-matched between-group comparison (AB restricted to the HF speed range) to isolate group effects from the baseline AB speed advantage. Lower-left panel: subject-level slope estimates (d eta / d speed), showing whether each participant's fitted operator becomes more or less non-normal at higher speed. Lower-right panel: clinical linkage in stroke participants between rank speed-sensitivity and Berg Balance Scale score, testing whether speed-dependent changes in operator dimensionality track functional balance status."
 #| output: true
 
 _silent(() -> include("Figure 2.jl"))
@@ -148,7 +148,7 @@ AB operators also retain higher SVD rank (median $(round(Int, rAB[2])) vs $(roun
 ```{julia}
 #| label: fig-harmonic-all
 #| fig-format: png
-#| fig-cap: "Absolute and normalised harmonic resolvent gain. (A) Absolute gain at harmonics 1–5. (B) Gain normalised by the fundamental, revealing fall-off shape independent of overall gain level."
+#| fig-cap: "Group-level harmonic resolvent profiles from fitted gait operators. (A) Absolute resolvent gain evaluated at harmonics h = 1..5 of each trial's stride frequency; lines show group medians and shaded bands show interquartile ranges, quantifying total responsiveness to periodic forcing at each harmonic. (B) The same profiles after normalizing each trial by its h = 1 gain, isolating spectral shape (fall-off structure) from absolute scale and highlighting whether groups differ in broadband support versus fundamental-dominated tuning."
 #| output: true
 
 _silent(() -> include("Figure 3.jl"))
@@ -158,7 +158,7 @@ plot(fig3ab; fmt=:png)
 ```{julia}
 #| label: fig-harmonic-speed
 #| fig-format: png
-#| fig-cap: "Absolute harmonic gain faceted by walking speed bin (blue = slow, red = fast). Speed modulates the gain profile within each group differently, with AB showing the largest speed-dependent change."
+#| fig-cap: "Three-panel harmonic gain figure (manuscript Figure 4) faceted by group and stratified by walking-speed bins (cool colors slower, warm colors faster). Within each panel, curves show median absolute gain across harmonics for one speed bin, allowing direct visualization of how spectral response shape shifts with speed inside a group. The legend is placed outside the plotting area to preserve curve visibility across all harmonics; speed-dependent spread is largest in AB, while stroke groups show more constrained reconfiguration across bins."
 #| output: true
 
 plot(fig3c; fmt=:png)
@@ -167,7 +167,7 @@ plot(fig3c; fmt=:png)
 ```{julia}
 #| label: fig-harmonic-matched
 #| fig-format: png
-#| fig-cap: "Speed-matched harmonic gain comparison (AB capped at the maximum HF speed). Group differences in the fall-off shape persist after controlling for speed."
+#| fig-cap: "Speed-matched normalized harmonic comparison (AB restricted to the HF speed range). Curves show median gain/gain_h1 with interquartile shading, so group differences represent spectral redistribution rather than absolute amplitude differences. This panel tests whether fall-off structure remains distinct once speed overlap is enforced across cohorts."
 #| output: true
 
 plot(fig3d; fmt=:png)
@@ -176,10 +176,19 @@ plot(fig3d; fmt=:png)
 ```{julia}
 #| label: fig-harmonic-mechanistic
 #| fig-format: png
-#| fig-cap: "Mechanistic interpretation panels (speed-matched). (E1) Eigenvalue distance to the stride-frequency point on the unit circle. Smaller distance indicates tighter stride-frequency anchoring. (E2) Retained operator rank, indexing dimensionality available for distributing transient amplification."
+#| fig-cap: "Mechanistic interpretation from speed-matched trials. (E1) Distance from the nearest eigenvalue to the stride-frequency point on the unit circle (min |lambda - exp(i*2*pi*f_stride/fs)|), where smaller values imply stronger fundamental anchoring and greater potential h = 1 gain. (E2) Retained operator rank from the DMD truncation, indexing how many effective dynamical directions remain available for distributing transient amplification and frequency response. Points are individual trials with jitter; horizontal bars indicate median and interquartile range."
 #| output: true
 
 plot(fig3e; fmt=:png)
+```
+
+```{julia}
+#| label: fig-dimensionality-speed
+#| fig-format: png
+#| fig-cap: "Speed-dimensionality diagnostics for the harmonic analysis dataset. (F1) Retained DMD rank vs walking speed, with semi-transparent within-subject trajectories and colored trial points to separate participant-level trends from pooled scatter. (F2) Participation ratio of Hankel singular values vs speed, where higher values indicate broader distributed variance across dynamical modes and lower values indicate concentration in fewer modes. Together these panels show how both hard truncation rank and continuous effective dimensionality vary with operating speed across groups."
+#| output: true
+
+plot(fig3f; fmt=:png)
 ```
 
 ```{julia}
@@ -213,7 +222,7 @@ The biological picture: able-bodied gait uses a high-dimensional, broadly respon
 ```{julia}
 #| label: fig-novel-strips
 #| fig-format: png
-#| fig-cap: "Speed-matched strip charts for the coarse operator metrics. (A) Spatial resolvent asymmetry: ratio of cross-body resolvent norms, max/min. (B) Peak Q-factor at stride frequency. (C) Mean paretic→non-paretic resolvent gain. (D) Mean non-paretic→paretic resolvent gain. Lines show median; error bars show IQR."
+#| fig-cap: "Speed-matched strip charts for coarse operator-level metrics of spatial coupling and resonance sharpness. (A) Spatial resolvent asymmetry, defined as max/min of cross-body resolvent block norms, where 1 indicates perfectly balanced bidirectional inter-limb influence. (B) Peak Q-factor at stride frequency (f_stride/FWHM), where larger values indicate narrower frequency tuning around the stride rhythm. (C) Mean paretic-to-non-paretic resolvent gain across cross-body blocks, summarizing how strongly perturbation pathways project from paretic-side inputs into non-paretic outputs. (D) Mean non-paretic-to-paretic gain, the reciprocal direction. Each dot is one trial; black horizontal and vertical bars denote group median and interquartile range."
 #| output: true
 
 _silent(() -> include("Figure 4.jl"))
@@ -223,10 +232,19 @@ plot(fig4ab; fmt=:png)
 ```{julia}
 #| label: fig-joint-summary
 #| fig-format: png
-#| fig-cap: "Speed-matched summary metrics replacing the full joint-level heatmaps. (E) Knee-target asymmetry, defined as log(hip→non-paretic knee / hip→paretic knee). Positive values indicate that hip-to-knee coupling is concentrated on the non-paretic knee. (F) Non-paretic-knee directional bias, defined as the mean log[(hip→non-paretic knee)/(non-paretic knee→hip)] across both hips. Positive values indicate preferential drive into the non-paretic knee. (G) Global pairwise asymmetry, defined as the mean absolute signed log-ratio across all joint pairs."
+#| fig-cap: "Speed-matched joint-summary metrics that replace full joint-to-joint heatmaps with targeted interpretable scalars. (E) Knee-target asymmetry = log(hip->non-paretic knee / hip->paretic knee); positive values indicate that hip-originating coupling concentrates toward the non-paretic knee. (F) Non-paretic-knee directional bias = mean log[(hip->non-paretic knee)/(non-paretic knee->hip)] across both hips; positive values indicate net inward drive into the non-paretic knee rather than reciprocal exchange. (G) Global pairwise asymmetry = mean absolute log-ratio |log(G[i->j]/G[j->i])| across all joint pairs, summarizing overall directional imbalance independent of sign. Trial-level points and median/IQR overlays are shown for AB, HF, and LF."
 #| output: true
 
 plot(fig4efg; fmt=:png)
+```
+
+```{julia}
+#| label: fig-novel-ab-speed
+#| fig-format: png
+#| fig-cap: "Able-bodied (AB) speed relationships for the coarse Figure 4 operator metrics. (H1) Spatial asymmetry (max/min cross-body gain ratio) versus walking speed. (H2) Peak Q-factor versus walking speed. In both panels, points are individual AB trials, faint line segments connect repeated speeds within participant, and the dashed line is a global linear trend for visual reference. These panels test whether the same coarse coupling/tuning metrics used for AB-HF-LF contrasts also vary systematically across operating speed within healthy walkers."
+#| output: true
+
+plot(fig4h; fmt=:png)
 ```
 
 ```{julia}
@@ -247,11 +265,15 @@ st_npkbias_hf = fig4_stats.within_group["npk_bias HF"]
 st_npkbias_lf = fig4_stats.within_group["npk_bias LF"]
 st_npkbias_lfab = fig4_stats.matched_diff["npk_bias LF-AB"]
 st_global_lfab = fig4_stats.matched_diff["global_pair_asym LF-AB"]
+st_ab_asym_speed = fig4_stats.speed_corr["AB asym vs speed"]
+st_ab_q_speed = fig4_stats.speed_corr["AB qfactor vs speed"]
 
 println("""
 In healthy walking, the two legs influence each other roughly symmetrically -- perturbations on one side propagate to the other with similar strength in both directions. Stroke disrupts this balance. We quantify inter-limb coupling asymmetry as the ratio between the stronger and weaker cross-body influence directions (a ratio of 1 means perfect symmetry). This ratio rises monotonically from AB (median $(round(med_asym["AB"]; digits=2))) through HF ($(round(med_asym["HF"]; digits=2))) to LF ($(round(med_asym["LF"]; digits=2))), indicating progressively one-sided coupling between the legs. Hierarchical bootstrap confirms larger asymmetry in both stroke groups relative to AB (HF--AB \$\\Delta\$median = $(round(st_asym_hfab.point; digits=2)), 95% CI [$(round(st_asym_hfab.ci[1]; digits=2)), $(round(st_asym_hfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_asym_hfab.p)); LF--AB \$\\Delta\$ = $(round(st_asym_lfab.point; digits=2)), [$(round(st_asym_lfab.ci[1]; digits=2)), $(round(st_asym_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_asym_lfab.p))). Moreover, in LF gait the dominant direction of influence runs from the paretic to the non-paretic side (mean log-ratio = $(round(st_dir_lf.point; digits=2)), 95% CI [$(round(st_dir_lf.ci[1]; digits=2)), $(round(st_dir_lf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_dir_lf.p))), with HF trending similarly but less certain ($(round(st_dir_hf.point; digits=2)), [$(round(st_dir_hf.ci[1]; digits=2)), $(round(st_dir_hf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_dir_hf.p))). In other words, the impaired limb's dynamics propagate forcefully across the body, and the intact side must absorb and accommodate those perturbations.
 
 How narrowly tuned is each group's coordination to the stride frequency? The Q-factor measures this: higher Q means the system responds strongly at stride frequency but poorly at neighbouring frequencies. HF gait is the most sharply tuned (median Q = $(round(med_q["HF"]; digits=1)) vs. AB $(round(med_q["AB"]; digits=1)) and LF $(round(med_q["LF"]; digits=1))), consistent with a coordination strategy that locks onto the stride rhythm but sacrifices adaptability to perturbations at other frequencies. Hierarchical bootstrap confirms higher Q in HF than AB (\$\\Delta\$median = $(round(st_q_hfab.point; digits=1)), 95% CI [$(round(st_q_hfab.ci[1]; digits=1)), $(round(st_q_hfab.ci[2]; digits=1))], \$p\$ $(fmt_pvalue(st_q_hfab.p))) and in LF than AB (\$\\Delta\$ = $(round(st_q_lfab.point; digits=1)), [$(round(st_q_lfab.ci[1]; digits=1)), $(round(st_q_lfab.ci[2]; digits=1))], \$p\$ $(fmt_pvalue(st_q_lfab.p))), while the HF--LF contrast is less certain (\$p\$ $(fmt_pvalue(st_q_hflf.p))). LF gait thus combines high spatial asymmetry with moderately narrow tuning -- a coordination pattern that is both directionally biased and somewhat rigid.
+
+Within AB walkers alone (Figure H1--H2), these coarse metrics behave differently with speed. Spatial asymmetry shows no clear speed dependence (hierarchical bootstrap correlation \$r\$ = $(round(st_ab_asym_speed.point; digits=2)), 95% CI [$(round(st_ab_asym_speed.ci[1]; digits=2)), $(round(st_ab_asym_speed.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_ab_asym_speed.p))), indicating that healthy inter-limb coupling symmetry remains largely stable across the tested speed range. In contrast, AB peak Q-factor increases modestly with speed (\$r\$ = $(round(st_ab_q_speed.point; digits=2)), 95% CI [$(round(st_ab_q_speed.ci[1]; digits=2)), $(round(st_ab_q_speed.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_ab_q_speed.p))), consistent with slightly sharper stride-frequency tuning at faster walking speeds in able-bodied gait.
 
 To localise where in the kinematic chain inter-limb asymmetry is concentrated, we examine hip-to-knee coupling. In AB gait, the hips drive both knees roughly equally. In both stroke groups, this coupling shifts toward the non-paretic knee: the log-ratio of hip-to-non-paretic-knee vs. hip-to-paretic-knee coupling is near zero in AB but positive in stroke (HF--AB \$\\Delta\$median = $(round(st_npk_hfab.point; digits=2)), 95% CI [$(round(st_npk_hfab.ci[1]; digits=2)), $(round(st_npk_hfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npk_hfab.p)); LF--AB \$\\Delta\$ = $(round(st_npk_lfab.point; digits=2)), [$(round(st_npk_lfab.ci[1]; digits=2)), $(round(st_npk_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npk_lfab.p))). Both stroke groups also show strong directional bias *into* the non-paretic knee from the hips (HF: mean = $(round(st_npkbias_hf.point; digits=2)), 95% CI [$(round(st_npkbias_hf.ci[1]; digits=2)), $(round(st_npkbias_hf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_hf.p)); LF: mean = $(round(st_npkbias_lf.point; digits=2)), [$(round(st_npkbias_lf.ci[1]; digits=2)), $(round(st_npkbias_lf.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_lf.p))), with LF exceeding AB (\$\\Delta\$median = $(round(st_npkbias_lfab.point; digits=2)), [$(round(st_npkbias_lfab.ci[1]; digits=2)), $(round(st_npkbias_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_npkbias_lfab.p))). A broader summary of all pairwise joint asymmetries trends upward in LF relative to AB (\$\\Delta\$median = $(round(st_global_lfab.point; digits=2)), 95% CI [$(round(st_global_lfab.ci[1]; digits=2)), $(round(st_global_lfab.ci[2]; digits=2))], \$p\$ $(fmt_pvalue(st_global_lfab.p))), but the clearest finding is that stroke-related coupling asymmetry is concentrated specifically around the non-paretic knee rather than being diffusely spread across all joints. The intact leg does not simply "compensate" in a general sense -- the model reveals a specific pathway through which the non-paretic knee absorbs and redistributes perturbations originating from the impaired side.
 """)

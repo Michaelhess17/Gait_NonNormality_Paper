@@ -127,6 +127,28 @@ norm_cols = [Symbol("gnorm_h$h") for h in 1:N_HARMONICS]
 harm_xs   = collect(1:N_HARMONICS)
 xtk       = (1:N_HARMONICS, string.(1:N_HARMONICS))
 
+function participation_ratio_from_svals(svals::AbstractVector)
+    s2 = svals .^ 2
+    den = sum(s2 .^ 2)
+    den <= 0 && return NaN
+    return (sum(s2) ^ 2) / den
+end
+
+part_ratio_v = @cached cache_path("fig3_participation_ratio.jls") begin
+    println("Computing participation ratio from Hankel singular values…")
+    _pr = fill(NaN, n_trials)
+    Threads.@threads for i in 1:n_trials
+        try
+            H = build_hankel_multi(data[i, :, :], TAU_GAIT)
+            X = H[:, 1:end-1]
+            _pr[i] = participation_ratio_from_svals(svdvals(X))
+        catch
+        end
+    end
+    _pr
+end
+df3[!, :part_ratio] = part_ratio_v
+
 # ── Helpers ────────────────────────────────────────────────────────────────────
 function profile_stats(df_sub, grp, cols)
     mask = df_sub.group .== grp
@@ -180,7 +202,7 @@ speed_panels = map(GROUP_ORDER) do g
     sp = pub_plot(; yscale=:log10, ylims=(raw_ymin, raw_ymax), xticks=xtk,
                     xlabel="Harmonic",
                     ylabel=(g == "AB" ? "Resolvent gain" : ""),
-                    title=g, legend=:bottomleft,
+                    title=g, legend=(g == "LF" ? :outerright : false),
                     size=(PUB_W3*0.8, PUB_H),
                     guidefontsize=PUB_GUIDE_FS+2,
                     tickfontsize=PUB_TICK_FS+2,
@@ -339,11 +361,56 @@ pE2 = strip_panel(df3_mech, :rank;
                   ylab="rank",
                   ysc=:identity)
 
+function speed_metric_panel(df_plot, col::Symbol; ttl::String, ylab::String, ysc=:identity)
+    sp = pub_plot(; title=ttl,
+                    xlabel="Walking speed (cm/s)",
+                    ylabel=ylab,
+                    yscale=ysc,
+                    legend=false)
+    for g in GROUP_ORDER
+        dfg = df_plot[(df_plot.group .== g) .& .!isnan.(df_plot[!, col]), :]
+        isempty(dfg) && continue
+
+        c = GROUP_COLORS[g]
+        c_line = RGBA(red(c), green(c), blue(c), 0.20)
+
+        for s in unique(dfg.subject)
+            dfs = dfg[dfg.subject .== s, :]
+            nrow(dfs) < 2 && continue
+            ord = sortperm(dfs.speed)
+            plot!(sp,
+                  dfs.speed[ord],
+                  Float64.(dfs[ord, col]);
+                  color=c_line,
+                  lw=1,
+                  label="")
+        end
+
+        scatter!(sp,
+                 dfg.speed,
+                 Float64.(dfg[!, col]);
+                 color=c,
+                 alpha=0.65,
+                 markersize=PUB_MSIZ-1,
+                 markerstrokewidth=0,
+                 label="")
+    end
+    return sp
+end
+
+df3_speeddim = df3[(df3.rank .> 0) .& .!isnan.(df3.part_ratio), :]
+pF1 = speed_metric_panel(df3_speeddim, :rank;
+                        ttl="(F1) Rank vs speed",
+                        ylab="Retained operator rank")
+pF2 = speed_metric_panel(df3_speeddim, :part_ratio;
+                        ttl="(F2) Participation ratio vs speed",
+                        ylab="Participation ratio")
+
 # ── Save ───────────────────────────────────────────────────────────────────────
 fig3ab = plot(pA, pB; layout=(1,2), size=(2*PUB_W, PUB_H))
 savefig(fig3ab, "figures/fig3ab_harmonic_gain_all.svg")
 
-fig3c = plot(speed_panels...; layout=(1,3), size=(1.5*PUB_W3, PUB_H))
+fig3c = plot(speed_panels...; layout=(1,3), size=(1.8*PUB_W3, PUB_H))
 savefig(fig3c, "figures/fig3c_harmonic_speed_bins.svg")
 
 fig3d = plot(pD; size=(1.5*PUB_W, 1.5*PUB_H))
@@ -352,6 +419,9 @@ savefig(fig3d, "figures/fig3d_harmonic_speed_matched.svg")
 fig3e = plot(pE1, pE2; layout=(1,2), size=(2*PUB_W, PUB_H))
 savefig(fig3e, "figures/fig3e_mechanistic_panels.svg")
 
-println("\nSaved: figures/fig3ab, fig3c, fig3d, fig3e")
+fig3f = plot(pF1, pF2; layout=(1,2), size=(2*PUB_W, PUB_H))
+savefig(fig3f, "figures/fig3f_rank_participation_speed.svg")
+
+println("\nSaved: figures/fig3ab, fig3c, fig3d, fig3e, fig3f")
 
 fig3_df = df3

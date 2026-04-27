@@ -221,6 +221,67 @@ fig4efg = plot(pE4, pF4, pG4; layout=(1,3), size=(3*PUB_W, PUB_H))
 savefig(fig4efg, "figures/fig4efg_joint_summary_metrics.svg")
 println("Saved: figures/fig4efg_joint_summary_metrics.svg")
 
+# ── AB speed relationships for coarse Figure 4 metrics ───────────────────────
+function speed_relationship_panel(df_plot, col::Symbol; ttl::String, ylab::String, ysc=:identity)
+    sp = pub_plot(; title=ttl,
+                    xlabel="Walking speed (cm/s)",
+                    ylabel=ylab,
+                    yscale=ysc,
+                    legend=false)
+
+    dfg = df_plot[df_plot.group .== "AB", :]
+    dfg = dfg[.!isnan.(dfg[!, col]), :]
+
+    c = GROUP_COLORS["AB"]
+    c_line = RGBA(red(c), green(c), blue(c), 0.22)
+
+    for s in unique(dfg.subject)
+        dfs = dfg[dfg.subject .== s, :]
+        nrow(dfs) < 2 && continue
+        ord = sortperm(dfs.speed)
+        plot!(sp,
+              dfs.speed[ord],
+              Float64.(dfs[ord, col]);
+              color=c_line,
+              lw=1,
+              label="")
+    end
+
+    scatter!(sp,
+             dfg.speed,
+             Float64.(dfg[!, col]);
+             color=c,
+             alpha=0.65,
+             markersize=PUB_MSIZ-1,
+             markerstrokewidth=0,
+             label="")
+
+    x = Float64.(dfg.speed)
+    y = Float64.(dfg[!, col])
+    if length(x) > 2 && std(x) > 0
+        b = cov(x, y) / var(x)
+        a = mean(y) - b * mean(x)
+        xfit = range(minimum(x), maximum(x), length=80)
+        yfit = a .+ b .* xfit
+        plot!(sp, xfit, yfit; color=:black, lw=2, ls=:dash, label="")
+    end
+
+    return sp
+end
+
+df4_ab_speed = df4[(df4.group .== "AB") .& (df4.asym .> 0) .& (df4.qfactor .> 0), :]
+pH1 = speed_relationship_panel(df4_ab_speed, :asym;
+                               ttl="(H1) AB spatial asymmetry vs speed",
+                               ylab="Max/Min cross-body gain")
+pH2 = speed_relationship_panel(df4_ab_speed, :qfactor;
+                               ttl="(H2) AB peak Q-factor vs speed",
+                               ylab="f_stride / FWHM",
+                               ysc=:log10)
+
+fig4h = plot(pH1, pH2; layout=(1,2), size=(2*PUB_W, PUB_H))
+savefig(fig4h, "figures/fig4h_ab_speed_relationship.svg")
+println("Saved: figures/fig4h_ab_speed_relationship.svg")
+
 function boot_group(df, g)
     df[df.group .== g, :]
 end
@@ -308,6 +369,18 @@ fig4_stats = (
             hierarchical_bootstrap_one(d.npk_bias, d.subject; statfun=mean,
                                        n_boot=4000, seed=334)
         end
+    ),
+    speed_corr = Dict(
+        "AB asym vs speed" => begin
+            d = df4[(df4.group .== "AB") .& (df4.asym .> 0), :]
+            hierarchical_bootstrap_corr(d.speed, d.asym, d.subject;
+                                        n_boot=4000, seed=341)
+        end,
+        "AB qfactor vs speed" => begin
+            d = df4[(df4.group .== "AB") .& (df4.qfactor .> 0), :]
+            hierarchical_bootstrap_corr(d.speed, d.qfactor, d.subject;
+                                        n_boot=4000, seed=342)
+        end
     )
 )
 
@@ -323,5 +396,10 @@ end
 for key in ("dir_bias HF", "dir_bias LF", "npk_bias HF", "npk_bias LF")
     st = fig4_stats.within_group[key]
     @printf("%-24s  mean = %.4f  95%% CI [%.4f, %.4f]  p %s\n",
+            key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
+end
+for key in ("AB asym vs speed", "AB qfactor vs speed")
+    st = fig4_stats.speed_corr[key]
+    @printf("%-24s  r = %.4f  95%% CI [%.4f, %.4f]  p %s\n",
             key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
 end
