@@ -5,6 +5,7 @@
 # Panel B: FitzHugh-Nagumo, sweep ε        → Henrici vs ε (timescale separation)
 # Panel C: Stuart-Landau + shear, sweep c  → Henrici vs c (isochron twist)
 # Panel D: Heatmap Henrici(μ, c)
+# Panel E–G: Transient phase-space trajectories for selected (μ, c)
 
 include("common.jl")
 using DifferentialEquations
@@ -42,6 +43,74 @@ function simulate_fhn(eps, u0; a=0.7, b=0.7, I_ext=0.5, T=60.0, dt=0.1)
     sol = solve(ODEProblem(rhs!, Float64[u0...], (0.0, T)),
                 Tsit5(), saveat=0.0:dt:T, reltol=1e-8, abstol=1e-10)
     return Matrix(sol)
+end
+
+function truncate_to_transient(traj::AbstractMatrix, mu, upsilon, c;
+                               omega=1.0, dt=0.01, tol=0.05, min_stay_steps=250, max_cycles_after=2)
+    x = @view traj[1, :]
+    y = @view traj[2, :]
+    r = sqrt.(x .^ 2 .+ y .^ 2)
+    r_star = sqrt(mu / upsilon)
+    in_band = abs.(r .- r_star) .<= tol * r_star
+
+    idx_conv = nothing
+    if length(in_band) >= min_stay_steps
+        for k in 1:(length(in_band) - min_stay_steps)
+            if all(in_band[k:(k + min_stay_steps - 1)])
+                idx_conv = k
+                break
+            end
+        end
+    end
+
+    if isnothing(idx_conv)
+        return traj
+    end
+
+    # Add a couple cycles after convergence so the local geometry is visible.
+    freq = omega + c * r_star^2
+    T_cycle = 2π / max(freq, eps())
+    extra_steps = round(Int, max_cycles_after * T_cycle / dt)
+    idx_end = min(size(traj, 2), idx_conv + extra_steps)
+    return traj[:, 1:idx_end]
+end
+
+function phase_portrait_sl_shear(mu, upsilon, c;
+                                 u0=(0.1, 0.1), omega=1.0, T=40.0, dt=0.01,
+                                 title="", show_colorbar=false)
+    traj_full = simulate_sl_shear(mu, upsilon, c, u0; omega=omega, T=T, dt=dt)
+    traj = truncate_to_transient(traj_full, mu, upsilon, c; omega=omega, dt=dt)
+
+    x = vec(traj[1, :])
+    y = vec(traj[2, :])
+    t = (0:(length(x) - 1)) .* dt
+    # Markers are placed at fixed time intervals to reveal timescale changes.
+    mark_every = max(1, round(Int, 0.5 / dt))  # ~0.5 s between markers
+    mark_idx = 1:mark_every:length(t)
+
+    p = plot(x, y;
+        line_z        = t,
+        c             = :viridis,
+        colorbar      = show_colorbar,
+        lw            = PUB_LW,
+        marker        = :circle,
+        markeralpha   = 0.35,
+        markersize    = 2,
+        markerstrokewidth = 0,
+        markevery     = collect(mark_idx),
+        xlabel        = "x",
+        ylabel        = "y",
+        title         = title,
+        legend        = false,
+        aspect_ratio  = :equal,
+        margin        = PUB_MARGIN,
+        guidefontsize = PUB_GUIDE_FS,
+        tickfontsize  = PUB_TICK_FS,
+        titlefontsize = PUB_TITLE_FS,
+    )
+    scatter!(p, [x[1]], [y[1]]; markershape=:diamond, markersize=5, color=:black, markerstrokewidth=0)
+    scatter!(p, [x[end]], [y[end]]; markershape=:star5, markersize=6, color=:black, markerstrokewidth=0)
+    return p
 end
 
 # ── DMD operators (data is n_vars × n_time) ───────────────────────────────────
@@ -215,7 +284,34 @@ pD = heatmap(collect(c_grid), collect(mu_grid), h_map;
         tickfontsize   = PUB_TICK_FS,
         titlefontsize  = PUB_TITLE_FS)
 
+# ── Phase-space transient panels (E–G) ───────────────────────────────────────
+# Representative parameter choices from the (μ, c) grid.
+phase_params = [
+    (0.20, 0.0, "(E)  Transient (μ=0.20, c=0.0)"),
+    (1.00, 0.0, "(F)  Transient (μ=1.00, c=0.0)"),
+    (1.00, 8.0, "(G)  Transient (μ=1.00, c=8.0)"),
+]
+
+pE = phase_portrait_sl_shear(phase_params[1][1], ups_fixed, phase_params[1][2]; title=phase_params[1][3])
+pF = phase_portrait_sl_shear(phase_params[2][1], ups_fixed, phase_params[2][2]; title=phase_params[2][3])
+pG = phase_portrait_sl_shear(phase_params[3][1], ups_fixed, phase_params[3][2]; title=phase_params[3][3])
+
+# Mark selected parameter combinations on the heatmap.
+sel_c = [p[2] for p in phase_params]
+sel_mu = [p[1] for p in phase_params]
+scatter!(pD, sel_c, sel_mu;
+    markershape     = :circle,
+    markersize      = 5,
+    color           = :white,
+    markerstrokecolor = :black,
+    markerstrokewidth = 1.0,
+    label           = "")
+
 # ── Compose and save ──────────────────────────────────────────────────────────
-fig1 = plot(pA, pB, pC, pD; layout=(2, 2), size=(2*PUB_W, 2*PUB_H))
+lay = @layout [a b c; d; e f g]
+fig1 = plot(pA, pB, pC, pD, pE, pF, pG;
+    layout = lay,
+    size   = (3*PUB_W, 3*PUB_H),
+)
 savefig(fig1, "figures/fig1_simulated_benchmarks.svg")
 println("\nSaved: figures/fig1_simulated_benchmarks.svg")

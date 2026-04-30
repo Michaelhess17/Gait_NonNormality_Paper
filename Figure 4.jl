@@ -282,6 +282,50 @@ fig4h = plot(pH1, pH2; layout=(1,2), size=(2*PUB_W, PUB_H))
 savefig(fig4h, "figures/fig4h_ab_speed_relationship.svg")
 println("Saved: figures/fig4h_ab_speed_relationship.svg")
 
+# ── Stroke Q-factor vs speed (all HF + LF combined) ──────────────────────────
+# Mirrors pH2 (AB Q vs speed) so the two panels can be placed side-by-side in
+# the manuscript for a direct AB-vs-Stroke comparison.
+df4_stroke_q = df4[(df4.group .!= "AB") .& (df4.qfactor .> 0), :]
+
+pH_stroke_q = pub_plot(;
+    title   = "Stroke: Q-factor vs speed",
+    xlabel  = "Walking speed (cm/s)",
+    ylabel  = "f_stride / FWHM",
+    yscale  = :log10,
+    legend  = :topright,
+    size    = (PUB_W, PUB_H))
+
+for g in ["HF", "LF"]
+    dfg = df4_stroke_q[df4_stroke_q.group .== g, :]
+    isempty(dfg) && continue
+    c = GROUP_COLORS[g]
+    c_line = RGBA(red(c), green(c), blue(c), 0.22)
+    for s in unique(dfg.subject)
+        dfs = dfg[dfg.subject .== s, :]
+        nrow(dfs) < 2 && continue
+        ord = sortperm(dfs.speed)
+        plot!(pH_stroke_q, dfs.speed[ord], Float64.(dfs.qfactor[ord]);
+              color=c_line, lw=1, label="")
+    end
+    scatter!(pH_stroke_q, dfg.speed, Float64.(dfg.qfactor);
+             color=c, alpha=0.65, markersize=PUB_MSIZ-1,
+             markerstrokewidth=0, label=g)
+end
+# Single pooled trend line across all stroke
+let x = Float64.(df4_stroke_q.speed), y = Float64.(df4_stroke_q.qfactor)
+    if length(x) > 2 && std(x) > 0
+        b = cov(x, log.(y)) / var(x)   # fit in log-Q space for log-scale axis
+        a = mean(log.(y)) - b * mean(x)
+        xfit = range(minimum(x), maximum(x), length=80)
+        plot!(pH_stroke_q, xfit, exp.(a .+ b .* xfit);
+              color=:black, lw=2, ls=:dash, label="")
+    end
+end
+
+fig4_stroke_q_speed = plot(pH2, pH_stroke_q; layout=(1,2), size=(2*PUB_W, PUB_H))
+savefig(fig4_stroke_q_speed, "figures/fig4_stroke_q_speed.svg")
+println("Saved: figures/fig4_stroke_q_speed.svg")
+
 function boot_group(df, g)
     df[df.group .== g, :]
 end

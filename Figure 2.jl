@@ -7,7 +7,6 @@
 # with per-subject trajectory lines connecting speeds within each subject.
 
 include("common.jl")
-using CSV
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 println("Loading data…")
@@ -52,6 +51,7 @@ df2 = DataFrame(subject  = collect(subj_all),
                 speed    = collect(speed_all),
                 henrici  = henrici_v,
                 rank     = rank_v)
+df2[!, :group2] = make_group2(df2.group)
 
 function intercept_slope(speed::AbstractVector, y::AbstractVector)
     ok = .!isnan.(speed) .& .!isnan.(y)
@@ -64,19 +64,6 @@ function intercept_slope(speed::AbstractVector, y::AbstractVector)
     X = hcat(ones(length(v)), x_center)
     β = X \ v
     return (β[1], β[2])
-end
-
-function try_parse_float(v)
-    if v isa Number
-        return Float64(v)
-    end
-    s = strip(String(v))
-    isempty(s) && return NaN
-    try
-        return parse(Float64, s)
-    catch
-        return NaN
-    end
 end
 
 println("\n═══ Henrici departure  (median [IQR]) ═══")
@@ -100,54 +87,17 @@ rows = Vector{NamedTuple}()
 for s in unique(df2.subject)
     d = sort(df2[df2.subject .== s, :], :speed)
     a_eta, b_eta = intercept_slope(Float64.(d.speed), Float64.(d.henrici))
-    a_rank, b_rank = intercept_slope(Float64.(d.speed), Float64.(d.rank))
     push!(rows, (subject=s, group=d.group[1], eta_int=a_eta, eta_slope=b_eta,
-                 rank_int=a_rank, rank_slope=b_rank, n_trials=nrow(d)))
+                 n_trials=nrow(d)))
 end
 df2_subj = DataFrame(rows)
+df2_subj[!, :group2] = make_group2(df2_subj.group)
 
 println("\n═══ Subject-level eta slope (median [IQR]) ═══")
 for g in GROUP_ORDER
     vals = filter(!isnan, df2_subj.eta_slope[df2_subj.group .== g])
     q = quantile(vals, [0.25, 0.5, 0.75])
     @printf("%-6s  %8.5f  [%8.5f – %8.5f]\n", g, q[2], q[1], q[3])
-end
-
-# ── Clinical merge: rank-speed slope vs Berg (stroke subjects) ───────────────
-score_paths = [
-    joinpath(DATA_DIR, "subject_scores.csv"),
-    joinpath(@__DIR__, "data", "subject_scores.csv"),
-    expanduser("~/Documents/Synology_local/Python/Gait-Signatures/data/subject_scores.csv"),
-    expanduser("~/Synology/Python/Gait-Signatures/data/subject_scores.csv"),
-]
-score_path = findfirst(isfile, score_paths)
-
-df2_clin = DataFrame()
-clinical_rank_berg = (point=NaN, ci=(NaN, NaN), p=NaN, n=0)
-if !isnothing(score_path)
-    clin_raw = CSV.read(score_paths[score_path], DataFrame; header=false)
-    if ncol(clin_raw) >= 3
-        rename!(clin_raw, [:subject_raw, :berg_raw, :fugl_raw])
-        df_scores = DataFrame(
-            subject = strip.(String.(clin_raw.subject_raw)),
-            berg = [try_parse_float(v) for v in clin_raw.berg_raw],
-        )
-
-        stroke_subj = unique(df2_subj.subject[df2_subj.group .!= "AB"])
-        keep_score = [(!ismissing(s)) && (s in stroke_subj) for s in df_scores.subject]
-        df_scores = df_scores[keep_score, :]
-
-        df2_clin = leftjoin(df2_subj[df2_subj.group .!= "AB", :], df_scores; on=:subject)
-        keep_clin = [(!ismissing(b)) && (!ismissing(r)) && isfinite(Float64(b)) && isfinite(Float64(r))
-                 for (b, r) in zip(df2_clin.berg, df2_clin.rank_slope)]
-        df2_clin = df2_clin[keep_clin, :]
-
-        if nrow(df2_clin) >= 6
-            clinical_rank_berg = hierarchical_bootstrap_corr(
-                Float64.(df2_clin.rank_slope), Float64.(df2_clin.berg), df2_clin.subject;
-                n_boot=4000, seed=181)
-        end
-    end
 end
 
 # ── Scatter: speed vs Henrici ──────────────────────────────────────────────────
@@ -179,6 +129,56 @@ for g in GROUP_ORDER
 end
 savefig(fig2, "figures/fig2_nonnormality_vs_speed.svg")
 println("\nSaved: figures/fig2_nonnormality_vs_speed.svg")
+
+# ── Section 1: AB-only η vs speed ─────────────────────────────────────────────
+fig2_ab_only = pub_plot(;
+    xlabel  = "Walking speed (cm/s)",
+    ylabel  = "Henrici departure (η)",
+    title   = "AB: dynamical strain vs walking speed",
+    legend  = false,
+    size    = (PUB_W, PUB_H))
+
+let c = GROUP_COLORS["AB"], cl = GROUP2_COLORS_LIGHT["AB"]
+    df2_ab = df2[df2.group .== "AB", :]
+    for subj in unique(df2_ab.subject)
+        df_s = sort(df2_ab[df2_ab.subject .== subj, :], :speed)
+        ok   = .!isnan.(df_s.henrici)
+        sum(ok) < 2 && continue
+        plot!(fig2_ab_only, df_s.speed[ok], df_s.henrici[ok];
+              color=cl, lw=1.2, label="")
+    end
+    ok_ab = .!isnan.(df2_ab.henrici)
+    scatter!(fig2_ab_only, df2_ab.speed[ok_ab], df2_ab.henrici[ok_ab];
+             color=c, markersize=PUB_MSIZ, markerstrokewidth=0, alpha=0.75, label="")
+end
+savefig(fig2_ab_only, "figures/fig2_ab_only_nonnormality.svg")
+println("Saved: figures/fig2_ab_only_nonnormality.svg")
+
+# ── Section 2: AB + combined Stroke η vs speed ────────────────────────────────
+fig2_stroke_vs_ab = pub_plot(;
+    xlabel  = "Walking speed (cm/s)",
+    ylabel  = "Henrici departure (η)",
+    title   = "Dynamical strain: AB vs Stroke",
+    legend  = :bottomright,
+    size    = (PUB_W, PUB_H))
+
+for g in GROUP2_ORDER
+    df_g = df2[df2.group2 .== g, :]
+    for subj in unique(df_g.subject)
+        df_s = sort(df_g[df_g.subject .== subj, :], :speed)
+        ok   = .!isnan.(df_s.henrici)
+        sum(ok) < 2 && continue
+        plot!(fig2_stroke_vs_ab, df_s.speed[ok], df_s.henrici[ok];
+              color=GROUP2_COLORS_LIGHT[g], lw=1.2, label="")
+    end
+    ok = .!isnan.(df_g.henrici)
+    scatter!(fig2_stroke_vs_ab, df_g.speed[ok], df_g.henrici[ok];
+             color=GROUP2_COLORS[g], markersize=PUB_MSIZ,
+             markerstrokewidth=0, alpha=0.75,
+             label="$g  (n=$(sum(ok)))", legend=:bottomright)
+end
+savefig(fig2_stroke_vs_ab, "figures/fig2_stroke_vs_ab_nonnormality.svg")
+println("Saved: figures/fig2_stroke_vs_ab_nonnormality.svg")
 
 # ── Strip chart (speed-matched) ────────────────────────────────────────────────
 sm_flag, speed_cap = speed_match_flag(speed_all, group_all)
@@ -226,11 +226,33 @@ fig2_stats = (
             hierarchical_bootstrap_diff(d1.henrici, d1.subject, d0.henrici, d0.subject;
                                         n_boot=4000, seed=143)
         end
-    ),
-    clinical = Dict(
-        "rank_slope_vs_berg" => clinical_rank_berg,
     )
 )
+
+# ── AB vs combined Stroke bootstrap stats ─────────────────────────────────────
+df2_stroke    = df2[df2.group .!= "AB", :]
+df2_stroke_sm = df2_sm[df2_sm.group .!= "AB", :]
+
+fig2_stats_combined = (
+    corr_stroke = hierarchical_bootstrap_corr(
+        df2_stroke.speed, df2_stroke.henrici, df2_stroke.subject;
+        n_boot=4000, seed=150),
+    matched_diff_stroke_ab = hierarchical_bootstrap_diff(
+        df2_stroke_sm.henrici, df2_stroke_sm.subject,
+        df2_sm[df2_sm.group .== "AB", :].henrici,
+        df2_sm[df2_sm.group .== "AB", :].subject;
+        n_boot=4000, seed=151),
+)
+
+println("\n═══ AB vs combined Stroke (speed-matched) ═══")
+let st = fig2_stats_combined.matched_diff_stroke_ab
+    @printf("Stroke−AB  Δmedian = %.4f  95%% CI [%.4f, %.4f]  p %s\n",
+            st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
+end
+let st = fig2_stats_combined.corr_stroke
+    @printf("Stroke r(speed,η) = %.3f  95%% CI [%.3f, %.3f]  p %s\n",
+            st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
+end
 
 println("\n═══ Figure 2 hierarchical bootstrap ═══")
 for g in GROUP_ORDER
@@ -242,11 +264,6 @@ for key in ("HF-AB", "LF-AB", "HF-LF")
     st = fig2_stats.matched_diff[key]
     @printf("%-6s  Δmedian = %.4f  95%% CI [%.4f, %.4f]  p %s\n",
             key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
-end
-if isfinite(fig2_stats.clinical["rank_slope_vs_berg"].point)
-    st = fig2_stats.clinical["rank_slope_vs_berg"]
-    @printf("%-20s  r = %.3f  95%% CI [%.3f, %.3f]  p %s  n=%d\n",
-            "rank_slope_vs_berg", st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p), nrow(df2_clin))
 end
 
 fig2b = pub_plot(;
@@ -274,9 +291,10 @@ end
 savefig(fig2b, "figures/fig2b_nonnormality_strip.svg")
 println("Saved: figures/fig2b_nonnormality_strip.svg")
 
+# 3-group slope strip (kept for reference / supplemental use)
 fig2c = pub_plot(;
     xlabel  = "",
-    ylabel  = "d eta / d speed",
+    ylabel  = "d η / d speed",
     title   = "Subject-level speed sensitivity",
     xticks  = (1:3, GROUP_ORDER),
     legend  = false,
@@ -300,37 +318,29 @@ end
 savefig(fig2c, "figures/fig2c_eta_speed_slope_strip.svg")
 println("Saved: figures/fig2c_eta_speed_slope_strip.svg")
 
-fig2d_berg = pub_plot(;
-    xlabel = "Rank slope (delta rank per cm/s)",
-    ylabel = "Berg score",
-    title  = "Clinical association (stroke subjects)",
-    legend = :bottomright,
-    size   = (PUB_W, PUB_H))
+# 2-group slope strip: AB vs combined Stroke (main manuscript version)
+fig2c_abvstroke = pub_plot(;
+    xlabel  = "",
+    ylabel  = "d η / d speed",
+    title   = "Speed sensitivity: AB vs Stroke",
+    xticks  = (1:2, GROUP2_ORDER),
+    legend  = false,
+    size    = (PUB_W, PUB_H))
 
-if nrow(df2_clin) > 0
-    for g in ["HF", "LF"]
-        d = df2_clin[df2_clin.group .== g, :]
-        x = Float64.(d.rank_slope)
-        y = Float64.(d.berg)
-        scatter!(fig2d_berg, x, y; color=GROUP_COLORS[g], alpha=0.80,
-                 markersize=PUB_MSIZ, markerstrokewidth=0,
-                 label="$g (n=$(length(y)))")
-        if length(y) >= 3 && std(x) > 0
-            X = hcat(ones(length(x)), x)
-            β = X \ y
-            xx = range(minimum(x), maximum(x), length=50)
-            plot!(fig2d_berg, xx, β[1] .+ β[2] .* xx; color=GROUP_COLORS[g], lw=2, label="")
-        end
+hline!(fig2c_abvstroke, [0.0]; color=:gray65, ls=:dash, lw=1, label="")
+rng_slope2 = MersenneTwister(19)
+for (i, g) in enumerate(GROUP2_ORDER)
+    vals = filter(!isnan, df2_subj.eta_slope[df2_subj.group2 .== g])
+    n    = length(vals)
+    xs   = i .+ 0.22 .* (rand(rng_slope2, n) .- 0.5)
+    scatter!(fig2c_abvstroke, xs, vals;
+             color=GROUP2_COLORS[g], markersize=PUB_MSIZ-1,
+             markerstrokewidth=0, alpha=0.70, label="")
+    if n > 0
+        q = quantile(vals, [0.25, 0.5, 0.75])
+        plot!(fig2c_abvstroke, [i-0.22, i+0.22], [q[2], q[2]]; color=:black, lw=3, label="")
+        plot!(fig2c_abvstroke, [i, i], [q[1], q[3]];             color=:black, lw=2, label="")
     end
-    st = fig2_stats.clinical["rank_slope_vs_berg"]
-    if isfinite(st.point)
-        annotate!(fig2d_berg,
-                  minimum(Float64.(df2_clin.rank_slope)),
-                  maximum(Float64.(df2_clin.berg)),
-                  text("r=$(round(st.point; digits=2)), p $(fmt_pvalue(st.p))", 8, :black, :left))
-    end
-else
-    annotate!(fig2d_berg, 0.5, 0.5, text("Clinical scores unavailable", 9, :black))
 end
-savefig(fig2d_berg, "figures/fig2d_rank_slope_vs_berg.svg")
-println("Saved: figures/fig2d_rank_slope_vs_berg.svg")
+savefig(fig2c_abvstroke, "figures/fig2c_abvstroke_slope_strip.svg")
+println("Saved: figures/fig2c_abvstroke_slope_strip.svg")

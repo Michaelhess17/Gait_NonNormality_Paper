@@ -8,9 +8,37 @@
 
 include("common.jl")
 using FFTW
+using CSV
 
 const N_HARMONICS = 5
 const N_ANGLES    = 1000
+const N_SWEEP_POINTS = div(N_ANGLES, 2) + 1
+
+function intercept_slope(speed::AbstractVector, y::AbstractVector)
+    ok = .!isnan.(speed) .& .!isnan.(y)
+    x = speed[ok]
+    v = y[ok]
+    length(v) == 0 && return (NaN, NaN)
+    length(v) == 1 && return (v[1], NaN)
+    std(x) == 0 && return (mean(v), 0.0)
+    x_center = x .- mean(x)
+    X = hcat(ones(length(v)), x_center)
+    β = X \ v
+    return (β[1], β[2])
+end
+
+function try_parse_float(v)
+    if v isa Number
+        return Float64(v)
+    end
+    s = strip(String(v))
+    isempty(s) && return NaN
+    try
+        return parse(Float64, s)
+    catch
+        return NaN
+    end
+end
 
 function harmonic_gains_at(A::AbstractMatrix, f_stride::Float64;
                             n_harmonics=N_HARMONICS, fs=FS)
@@ -33,17 +61,37 @@ function resolvent_gain_serial(A::AbstractMatrix; n_angles=N_ANGLES, fs=FS)
     return freq_hz[1:nyq-1], gains[1:nyq-1]
 end
 
+const FIG2B_FREQS = collect(range(0, FS / 2, length=N_SWEEP_POINTS))
+const FIG2B_FREQ_MASK = (FIG2B_FREQS .>= 0.3) .& (FIG2B_FREQS .<= 5.0)
+
+function sweep_profile_stats(mat::AbstractMatrix)
+    med = fill(NaN, size(mat, 2))
+    q25 = fill(NaN, size(mat, 2))
+    q75 = fill(NaN, size(mat, 2))
+    for j in 1:size(mat, 2)
+        vals = filter(!isnan, Float64.(mat[:, j]))
+        if !isempty(vals)
+            q = quantile(vals, [0.25, 0.5, 0.75])
+            q25[j] = q[1]
+            med[j] = q[2]
+            q75[j] = q[3]
+        end
+    end
+    return med, q25, q75
+end
+
 # ── Load data ─────────────────────────────────────────────────────────────────
 println("Loading data…")
 data, speed_all, group_all, subj_all = load_gait_data()
 n_trials = size(data, 1)
 
 # ── DMD + harmonic gains  [threaded, cached] ──────────────────────────────────
-ranks_v, f_strides_v, hgain_v = @cached cache_path("fig3_harmonic.jls") begin
+ranks_v, f_strides_v, hgain_v, sweep_gains_v = @cached cache_path("fig3_harmonic_v2.jls") begin
     println("Running DMD on $n_trials trials  ($(Threads.nthreads()) threads)…")
     _ranks    = zeros(Int, n_trials)
     _fstrides = fill(NaN, n_trials)
     _hgain    = fill(NaN, n_trials, N_HARMONICS)
+    _sweep    = fill(NaN, n_trials, N_SWEEP_POINTS)
     Threads.@threads for i in 1:n_trials
         try
             A_s, _, r      = get_stable_dmd_operator(data[i, :, :])
@@ -52,12 +100,15 @@ ranks_v, f_strides_v, hgain_v = @cached cache_path("fig3_harmonic.jls") begin
             _ranks[i]      = r
             _fstrides[i]   = f_s
             _hgain[i, :]   = harmonic_gains_at(A_s, f_s)
+            if length(gh) == N_SWEEP_POINTS
+                _sweep[i, :] = gh
+            end
         catch
         end
     end
     n_ok = sum(.!isnan.(_fstrides))
     println("  Done.  $n_ok / $n_trials succeeded.")
-    (_ranks, _fstrides, _hgain)
+    (_ranks, _fstrides, _hgain, _sweep)
 end
 
 # ── Eigenvalue–stride distance  [threaded, cached] ───────────────────────────
@@ -107,6 +158,7 @@ df3[!, :decay_rate] = decay_v
 
 sm_flag, speed_cap = speed_match_flag(speed_all, group_all)
 df3[!, :speed_matched] = sm_flag
+df3[!, :group2] = make_group2(df3.group)
 
 println("\n═══ Spectral decay rate (median [IQR]) ═══")
 for g in GROUP_ORDER
@@ -126,6 +178,22 @@ raw_cols  = [Symbol("gain_h$h")  for h in 1:N_HARMONICS]
 norm_cols = [Symbol("gnorm_h$h") for h in 1:N_HARMONICS]
 harm_xs   = collect(1:N_HARMONICS)
 xtk       = (1:N_HARMONICS, string.(1:N_HARMONICS))
+
+function swept_profile_stats(mat::AbstractMatrix)
+    med = fill(NaN, size(mat, 2))
+    q25 = fill(NaN, size(mat, 2))
+    q75 = fill(NaN, size(mat, 2))
+    for j in 1:size(mat, 2)
+        vals = filter(!isnan, Float64.(mat[:, j]))
+        if !isempty(vals)
+            q = quantile(vals, [0.25, 0.5, 0.75])
+            q25[j] = q[1]
+            med[j] = q[2]
+            q75[j] = q[3]
+        end
+    end
+    return med, q25, q75
+end
 
 function participation_ratio_from_svals(svals::AbstractVector)
     s2 = svals .^ 2
@@ -148,6 +216,60 @@ part_ratio_v = @cached cache_path("fig3_participation_ratio.jls") begin
     _pr
 end
 df3[!, :part_ratio] = part_ratio_v
+
+rows_pr = Vector{NamedTuple}()
+for s in unique(df3.subject)
+    d = sort(df3[(df3.subject .== s) .& .!isnan.(df3.part_ratio), :], :speed)
+    a_pr, b_pr = intercept_slope(Float64.(d.speed), Float64.(d.part_ratio))
+    push!(rows_pr, (subject=s, group=nrow(d) == 0 ? "NA" : d.group[1],
+                    pr_int=a_pr, pr_slope=b_pr, n_trials=nrow(d)))
+end
+df3_subj_pr = DataFrame(rows_pr)
+
+score_paths = [
+    joinpath(DATA_DIR, "subject_scores.csv"),
+    joinpath(@__DIR__, "data", "subject_scores.csv"),
+    expanduser("~/Documents/Synology_local/Python/Gait-Signatures/data/subject_scores.csv"),
+    expanduser("~/Synology/Python/Gait-Signatures/data/subject_scores.csv"),
+]
+score_path = findfirst(isfile, score_paths)
+
+df3_clin = DataFrame()
+clinical_pr_berg = (point=NaN, ci=(NaN, NaN), p=NaN, n=0)
+clinical_pr_fugl = (point=NaN, ci=(NaN, NaN), p=NaN, n=0)
+if !isnothing(score_path)
+    clin_raw = CSV.read(score_paths[score_path], DataFrame; header=false)
+    if ncol(clin_raw) >= 3
+        rename!(clin_raw, [:subject_raw, :berg_raw, :fugl_raw])
+        df_scores = DataFrame(
+            subject = strip.(String.(clin_raw.subject_raw)),
+            berg = [try_parse_float(v) for v in clin_raw.berg_raw],
+            fugl = [try_parse_float(v) for v in clin_raw.fugl_raw],
+        )
+
+        df3_clin = leftjoin(df3_subj_pr[df3_subj_pr.group .!= "AB", :], df_scores; on=:subject)
+
+        keep_berg = [(!ismissing(b)) && isfinite(Float64(b)) && isfinite(Float64(p))
+                     for (b, p) in zip(df3_clin.berg, df3_clin.pr_slope)]
+        df3_clin_berg = df3_clin[keep_berg, :]
+        if nrow(df3_clin_berg) >= 6
+            clinical_pr_berg = hierarchical_bootstrap_corr(
+                Float64.(df3_clin_berg.pr_slope), Float64.(df3_clin_berg.berg), df3_clin_berg.subject;
+                n_boot=4000, seed=281)
+            clinical_pr_berg = merge(clinical_pr_berg, (n=nrow(df3_clin_berg),))
+        end
+
+        keep_fugl = [(!ismissing(f)) && isfinite(Float64(f)) && isfinite(Float64(p))
+                     for (f, p) in zip(df3_clin.fugl, df3_clin.pr_slope)]
+        df3_clin_fugl = df3_clin[keep_fugl, :]
+        if nrow(df3_clin_fugl) >= 6
+            clinical_pr_fugl = hierarchical_bootstrap_corr(
+                Float64.(df3_clin_fugl.pr_slope), Float64.(df3_clin_fugl.fugl), df3_clin_fugl.subject;
+                n_boot=4000, seed=282)
+            clinical_pr_fugl = merge(clinical_pr_fugl, (n=nrow(df3_clin_fugl),))
+        end
+    end
+end
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 function profile_stats(df_sub, grp, cols)
@@ -172,6 +294,42 @@ function add_profile!(sp, xs, med, q25, q75, color; label="")
           fillalpha=0.18, fillcolor=color, lw=0, label="")
     plot!(sp, xs[ok], med[ok]; lw=PUB_LW, color=color, label=label)
 end
+
+ab_curve_bin_edges  = [0, 40, 60, 90, 130, 250]
+ab_curve_bin_labels = ["<40", "40–60", "60–90", "90–130", ">130  cm/s"]
+
+ab_curve_vals = filter(x -> isfinite(x) && x > 0, vec(sweep_gains_v[df3.group .== "AB", FIG2B_FREQ_MASK]))
+ab_curve_ymin = 10.0 ^ floor(log10(minimum(ab_curve_vals)))
+ab_curve_ymax = 10.0 ^ ceil(log10(maximum(ab_curve_vals)))
+
+ab_speed_curve_panel = pub_plot(; yscale=:log10,
+                      ylims=(ab_curve_ymin, ab_curve_ymax),
+                      xlabel="Forcing frequency (Hz)",
+                      ylabel="Resolvent gain",
+                      title="(B)  AB frequency-resolved gain by speed bin",
+                      legend=:topright,
+                      size=(PUB_W, PUB_H),
+                      guidefontsize=PUB_GUIDE_FS+1,
+                      tickfontsize=PUB_TICK_FS+1,
+                      legendfontsize=PUB_LEGEND_FS,
+                      titlefontsize=PUB_TITLE_FS+1)
+
+for (rk, bi) in enumerate(1:length(ab_curve_bin_labels))
+    lo, hi = ab_curve_bin_edges[bi], ab_curve_bin_edges[bi+1]
+    idx = (df3.group .== "AB") .& (df3.speed .>= lo) .& (df3.speed .< hi)
+    mat = sweep_gains_v[idx, FIG2B_FREQ_MASK]
+    med, q25, q75 = swept_profile_stats(mat)
+    ok = .!isnan.(med)
+    any(ok) || continue
+    t = length(ab_curve_bin_labels) <= 1 ? 1.0 : (rk - 1) / (length(ab_curve_bin_labels) - 1)
+    c = RGB(t, 0.0, 1.0 - t)
+    plot!(ab_speed_curve_panel, FIG2B_FREQS[FIG2B_FREQ_MASK][ok], q75[ok];
+        fillrange=q25[ok], fillalpha=0.14, fillcolor=c, lw=0, label="")
+    plot!(ab_speed_curve_panel, FIG2B_FREQS[FIG2B_FREQ_MASK][ok], med[ok];
+        lw=3.0, color=c, label=ab_curve_bin_labels[bi])
+end
+savefig(ab_speed_curve_panel, "figures/fig3_ab_speed_curves.svg")
+println("Saved: figures/fig3_ab_speed_curves.svg")
 
 # ── Panels A & B: all trials ───────────────────────────────────────────────────
 pA = pub_plot(; yscale=:log10, xticks=xtk,
@@ -224,6 +382,45 @@ speed_panels = map(GROUP_ORDER) do g
     end
     sp
 end
+
+# ── Combined Stroke speed-bin panel (HF + LF merged) ─────────────────────────
+# Rename group to "Stroke" for the merged panel so profile_stats works unchanged.
+df3_stroke_bins = copy(df3[df3.group .!= "AB", :])
+df3_stroke_bins[!, :group] .= "Stroke"
+
+sp_stroke_bins = pub_plot(;
+    yscale=:log10, ylims=(raw_ymin, raw_ymax), xticks=xtk,
+    xlabel="Harmonic",
+    ylabel="Resolvent gain",
+    title="Stroke",
+    legend=:outerright,
+    size=(PUB_W3*0.8, PUB_H),
+    guidefontsize=PUB_GUIDE_FS+2,
+    tickfontsize=PUB_TICK_FS+2,
+    legendfontsize=PUB_LEGEND_FS,
+    titlefontsize=PUB_TITLE_FS+2)
+
+let pres = [bi for bi in 1:length(speed_bin_labels)
+            if sum((df3_stroke_bins.speed .>= speed_bin_edges[bi]) .&
+                   (df3_stroke_bins.speed .<  speed_bin_edges[bi+1])) > 0]
+    np = length(pres)
+    for (rk, bi) in enumerate(pres)
+        lo, hi  = speed_bin_edges[bi], speed_bin_edges[bi+1]
+        df_bin  = df3_stroke_bins[(df3_stroke_bins.speed .>= lo) .&
+                                  (df3_stroke_bins.speed .<  hi), :]
+        med, _, _ = profile_stats(df_bin, "Stroke", raw_cols)
+        ok = .!isnan.(med); any(ok) || continue
+        t  = np <= 1 ? 1.0 : (rk-1)/(np-1)
+        plot!(sp_stroke_bins, harm_xs[ok], med[ok]; lw=3.0,
+              color=RGB(t, 0.0, 1.0-t), label=speed_bin_labels[bi])
+    end
+end
+
+# 2-panel figure: AB (section-1 reference) + combined Stroke (section-2 contrast)
+fig3_ab_stroke_speed = plot(speed_panels[1], sp_stroke_bins;
+                            layout=(1,2), size=(2*PUB_W3*0.8, PUB_H))
+savefig(fig3_ab_stroke_speed, "figures/fig3_ab_stroke_speed_bins.svg")
+println("Saved: figures/fig3_ab_stroke_speed_bins.svg")
 
 # ── Panel D: speed-matched ─────────────────────────────────────────────────────
 df3_sm = df3[df3.speed_matched, :]
@@ -309,6 +506,10 @@ fig3_stats = (
                                         n_boot=4000, seed=208)
         end
     ),
+    clinical = Dict(
+        "pr_slope_vs_berg" => clinical_pr_berg,
+        "pr_slope_vs_fugl" => clinical_pr_fugl,
+    ),
 )
 
 println("\n═══ Figure 3 hierarchical bootstrap ═══")
@@ -319,6 +520,13 @@ for key in ("gain_h1 HF-AB", "gain_h1 HF-LF", "gnorm_h2 HF-AB",
     st = fig3_stats.matched_diff[key]
     @printf("%-20s  Δmedian = %.4e  95%% CI [%.4e, %.4e]  p %s\n",
             key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p))
+end
+for key in ("pr_slope_vs_berg", "pr_slope_vs_fugl")
+    st = fig3_stats.clinical[key]
+    if isfinite(st.point)
+        @printf("%-20s  r = %.3f  95%% CI [%.3f, %.3f]  p %s  n=%d\n",
+                key, st.point, st.ci[1], st.ci[2], fmt_pvalue(st.p), st.n)
+    end
 end
 
 pD = pub_plot(; yscale=:log10, xticks=xtk,
@@ -400,11 +608,50 @@ end
 
 df3_speeddim = df3[(df3.rank .> 0) .& .!isnan.(df3.part_ratio), :]
 pF1 = speed_metric_panel(df3_speeddim, :rank;
-                        ttl="(F1) Rank vs speed",
+                        ttl="(E1) Rank vs speed",
                         ylab="Retained operator rank")
 pF2 = speed_metric_panel(df3_speeddim, :part_ratio;
-                        ttl="(F2) Participation ratio vs speed",
+                        ttl="(E2) Participation ratio vs speed",
                         ylab="Participation ratio")
+
+pF3 = pub_plot(;
+    xlabel = "d(PR) / d speed",
+    ylabel = "Berg score",
+    title  = "(E3) PR slope vs Berg",
+    legend = :bottomright)
+
+if nrow(df3_clin) > 0
+    berg_mask = [(!ismissing(b)) && isfinite(Float64(b)) && isfinite(Float64(p))
+                 for (b, p) in zip(df3_clin.berg, df3_clin.pr_slope)]
+    df3_clin_berg = df3_clin[berg_mask, :]
+    # Plot HF and LF points in their own colours but fit a SINGLE regression line
+    # across all stroke subjects (HF and LF show the same PR-slope/Berg trend).
+    for g in ["HF", "LF"]
+        d = df3_clin_berg[df3_clin_berg.group .== g, :]
+        isempty(d) && continue
+        scatter!(pF3, Float64.(d.pr_slope), Float64.(d.berg);
+                 color=GROUP_COLORS[g], alpha=0.80,
+                 markersize=PUB_MSIZ, markerstrokewidth=0,
+                 label="$g (n=$(nrow(d)))")
+    end
+    x_all = Float64.(df3_clin_berg.pr_slope)
+    y_all = Float64.(df3_clin_berg.berg)
+    if length(y_all) >= 3 && std(x_all) > 0
+        X_mat = hcat(ones(length(x_all)), x_all)
+        β = X_mat \ y_all
+        xx = range(minimum(x_all), maximum(x_all), length=50)
+        plot!(pF3, xx, β[1] .+ β[2] .* xx; color=:black, lw=2, ls=:dash, label="all stroke")
+    end
+    st = fig3_stats.clinical["pr_slope_vs_berg"]
+    if isfinite(st.point)
+        annotate!(pF3,
+                  minimum(x_all),
+                  maximum(y_all),
+                  text("r=$(round(st.point; digits=2)), p $(fmt_pvalue(st.p))", 8, :black, :left))
+    end
+else
+    annotate!(pF3, 0.5, 0.5, text("Clinical scores unavailable", 9, :black))
+end
 
 # ── Save ───────────────────────────────────────────────────────────────────────
 fig3ab = plot(pA, pB; layout=(1,2), size=(2*PUB_W, PUB_H))
@@ -416,12 +663,9 @@ savefig(fig3c, "figures/fig3c_harmonic_speed_bins.svg")
 fig3d = plot(pD; size=(1.5*PUB_W, 1.5*PUB_H))
 savefig(fig3d, "figures/fig3d_harmonic_speed_matched.svg")
 
-fig3e = plot(pE1, pE2; layout=(1,2), size=(2*PUB_W, PUB_H))
-savefig(fig3e, "figures/fig3e_mechanistic_panels.svg")
-
-fig3f = plot(pF1, pF2; layout=(1,2), size=(2*PUB_W, PUB_H))
+fig3f = plot(pF1, pF2, pF3; layout=(1,3), size=(3*PUB_W, PUB_H))
 savefig(fig3f, "figures/fig3f_rank_participation_speed.svg")
 
-println("\nSaved: figures/fig3ab, fig3c, fig3d, fig3e, fig3f")
+println("\nSaved: figures/fig3ab, fig3c, fig3d, fig3f")
 
 fig3_df = df3

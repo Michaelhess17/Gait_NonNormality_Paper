@@ -1,0 +1,76 @@
+---
+title: "Weekly Progress Update (04-27-2026)"
+author: "Michael Hess"
+date: today
+format:
+  html:
+    format-links:
+      - pdf
+  pdf: default
+jupyter: julia-1.12
+engine: julia
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Summary
+
+This week focused on two parallel threads: (1) consolidating the gait non-normality manuscript after last week's exploratory work and feedback during group meeting, and (2) beginning infrastructure work on the companion perspective paper. The main gait-manuscript changes were:
+  - adding new speed-dimensionality comparisons for most metrics 
+  - moving AB-only speed-trend diagnostics to the beginning to support the later mechanistic interpretation of the harmonic and coupling results in stroke survivors 
+  - rewriting the paper's narrative so the able-bodied coordination template is established first and the stroke results are then presented as specific departures from that template. 
+
+I have also begun converting the perspective paper draft from TeX into Quarto and setting up the analysis scripts that will support that paper's figures and quantitative components. Overall, this week was more about integrating and synthesizing existing results into a clearer narrative than about generating new mechanistic insights, but it was an important step toward a more polished manuscript and a more efficient workflow for the companion paper.
+
+## Accomplishments
+
+- Added new speed-dimensionality diagnostics to the harmonic analysis workflow in `Figure 3.jl`:
+  - Computed a participation-ratio metric from Hankel singular values as a continuous measure of effective dimensionality rather than rank, which showed significant discrete jumps due to numerics.
+  - added `fig3f_rank_participation_speed.svg` to the output, showing how both hard rank and participation ratio vary with speed across AB, HF, and LF trials. (will likely remove the rank panel from the main text and keep it in supplement, but the participation ratio is a nice addition to the main text)
+  
+  - Integrated those diagnostics into the manuscript as a new Figure 3F panel and updated the figure caption/text accordingly.
+- Extended the spatial-resolvent analysis in `Figure 4.jl`:
+  - Added AB-only speed relationship panels for
+    - spatial asymmetry vs speed, and
+    - peak Q-factor vs speed.
+  - Saved this new output as `fig4h_ab_speed_relationship.svg`.
+  - Added hierarchical bootstrap correlations for these AB speed trends so they can be discussed quantitatively in the Results.
+- Updated the main manuscript text and captions in `index.qmd`:
+  - Moved methods to after discussion, and ensured that metrics are defined (with biomechanical significance) before they are used in the text.
+  - Rewrote several figure titles/captions to be much more explicit about the biological interpretation of each panel and explanations of results shown.
+  - Added text and figures linking AB dimensional richness (via participation ratio) to Berg Balance Score.
+- Reframed the paper's core narrative around an AB baseline:
+  - Introduction now explicitly uses the healthy-cohort result of @winner2024 as the reference template.
+  - Results sections for Figures 2-4 now follow a "healthy baseline first, stroke departures second" structure.
+  - Discussion now opens with the same baseline-and-breakdown framing instead of immediately foregrounding stroke deficits.
+- Started parallel work on the companion perspective paper in `github.com/michaelhess17/gait-modeling-perspective-paper`:
+  - Converted the draft from TeX into Quarto.
+  - Began setting up the analysis scripts that will support the figures/quantitative components of that paper.
+
+## Results and Figures
+
+The week produced two main additions to the figure set and a clearer synthesis of the existing results.
+
+Overall, this week was less about generating entirely new mechanistic models and more about integrating selected diagnostics into a cleaner manuscript-level story, while also getting the companion perspective project into a Quarto-based workflow that should make its analysis and drafting easier to iterate on.
+
+## Challenges / Open Questions
+
+- The main open question is editorial rather than computational:
+  - Is the AB-first framing now a clear organization for the paper, or does it over-delay the stroke motivation for some readers?
+  - Are the analyses and figures now sufficiently focused on the mechanistic insights they support, or are there still too many exploratory diagnostics that dilute the narrative?
+  - Need to go through with a critical eye to ensure all claims are supported by the figures and that all figures are clearly explained in the text and captions. This is a major focus for next week.
+- Figure load is still an issue, and I need to be ruthless about cutting any panels that don't directly support the main mechanistic insights. The new AB speed relationships are nice, but they add more panels to an already busy figure, so I may need to move some of the other panels to the supplement to keep the main text focused.
+
+- The perspective paper is now in a better format for collaboration, but its analysis layer is still early:
+  - I have only started scaffolding the needed scripts and figures, so the main question there is how much quantitative support that paper should ultimately carry versus how much should remain conceptual/synthetic.
+
+## Plan for Next Week
+- Finalize the _structure_ of the gait-non-normality manuscript:
+  - Decide on the final figure set and their organization across main text vs supplement.
+  - Finalize the narrative structure of the Results and Discussion sections.
+- Convert Julia-generated SVGs into final publication-quality figures (e.g. via Illustrator/Inkscape) and integrate them into the manuscript -- possibly in a LaTeX document using an Interface template.
+- Continue building out the perspective paper's analysis layer and draft:
+  - Flesh out the main figures and their quantitative support.
+  - Continue drafting the text, starting with the Introduction and working through the main sections.

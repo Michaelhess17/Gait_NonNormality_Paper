@@ -77,6 +77,20 @@ const GROUP_COLORS = Dict(
     "LF" => RGB(0.86, 0.08, 0.24),   # crimson
 )
 
+# Combined stroke grouping (HF + LF → "Stroke") for analyses where the
+# two functional levels show similar patterns and the AB-vs-Stroke contrast
+# is the primary comparison.
+const STROKE_COLOR_COMB = RGB(0.65, 0.15, 0.20)   # brick-red
+const GROUP2_ORDER  = ["AB", "Stroke"]
+const GROUP2_COLORS = Dict(
+    "AB"     => GROUP_COLORS["AB"],
+    "Stroke" => STROKE_COLOR_COMB,
+)
+const GROUP2_COLORS_LIGHT = Dict(
+    g => RGBA(c.r, c.g, c.b, 0.35) for (g, c) in GROUP2_COLORS
+)
+make_group2(groups) = [g == "AB" ? "AB" : "Stroke" for g in groups]
+
 # ── Data paths ─────────────────────────────────────────────────────────────────
 const LEGACY_DATA_DIR = "/home/michael/Synology/Julia/data"
 const REPO_DATA_DIR   = joinpath(@__DIR__, "data")
