@@ -35,6 +35,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y librsvg2-bin
 
+      - name: Install TeX Live (LaTeX dependencies)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y texlive-luatex texlive-latex-extra texlive-fonts-recommended lmodern
+
       - name: Verify required data files
         shell: bash
         run: |
