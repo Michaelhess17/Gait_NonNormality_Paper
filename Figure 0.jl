@@ -49,37 +49,45 @@ pB0 = heatmap(1:n_cols_show, 1:size(H, 1), H[:, 1:n_cols_show];
 for y in 6:6:60
     hline!(pB0, [y + 0.5]; color=:white, lw=0.6, alpha=0.8, label="")
 end
-
 # ── Panel C: schematic of the fitted model ───────────────────────────────────
+# We use a 1x1 coordinate system. Let's give the boxes more "breathing room."
 pC0 = plot(; xlim=(0, 1), ylim=(0, 1), axis=false, ticks=false,
              title="(C) Fit reduced Hankel DMD and interpret geometry",
              margin=PUB_MARGIN)
 
-plot!(pC0, boxshape(0.18, 0.72, 0.28, 0.18);
-      seriestype=:shape, fillcolor=:white, linecolor=:black, lw=1.8, label="")
-plot!(pC0, boxshape(0.50, 0.72, 0.28, 0.18);
-      seriestype=:shape, fillcolor=:white, linecolor=:black, lw=1.8, label="")
-plot!(pC0, boxshape(0.82, 0.72, 0.28, 0.18);
-      seriestype=:shape, fillcolor=:white, linecolor=:black, lw=1.8, label="")
-plot!(pC0, boxshape(0.50, 0.28, 0.66, 0.20);
-      seriestype=:shape, fillcolor=:white, linecolor=:black, lw=1.8, label="")
+# Box Coordinates: [center_x, center_y, width, height]
+b1 = [0.18, 0.75, 0.32, 0.20]
+b2 = [0.50, 0.75, 0.28, 0.20]
+b3 = [0.82, 0.75, 0.32, 0.20]
+b4 = [0.50, 0.30, 0.85, 0.30]
 
-plot!(pC0, [0.32, 0.40], [0.72, 0.72]; color=:black, lw=1.5, arrow=true, label="")
-plot!(pC0, [0.64, 0.72], [0.72, 0.72]; color=:black, lw=1.5, arrow=true, label="")
-plot!(pC0, [0.82, 0.82], [0.61, 0.41]; color=:black, lw=1.5, arrow=true, label="")
+# Draw Boxes
+for b in [b1, b2, b3, b4]
+    plot!(pC0, boxshape(b[1], b[2], b[3], b[4]);
+          seriestype=:shape, fillcolor=:white, linecolor=:black, lw=1.5, label="")
+end
 
-annotate!(pC0, 0.18, 0.75, text("6-channel gait state", 10, :black, :center))
-annotate!(pC0, 0.18, 0.68, text("y(t) = [hips, knees, ankles]", 8, :black, :center))
+# Draw Connecting Arrows (Start X, End X), (Start Y, End Y)
+plot!(pC0, [0.34, 0.36], [0.75, 0.75]; color=:black, lw=1.2, arrow=true, label="")
+plot!(pC0, [0.64, 0.66], [0.75, 0.75]; color=:black, lw=1.2, arrow=true, label="")
+plot!(pC0, [0.82, 0.82], [0.65, 0.45]; color=:black, lw=1.2, arrow=true, label="")
 
-annotate!(pC0, 0.50, 0.75, text("Delay embedding", 10, :black, :center))
-annotate!(pC0, 0.50, 0.69, text("x(t) = [y(t); y(t+1); ...; y(t+τ)]", 8, :black, :center))
+# Box 1 Text: Input
+annotate!(pC0, b1[1], b1[2], text("Gait State\n(6-channel)", 9, :bold, :black, :center))
+annotate!(pC0, b1[1], b1[2]-0.06, text("y(t) = [H, K, A]", 7, :black, :center))
 
-annotate!(pC0, 0.82, 0.75, text("Reduced DMD fit", 10, :black, :center))
-annotate!(pC0, 0.82, 0.68, text("z(t+1) ≈ Ã z(t)", 8, :black, :center))
+# Box 2 Text: Process
+annotate!(pC0, b2[1], b2[2], text("Hankel\nEmbedding", 9, :bold, :black, :center))
+annotate!(pC0, b2[1], b2[2]-0.06, text("x(t) = [y(t); ...; y(t+τ)]", 7, :black, :center))
 
-annotate!(pC0, 0.50, 0.32, text("Interpret the fitted operator through its non-normal geometry,", 9, :black, :center))
-annotate!(pC0, 0.50, 0.26, text("not through individual eigenvalues alone:", 9, :black, :center))
-annotate!(pC0, 0.50, 0.20, text("dynamical strain η | harmonic gain profiles | spatial asymmetry | Q-factor", 9, :black, :center))
+# Box 3 Text: Fit
+annotate!(pC0, b3[1], b3[2], text("Reduced\nDMD Fit", 9, :bold, :black, :center))
+annotate!(pC0, b3[1], b3[2]-0.06, text("z(t+1) ≈ Ã z(t)", 7, :black, :center))
+
+# Box 4 Text: Interpretation (The big box)
+annotate!(pC0, b4[1], b4[2]+0.08, text("Interpret Non-Normal Geometry", 10, :bold, :black, :center))
+annotate!(pC0, b4[1], b4[2],      text("Strain (η)  |  Harmonic Gain  |  Asymmetry", 8, :black, :center))
+annotate!(pC0, b4[1], b4[2]-0.08, text("Analyzes stability & energy growth mechanisms", 7, :italic, :gray30, :center))
 
 # ── Panel D: short-horizon model prediction in joint space ───────────────────
 Ared, Ured, r = get_stable_dmd_operator(trial)
